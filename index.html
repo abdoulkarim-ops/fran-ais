@@ -321,7 +321,7 @@ summary{font:800 17px var(--f-head);min-height:44px;display:flex;align-items:cen
    ===================================================================== */
 
 /* ============================ 1. CONFIGURATION ============================ */
-const APP={nom:'Le Français avec Abdoul Karim',version:'1.1.0',objectifJour:2,tailleQuiz:10,seuil:6};
+const APP={nom:'Le Français avec Abdoul Karim',version:'1.2.0',objectifJour:2,tailleQuiz:10,seuil:6};
 const CLASSES=[['6e','Sixième','Collège'],['5e','Cinquième','Collège'],['4e','Quatrième','Collège'],['3e','Troisième','Collège'],['2nde','Seconde','Lycée'],['1ère','Première','Lycée'],['Terminale','Terminale','Lycée']];
 const CL=CLASSES.map(c=>c[0]);
 const rg=(a,b)=>CL.slice(CL.indexOf(a),CL.indexOf(b)+1);
@@ -352,29 +352,48 @@ const CATALOG=[
   L('gram-formes','grammaire','Les formes de phrases',rg('6e','4e')),
   L('gram-complexe','grammaire','La phrase complexe',rg('3e','2nde')),
   L('gram-subordonnee','grammaire','Les propositions subordonnées',rg('2nde','Terminale')),
+  L('gram-sujet','grammaire',"Le sujet et l'attribut du sujet",rg('6e','4e')),
+  L('gram-cc','grammaire','Les compléments circonstanciels',rg('5e','3e')),
   L('conj-present','conjugaison',"Le présent de l'indicatif",rg('6e','4e')),
   L('conj-imparfait','conjugaison',"L'imparfait",rg('6e','5e')),
   L('conj-pc','conjugaison','Le passé composé',rg('6e','4e')),
   L('conj-futur','conjugaison','Le futur simple',rg('5e','4e')),
   L('conj-subjonctif','conjugaison','Le subjonctif présent',rg('3e','1ère')),
+  L('conj-imperatif','conjugaison',"L'impératif présent",rg('6e','4e')),
+  L('conj-passe-simple','conjugaison','Le passé simple',rg('5e','3e')),
+  L('conj-conditionnel','conjugaison','Le conditionnel présent',rg('4e','2nde')),
+  L('conj-plus-que-parfait','conjugaison','Le plus-que-parfait',rg('4e','2nde')),
   L('ortho-a','orthographe','a / à',rg('6e','4e')),
   L('ortho-et','orthographe','et / est',rg('6e','5e')),
   L('ortho-on','orthographe','on / ont',rg('6e','5e')),
   L('ortho-pp','orthographe',"L'accord du participe passé",rg('4e','2nde')),
+  L('ortho-son','orthographe','son / sont',rg('6e','5e')),
+  L('ortho-ou','orthographe','ou / où',rg('6e','5e')),
+  L('ortho-ce','orthographe','ce / se',rg('6e','5e')),
+  L('ortho-ces','orthographe',"ces / ses / c'est / s'est",rg('6e','4e')),
   L('voc-synonymes','vocabulaire','Les synonymes',rg('6e','3e')),
   L('voc-antonymes','vocabulaire','Les antonymes',rg('6e','4e')),
   L('voc-familles','vocabulaire','Les familles de mots',rg('5e','3e')),
   L('voc-figures','vocabulaire','Les figures de style',rg('3e','Terminale')),
+  L('voc-propre-figure','vocabulaire','Sens propre et sens figuré',rg('6e','3e')),
+  L('voc-champ-lexical','vocabulaire','Le champ lexical',rg('5e','2nde')),
+  L('voc-registres','vocabulaire','Les niveaux de langue',rg('5e','3e')),
   L('expr-paragraphe','expression','Comment construire un paragraphe',rg('6e','Terminale')),
   L('expr-lettre','expression','Écrire une lettre',rg('6e','4e')),
   L('expr-description','expression','Décrire un lieu',rg('6e','3e')),
   L('expr-argumenter','expression',"L'argumentation",rg('4e','2nde')),
   L('expr-commentaire','expression','Le commentaire composé',rg('1ère','Terminale')),
+  L('expr-recit','expression','Écrire un récit',rg('6e','4e')),
+  L('expr-dialogue','expression','Insérer un dialogue',rg('5e','3e')),
+  L('expr-resume','expression','Résumer un texte',rg('3e','2nde')),
   L('litt-recit','litterature',"Qu'est-ce qu'un récit ?",rg('6e','Terminale')),
   L('litt-portrait','litterature','Le portrait',rg('5e','3e')),
   L('litt-poesie','litterature','Lire un poème',rg('6e','3e')),
   L('litt-theatre','litterature','Le théâtre',rg('4e','2nde')),
-  L('litt-roman','litterature','Étudier un roman',rg('2nde','Terminale'))
+  L('litt-roman','litterature','Étudier un roman',rg('2nde','Terminale')),
+  L('litt-conte','litterature','Le conte et la légende',rg('6e','5e')),
+  L('litt-fable','litterature','La fable',rg('6e','3e')),
+  L('litt-registres','litterature','Les registres littéraires',rg('4e','Terminale'))
 ];
 
 /* ============================ 3. CONTENU ============================ */
@@ -1642,6 +1661,726 @@ const CONTENT={
     {t:'qcm',q:"Quel est un thème possible d'un roman ?",o:["l'exil","le point-virgule","la rime"],a:0,e:"Exil, pouvoir, amour, identité… sont des thèmes."},
     {t:'qcm',q:"Quelle focalisation permet au narrateur de savoir ce que pensent tous les personnages ?",o:["zéro","interne","externe"],a:0,e:"C'est la focalisation omnisciente."},
     {t:'fill',q:"Complète : Le temps de l'histoire et le temps du ___ sont deux notions différentes.",a:["récit"],e:"La durée des événements et la durée de leur récit ne coïncident pas toujours."}
+  ]
+},
+
+/* ---- Leçons ajoutées (V1.2) ---- */
+"gram-sujet":{
+  objectif:"Trouver le sujet d'un verbe et reconnaître l'attribut du sujet après un verbe d'état.",
+  explication:[
+    "Le **sujet** est le mot ou le groupe de mots qui fait l'action ou dont on parle. Pour le trouver, on pose la question « **Qui est-ce qui ?** » (ou « **Qu'est-ce qui ?** ») devant le verbe : « Les enfants jouent. » → Qui est-ce qui joue ? Les enfants. Le sujet peut être un nom (Awa), un groupe nominal (le petit chat), un pronom (elle) ou un infinitif (Lire est agréable).",
+    "Le sujet se place le plus souvent **avant** le verbe, mais il peut aussi se trouver **après** lui : « Dans la cour jouent des enfants. » On dit alors que le sujet est **inversé**. Cela arrive dans certaines questions (« Où vas-tu ? ») ou pour donner du style à une phrase.",
+    "L'**attribut du sujet** exprime une qualité ou une identité du sujet. Il est relié au sujet par un **verbe d'état** : être, sembler, paraître, devenir, rester, demeurer. « Awa est **contente**. » « Karim devient **médecin**. » L'attribut s'accorde avec le sujet et ne peut pas être supprimé sans que la phrase perde son sens."
+  ],
+  regle:"Le **sujet** répond à « Qui est-ce qui ? / Qu'est-ce qui ? » devant le verbe. L'**attribut du sujet** suit un **verbe d'état** (être, sembler, devenir…) et **s'accorde avec le sujet**.",
+  tableaux:[{titre:"Les verbes d'état",entetes:["Verbe d'état","Exemple","Attribut"],lignes:[["être","Les élèves sont attentifs.","attentifs"],["devenir","Karim devient médecin.","médecin"],["sembler","Elle semble fatiguée.","fatiguée"],["rester","Nous restons calmes.","calmes"]]}],
+  exemples:[
+    {t:"**Les élèves** écoutent le maître.",n:"Qui est-ce qui écoute ? Les élèves : c'est le sujet du verbe « écoutent »."},
+    {t:"Awa est **la meilleure de sa classe**.",n:"« La meilleure de sa classe » est un attribut du sujet « Awa », relié par le verbe d'état « est »."},
+    {t:"Dans le jardin poussent **des manguiers**.",n:"Le sujet est placé après le verbe : qui est-ce qui pousse ? Des manguiers."}
+  ],
+  retenir:["Le sujet se trouve avec « Qui est-ce qui ? » devant le verbe.","Il peut se placer après le verbe (sujet inversé).","L'attribut du sujet suit un verbe d'état.","L'attribut s'accorde avec le sujet."],
+  plus:"Ne confonds pas l'**attribut** et le **COD**. L'attribut désigne **la même personne ou chose que le sujet** : « Karim est un ami » (Karim = un ami). Le COD désigne un être ou une chose **différente** : « Karim aide un ami ». Dans « Il pleut » ou « Il faut partir », le pronom « il » est un **sujet apparent** (impersonnel) : il ne remplace personne. Enfin, un même verbe peut être d'état ou d'action : « Elle **reste** calme » (état) et « Elle **reste** à la maison » (elle se trouve là).",
+  mini:{t:'qcm',q:"Dans « Ma sœur est infirmière », « infirmière » est…",o:["attribut du sujet","COD","sujet"],a:0,e:"Le verbe « est » est un verbe d'état : « infirmière » est attribut du sujet « ma sœur »."},
+  exercices:[
+    {t:'find',q:"Touche tous les mots du sujet, puis valide.",s:"Les enfants de mon voisin jouent au ballon",a:["Les","enfants","de","mon","voisin"],e:"Qui est-ce qui joue ? Les enfants de mon voisin : c'est le groupe sujet."},
+    {t:'qcm',q:"Quelle phrase contient un attribut du sujet ?",o:["Awa semble heureuse.","Awa mange une mangue.","Awa lit un livre."],a:0,e:"« Sembler » est un verbe d'état : « heureuse » est attribut d'Awa."},
+    {t:'fill',q:"Complète avec un verbe d'état : Le ciel ___ bleu.",a:["est","semble","paraît","reste","devient","demeure"],e:"Être, sembler, paraître, rester, devenir sont des verbes d'état."},
+    {t:'match',q:"Associe chaque phrase à la fonction du groupe en gras.",pairs:[["Les élèves chantent.","sujet : Les élèves"],["Elle est joyeuse.","attribut : joyeuse"],["Le maître corrige les copies.","COD : les copies"],["Il parle à sa mère.","COI : à sa mère"]],e:"On distingue le sujet (qui fait l'action), l'attribut (relié par un verbe d'état), le COD (sans préposition) et le COI (avec préposition)."},
+    {t:'vf',q:"L'attribut du sujet s'accorde avec le sujet.",a:true,e:"Les élèves sont attentifs : « attentifs » est au masculin pluriel comme « les élèves »."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Comment trouve-t-on le sujet d'un verbe ?",o:["En posant « Qui est-ce qui ? » devant le verbe","En posant « à qui ? » après le verbe","En cherchant l'adjectif"],a:0,e:"On demande : qui est-ce qui fait l'action ?"},
+    {t:'qcm',q:"Dans « Le vieux chat dort sur le tapis », quel est le sujet ?",o:["Le vieux chat","sur le tapis","dort"],a:0,e:"Qui est-ce qui dort ? Le vieux chat."},
+    {t:'vf',q:"Un verbe d'état exprime une action.",a:false,e:"Un verbe d'état exprime une manière d'être : il relie le sujet à son attribut."},
+    {t:'qcm',q:"Quel verbe est un verbe d'état ?",o:["sembler","courir","manger"],a:0,e:"Sembler exprime un état ; courir et manger expriment des actions."},
+    {t:'fill',q:"Accorde l'attribut : Les élèves sont ___ . (attentif)",a:["attentifs"],e:"L'attribut s'accorde avec le sujet « les élèves » : masculin pluriel."},
+    {t:'qcm',q:"Dans « Karim devient médecin », quel est l'attribut du sujet ?",o:["médecin","Karim","devient"],a:0,e:"« Médecin » est relié à Karim par le verbe d'état « devient »."},
+    {t:'vf',q:"Le sujet peut se placer après le verbe.",a:true,e:"C'est le sujet inversé : « Dans la cour jouent des enfants »."},
+    {t:'qcm',q:"Dans « Dans la cour jouent des enfants », quel est le sujet ?",o:["des enfants","Dans la cour","jouent"],a:0,e:"Qui est-ce qui joue ? Des enfants."},
+    {t:'fill',q:"Complète : Awa reste ___ . (calme, au féminin singulier)",a:["calme"],e:"« Calme » ne change pas au féminin."},
+    {t:'fix',q:"Corrige la phrase : « Fatou semble fatigué. »",o:["Fatou semble fatiguée.","Fatou semble fatigué.","Fatou semblent fatiguée."],a:0,e:"L'attribut s'accorde avec le sujet Fatou : féminin singulier."}
+  ]
+},
+
+"gram-cc":{
+  objectif:"Reconnaître les compléments circonstanciels (lieu, temps, manière, cause, but) et les distinguer du COD.",
+  explication:[
+    "Le **complément circonstanciel** (CC) précise les **circonstances** de l'action : où, quand, comment, pourquoi… Il n'est pas indispensable à la phrase : on peut le **supprimer** ou le **déplacer** sans rendre la phrase incorrecte. « **Hier**, Awa a lu un livre **dans la cour**. » → « Awa a lu un livre. » est correct.",
+    "On distingue plusieurs types selon la question posée : le **lieu** (Où ?), le **temps** (Quand ?), la **manière** (Comment ?), la **cause** (Pourquoi ?), le **but** (Pour quoi faire ?), le **moyen** (Avec quoi ?).",
+    "Un CC peut être un **groupe nominal introduit par une préposition** (dans la cour, avec joie), un **adverbe** (hier, ici, lentement) ou une **proposition subordonnée** (quand il pleut). Dans les programmes récents, on parle aussi de **complément de phrase**."
+  ],
+  regle:"Un **CC** répond à **où ? quand ? comment ? pourquoi ?** et il est **supprimable et déplaçable**. Le COD, lui, ne peut ni être supprimé ni déplacé sans changer le sens de la phrase.",
+  tableaux:[{titre:"Les types de CC",entetes:["Type","Question","Exemple"],lignes:[["lieu","Où ?","Nous jouons dans la cour."],["temps","Quand ?","Il pleut depuis ce matin."],["manière","Comment ?","Elle répond calmement."],["cause","Pourquoi ?","Il est absent à cause de la maladie."],["but","Pour quoi faire ?","Il étudie pour réussir."]]}],
+  exemples:[
+    {t:"**Chaque matin**, mon père va au marché.",n:"CC de temps : il répond à « quand ? » et peut se déplacer en fin de phrase."},
+    {t:"Karim écrit **avec un stylo bleu**.",n:"CC de moyen : il répond à « avec quoi ? » et peut être supprimé."},
+    {t:"Elle chante **dans la cour**.",n:"CC de lieu : il répond à « où ? »."}
+  ],
+  retenir:["Le CC précise les circonstances : lieu, temps, manière, cause, but…","Il est supprimable et déplaçable.","Il peut être un groupe nominal, un adverbe ou une subordonnée.","Le COD n'est ni supprimable ni déplaçable."],
+  plus:"Pour distinguer un **CC** d'un **COI**, fais le test de la suppression : « Il parle à Awa » ne peut pas perdre « à Awa » sans perdre son sens (COI), alors que « Il parle dans la cour » reste correct sans « dans la cour » (CC). Plusieurs CC peuvent se cumuler dans une même phrase : « **Hier soir**, il a marché **lentement** **jusqu'au village** **pour voir son ami**. »",
+  mini:{t:'qcm',q:"Dans « Hier, nous sommes allés au marché », quel type de CC est « hier » ?",o:["temps","lieu","manière"],a:0,e:"« Hier » répond à la question « quand ? »."},
+  exercices:[
+    {t:'find',q:"Touche tous les mots du CC de lieu, puis valide.",s:"Les élèves jouent dans le jardin pendant la récréation",a:["dans","le","jardin"],e:"« Dans le jardin » répond à « où ? »."},
+    {t:'qcm',q:"Dans « Il marche lentement », quel type de CC est « lentement » ?",o:["manière","temps","lieu"],a:0,e:"« Lentement » répond à « comment ? »."},
+    {t:'vf',q:"Un CC ne peut jamais être supprimé.",a:false,e:"Le CC peut être supprimé sans que la phrase devienne incorrecte."},
+    {t:'match',q:"Associe chaque CC à son type.",pairs:[["demain matin","temps"],["au village","lieu"],["avec joie","manière"],["pour réussir","but"]],e:"Quand ? où ? comment ? pour quoi faire ?"},
+    {t:'fill',q:"Complète avec un CC de cause : Il est absent ___ la maladie.",a:["à cause de"],e:"« À cause de » exprime la cause."}
+  ],
+  quiz:[
+    {t:'qcm',q:"À quelles questions répond un CC ?",o:["Où ? quand ? comment ? pourquoi ?","Qui ? quoi ?","À qui ?"],a:0,e:"Le CC donne les circonstances de l'action."},
+    {t:'qcm',q:"Dans « Le soir, il lit un roman », quel est le CC ?",o:["Le soir","un roman","il lit"],a:0,e:"« Le soir » répond à « quand ? » et peut être supprimé."},
+    {t:'vf',q:"Un CC peut être déplacé dans la phrase.",a:true,e:"« Hier, il a lu » / « Il a lu hier »."},
+    {t:'qcm',q:"Dans « Elle travaille avec soin », quel type de CC est « avec soin » ?",o:["manière","lieu","temps"],a:0,e:"Il répond à « comment ? »."},
+    {t:'qcm',q:"Dans « Nous mangeons chez ma tante », le CC « chez ma tante » exprime…",o:["le lieu","le temps","la cause"],a:0,e:"Il répond à « où ? »."},
+    {t:'vf',q:"Le COD peut toujours être supprimé sans changer le sens de la phrase.",a:false,e:"Le COD complète le verbe : « Il mange » n'a pas le même sens que « Il mange une mangue »."},
+    {t:'qcm',q:"Quelle est la nature du mot « demain » dans « Demain, il viendra » ?",o:["un adverbe","un nom propre","un verbe"],a:0,e:"« Demain » est un adverbe de temps."},
+    {t:'qcm',q:"Quel type de CC est « pour gagner » dans « Il s'entraîne pour gagner » ?",o:["but","cause","lieu"],a:0,e:"Il répond à « pour quoi faire ? »."},
+    {t:'qcm',q:"Dans « Nous mangeons dans la cuisine », que se passe-t-il si on supprime « dans la cuisine » ?",o:["La phrase reste correcte : c'est un CC de lieu","La phrase devient incorrecte : c'est un COD","La phrase devient incorrecte : c'est un attribut"],a:0,e:"La suppression est possible : c'est un CC."},
+    {t:'vf',q:"« À cause de la pluie » exprime la cause.",a:true,e:"Il répond à « pourquoi ? »."}
+  ]
+},
+
+"conj-imperatif":{
+  objectif:"Conjuguer l'impératif présent et l'employer pour donner un ordre, un conseil ou une interdiction.",
+  explication:[
+    "L'**impératif** est le mode qui sert à **donner un ordre**, un conseil, une invitation ou une interdiction : « Range ta chambre. » « Ne cours pas dans le couloir ! » Il ne s'emploie qu'à **trois personnes** : **tu, nous, vous**. Et on **n'écrit pas le pronom sujet** : on dit « Chante ! », pas « Tu chante ! ».",
+    "On forme l'impératif à partir du présent de l'indicatif, sans pronom : tu chantes → **chante** ; nous chantons → **chantons** ; vous chantez → **chantez**. Attention : pour les verbes du **1er groupe** (et aller, ouvrir, offrir…), on **enlève le -s** à la 2e personne du singulier : « chante », « va ». Les verbes en -ir et -re gardent le -s : « finis », « prends ».",
+    "Quatre verbes ont un impératif particulier : **être** (sois, soyons, soyez), **avoir** (aie, ayons, ayez), **savoir** (sache, sachons, sachez) et **vouloir** (veuille, veuillons, veuillez). À la forme négative, « ne » et « pas » entourent le verbe : « **Ne** cours **pas** ! »"
+  ],
+  regle:"L'impératif n'a que **trois personnes (tu, nous, vous)** et **pas de pronom sujet**. Au singulier, les verbes du **1er groupe** n'ont **pas de -s** : « chante ».",
+  tableaux:[{titre:"L'impératif présent",entetes:["","chanter","finir","être","avoir"],lignes:[["tu","chante","finis","sois","aie"],["nous","chantons","finissons","soyons","ayons"],["vous","chantez","finissez","soyez","ayez"]]}],
+  exemples:[
+    {t:"**Range** ta chambre.",n:"Impératif de « ranger » à la 2e personne du singulier, sans pronom sujet."},
+    {t:"**Soyez** attentifs.",n:"Impératif irrégulier du verbe être, 2e personne du pluriel."},
+    {t:"**Allons** au marché.",n:"Impératif à la 1re personne du pluriel : une invitation."}
+  ],
+  retenir:["L'impératif exprime un ordre, un conseil, une invitation, une interdiction.","3 personnes seulement : tu, nous, vous.","Pas de pronom sujet.","Pas de -s à « tu » pour les verbes en -er : chante, va."],
+  plus:"Quand un pronom complément accompagne le verbe, il se place **après** l'impératif à la forme affirmative, avec des **traits d'union** : « Donne-le-moi. » ; à la forme négative, il se place **avant** : « Ne me le donne pas. » Le -s réapparaît devant les pronoms « y » et « en » pour faciliter la prononciation : « Vas-y ! », « Manges-en ! ». Il existe aussi un impératif passé (« aie fini avant midi ») mais on l'emploie rarement.",
+  mini:{t:'qcm',q:"Quel est l'impératif de « chanter » à la 2e personne du singulier ?",o:["chante","chantes","chanter"],a:0,e:"Les verbes du 1er groupe perdent le -s à l'impératif : chante."},
+  exercices:[
+    {t:'fill',q:"Conjugue à l'impératif (tu) : ___ (finir) tes devoirs avant de jouer.",a:["finis"],e:"Le verbe « finir » garde le -s : finis."},
+    {t:'qcm',q:"Quelle phrase est à l'impératif ?",o:["Écoute la leçon.","Tu écoutes la leçon.","Écoutes-tu la leçon ?"],a:0,e:"« Écoute » donne un ordre, sans pronom sujet."},
+    {t:'fix',q:"Corrige la phrase : « Chantes plus fort ! »",o:["Chante plus fort !","Chantes plus fort !","Chanter plus fort !"],a:0,e:"Au singulier, les verbes du 1er groupe n'ont pas de -s à l'impératif."},
+    {t:'match',q:"Associe chaque verbe à son impératif.",pairs:[["être (tu)","sois"],["être (vous)","soyez"],["avoir (tu)","aie"],["avoir (nous)","ayons"]],e:"Être et avoir ont un impératif irrégulier."},
+    {t:'vf',q:"À l'impératif, on emploie toujours le pronom sujet.",a:false,e:"L'impératif se conjugue sans pronom sujet."}
+  ],
+  quiz:[
+    {t:'qcm',q:"À quoi sert l'impératif ?",o:["À donner un ordre ou un conseil","À raconter le passé","À poser une question"],a:0,e:"L'impératif exprime l'ordre, le conseil, l'invitation ou l'interdiction."},
+    {t:'qcm',q:"À combien de personnes se conjugue l'impératif ?",o:["3","6","2"],a:0,e:"Tu, nous, vous."},
+    {t:'fill',q:"Conjugue à l'impératif (tu) : ___ (prendre) ton cahier.",a:["prends"],e:"Le verbe « prendre » garde le -s : prends."},
+    {t:'fill',q:"Conjugue à l'impératif (vous) : ___ (être) courageux !",a:["soyez"],e:"Être a un impératif irrégulier : soyez."},
+    {t:'vf',q:"À l'impératif, « manger » à la 2e personne du singulier s'écrit « manges ».",a:false,e:"On écrit « mange », sans -s."},
+    {t:'qcm',q:"Quel est l'impératif d'« aller » à la 2e personne du singulier ?",o:["va","vas","aller"],a:0,e:"« Aller » perd le -s à l'impératif : va."},
+    {t:'fill',q:"Conjugue à l'impératif (tu) : ___ (avoir) confiance !",a:["aie"],e:"Avoir a un impératif irrégulier : aie."},
+    {t:'qcm',q:"Quelle phrase est un impératif négatif correct ?",o:["Ne cours pas !","Cours pas !","Ne pas cours !"],a:0,e:"« Ne » et « pas » entourent le verbe."},
+    {t:'fill',q:"Conjugue à l'impératif (nous) : ___ (finir) ce travail.",a:["finissons"],e:"Impératif de « nous » : finissons."},
+    {t:'fix',q:"Corrige l'impératif adressé à des élèves : « Sois attentifs. »",o:["Soyez attentifs.","Sois attentifs.","Sommes attentifs."],a:0,e:"On s'adresse à plusieurs personnes : « soyez »."}
+  ]
+},
+
+"conj-passe-simple":{
+  objectif:"Reconnaître le passé simple, le conjuguer à la 3e personne et l'employer dans un récit.",
+  explication:[
+    "Le **passé simple** est le temps du **récit écrit** : on le rencontre dans les contes, les romans, les textes d'histoire. Il exprime des actions **terminées** qui font avancer l'histoire : « Il **ouvrit** la porte et **entra**. » On ne l'utilise presque jamais à l'oral, et surtout à la **3e personne** (il, elle, ils, elles).",
+    "Formation à la 3e personne : les verbes du **1er groupe** font **-a** et **-èrent** (il chanta, ils chantèrent). Les verbes du **2e groupe** et beaucoup de verbes du 3e groupe font **-it** et **-irent** (il finit, ils finirent ; il prit, ils prirent ; il fit, ils firent). D'autres font **-ut** et **-urent** (il eut, il fut ; ils eurent, ils furent) ou **-int** et **-inrent** (il vint, ils vinrent).",
+    "Dans un récit, on associe souvent le passé simple et l'**imparfait**. L'imparfait décrit le **décor** ou ce qui **dure** ; le passé simple raconte les **actions** qui se succèdent : « Il pleuvait ; le vieux prit son bâton et sortit. »"
+  ],
+  regle:"Le **passé simple** raconte les **actions principales** d'un récit écrit. À la 3e personne : **-a / -èrent** (1er groupe), **-it / -irent** (finir, prendre, faire…), **-ut / -urent** (avoir, être…).",
+  tableaux:[{titre:"Le passé simple à la 3e personne",entetes:["Infinitif","il / elle","ils / elles"],lignes:[["chanter","chanta","chantèrent"],["finir","finit","finirent"],["avoir","eut","eurent"],["être","fut","furent"],["faire","fit","firent"],["venir","vint","vinrent"]]}],
+  exemples:[
+    {t:"Le griot **se leva** et **commença** son récit.",n:"Deux actions qui se suivent, racontées au passé simple."},
+    {t:"Il **fut** surpris par le bruit.",n:"Passé simple du verbe être à la 3e personne du singulier."},
+    {t:"Le vieux **prit** son bâton et **partit**.",n:"« Prit » et « partit » : passé simple en -it."}
+  ],
+  retenir:["Le passé simple est le temps du récit écrit.","On l'emploie surtout à la 3e personne.","Il exprime des actions terminées qui se succèdent.","Il s'associe à l'imparfait, qui donne le décor."],
+  plus:"Aux autres personnes, on écrit : je chantai, tu chantas, nous chantâmes, vous chantâtes (avec un accent circonflexe), et pour finir : je finis, tu finis, nous finîmes, vous finîtes. Le **passé composé** se rapproche du présent et s'emploie à l'oral ; le passé simple, lui, raconte des faits complètement détachés du présent. Attention à ne pas confondre « il **chanta** » (passé simple) et « il **chantera** » (futur simple).",
+  mini:{t:'qcm',q:"Il ___ la porte. (ouvrir, au passé simple)",o:["ouvrit","ouvrait","ouvre"],a:0,e:"Passé simple de « ouvrir » à la 3e personne : il ouvrit."},
+  exercices:[
+    {t:'fill',q:"Conjugue au passé simple : Il ___ (chanter) une chanson.",a:["chanta"],e:"Verbe du 1er groupe : -a à la 3e personne du singulier."},
+    {t:'qcm',q:"Quelle forme est au passé simple ?",o:["Ils finirent","Ils finissaient","Ils finissent"],a:0,e:"« Finirent » : 3e personne du pluriel du passé simple."},
+    {t:'match',q:"Associe chaque verbe à sa forme au passé simple (il).",pairs:[["être","fut"],["avoir","eut"],["faire","fit"],["venir","vint"]],e:"Ce sont des formes irrégulières à connaître."},
+    {t:'vf',q:"Le passé simple s'emploie surtout à l'oral.",a:false,e:"Il s'emploie surtout à l'écrit, dans les récits."},
+    {t:'find',q:"Touche les verbes au passé simple, puis valide.",s:"Le roi entra dans la salle et tout le monde se tut",a:["entra","tut"],e:"« Entra » et « tut » (se taire) sont au passé simple."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Où emploie-t-on surtout le passé simple ?",o:["Dans les récits écrits","À l'oral","Dans les SMS"],a:0,e:"C'est le temps des contes, des romans et des textes d'histoire."},
+    {t:'fill',q:"Conjugue au passé simple : Elle ___ (marcher) longtemps.",a:["marcha"],e:"Verbe du 1er groupe : marcha."},
+    {t:'qcm',q:"Ils ___ peur. (avoir, au passé simple)",o:["eurent","avaient","auront"],a:0,e:"Avoir au passé simple, 3e personne du pluriel : ils eurent."},
+    {t:'vf',q:"« Il fut » est le passé simple du verbe être.",a:true,e:"Être : il fut, ils furent."},
+    {t:'fill',q:"Conjugue au passé simple : Il ___ (faire) un geste.",a:["fit"],e:"Faire au passé simple : il fit."},
+    {t:'qcm',q:"Quelle est la 3e personne du pluriel du passé simple de « chanter » ?",o:["chantèrent","chantaient","chanteront"],a:0,e:"Verbes du 1er groupe : -èrent."},
+    {t:'fill',q:"Conjugue au passé simple : Ils ___ (venir) très tôt.",a:["vinrent"],e:"Venir au passé simple : ils vinrent."},
+    {t:'qcm',q:"Dans « Il pleuvait quand il sortit », quel verbe est au passé simple ?",o:["sortit","pleuvait","quand"],a:0,e:"« Pleuvait » est à l'imparfait ; « sortit » est au passé simple."},
+    {t:'vf',q:"Dans un récit, l'imparfait décrit le décor et le passé simple raconte les actions.",a:true,e:"C'est la répartition habituelle."},
+    {t:'fix',q:"Corrige l'accord : « Les gardes s'inclina devant le roi. »",o:["Les gardes s'inclinèrent devant le roi.","Les gardes s'inclina devant le roi.","Les gardes s'inclinera devant le roi."],a:0,e:"Le sujet « les gardes » est pluriel : le verbe prend la terminaison -èrent."}
+  ]
+},
+
+"conj-conditionnel":{
+  objectif:"Conjuguer le conditionnel présent et l'employer pour un souhait, un conseil ou une hypothèse.",
+  explication:[
+    "Le **conditionnel présent** exprime plusieurs choses. Un **souhait poli** : « Je **voudrais** un verre d'eau. » Un **conseil** : « Tu **devrais** te reposer. » Une **information incertaine** : « Il y **aurait** des blessés. » Et surtout la **conséquence d'une condition** qui n'est pas réalisée : « Si j'avais le temps, je **viendrais**. »",
+    "Pour le former, on prend le **radical du futur** et on ajoute les **terminaisons de l'imparfait** : **-ais, -ais, -ait, -ions, -iez, -aient**. Chanter → je chanter**ais** ; finir → je finir**ais** ; être → je ser**ais** ; avoir → j'aur**ais** ; aller → j'ir**ais**.",
+    "Dans une phrase avec « **si** », il faut respecter un système précis : **si + imparfait** dans la proposition avec « si », et **conditionnel** dans l'autre. « Si tu **travaillais**, tu **réussirais**. » Jamais de conditionnel après « si » : « Si j'aurais… » est une faute."
+  ],
+  regle:"**Conditionnel présent = radical du futur + terminaisons de l'imparfait** (-ais, -ais, -ait, -ions, -iez, -aient). Système : **si + imparfait → conditionnel**.",
+  tableaux:[{titre:"Futur et conditionnel présent",entetes:["","Futur","Conditionnel"],lignes:[["je","je chanterai","je chanterais"],["tu","tu chanteras","tu chanterais"],["nous","nous chanterons","nous chanterions"],["ils","ils chanteront","ils chanteraient"]]}],
+  exemples:[
+    {t:"Je **voudrais** un peu d'eau, s'il vous plaît.",n:"Le conditionnel exprime ici une demande polie."},
+    {t:"Si j'**avais** le temps, je **viendrais**.",n:"Après « si » : imparfait. Dans l'autre proposition : conditionnel."},
+    {t:"Tu **devrais** te reposer.",n:"Le conditionnel exprime un conseil."}
+  ],
+  retenir:["Le conditionnel exprime souhait, politesse, conseil, hypothèse.","Radical du futur + terminaisons de l'imparfait.","Futur : -ai. Conditionnel : -ais.","Après « si », jamais de conditionnel."],
+  plus:"Le **conditionnel passé** se forme avec l'auxiliaire au conditionnel et le participe passé : « J'**aurais chanté** », « Elle **serait partie** ». Il sert à exprimer un regret ou une hypothèse dans le passé : « Si j'avais su, je **serais venu**. » Dans les journaux, le conditionnel présente une information **non confirmée** : « Le ministre **aurait démissionné**. »",
+  mini:{t:'qcm',q:"Si j'avais de l'argent, j'___ un vélo. (acheter)",o:["achèterais","achèterai","achetais"],a:0,e:"Après « si + imparfait », on emploie le conditionnel : j'achèterais."},
+  exercices:[
+    {t:'fill',q:"Conjugue au conditionnel : Je ___ (vouloir) un verre d'eau, s'il vous plaît.",a:["voudrais"],e:"Radical « voudr- » + -ais."},
+    {t:'qcm',q:"Quelle phrase est correcte ?",o:["Si tu venais, je serais content.","Si tu viendrais, je serais content.","Si tu viendrais, je serai content."],a:0,e:"Après « si », on emploie l'imparfait : « si tu venais »."},
+    {t:'match',q:"Associe chaque futur à son conditionnel.",pairs:[["je chanterai","je chanterais"],["nous finirons","nous finirions"],["ils seront","ils seraient"],["tu auras","tu aurais"]],e:"Même radical, mais terminaisons de l'imparfait au conditionnel."},
+    {t:'fix',q:"Corrige la phrase : « Si j'aurais du temps, je viendrais. »",o:["Si j'avais du temps, je viendrais.","Si j'aurais du temps, je viendrai.","Si j'avais du temps, je viendrai."],a:0,e:"Après « si », on emploie l'imparfait, pas le conditionnel."},
+    {t:'vf',q:"On peut employer le conditionnel juste après « si ».",a:false,e:"Après « si » de la condition, on emploie l'imparfait."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Le conditionnel peut exprimer…",o:["un souhait poli","un ordre","un passé récent"],a:0,e:"« Je voudrais… » est un souhait poli."},
+    {t:'fill',q:"Conjugue au conditionnel : Il ___ (être) content de vous voir.",a:["serait"],e:"Radical « ser- » + -ait."},
+    {t:'qcm',q:"Quelle est la terminaison de « ils » au conditionnel présent ?",o:["-aient","-ont","-ent"],a:0,e:"Ils chanteraient, ils seraient, ils auraient."},
+    {t:'vf',q:"« Je chanterais » est une forme du conditionnel.",a:true,e:"Radical du futur « chanter- » + -ais."},
+    {t:'fill',q:"Conjugue au conditionnel : Nous ___ (aller) au marché si nous avions le temps.",a:["irions"],e:"Radical « ir- » + -ions."},
+    {t:'qcm',q:"Quelle phrase est correcte ?",o:["Si j'étais riche, j'achèterais une maison.","Si j'aurais été riche, j'achèterais une maison.","Si je serais riche, j'achèterais une maison."],a:0,e:"Si + imparfait dans la condition."},
+    {t:'fill',q:"Conjugue au conditionnel (conseil) : Tu ___ (devoir) te reposer.",a:["devrais"],e:"Radical « devr- » + -ais."},
+    {t:'qcm',q:"Quelle est la différence entre « je finirai » et « je finirais » ?",o:["futur / conditionnel","conditionnel / futur","imparfait / futur"],a:0,e:"-ai : futur. -ais : conditionnel."},
+    {t:'vf',q:"Le conditionnel présent a le même radical que le futur.",a:true,e:"Chanter- : je chanterai, je chanterais."},
+    {t:'fix',q:"Corrige la phrase : « Si tu travaillerais, tu réussirais. »",o:["Si tu travaillais, tu réussirais.","Si tu travaillerais, tu réussiras.","Si tu travailles, tu réussirais."],a:0,e:"Après « si », on emploie l'imparfait."}
+  ]
+},
+
+"conj-plus-que-parfait":{
+  objectif:"Former le plus-que-parfait et l'employer pour une action passée antérieure à une autre action passée.",
+  explication:[
+    "Le **plus-que-parfait** exprime une action **déjà terminée avant** une autre action passée. « Quand je suis arrivé, le cours **avait** déjà **commencé**. » Le cours a commencé avant mon arrivée : le plus-que-parfait marque cette **antériorité**. Il sert aussi à expliquer une cause dans le passé : « Elle pleurait parce qu'elle **avait perdu** son livre. »",
+    "Pour le former, on emploie l'**auxiliaire avoir ou être à l'imparfait** suivi du **participe passé** : j'**avais** chanté, il **était** parti, elles **étaient** arrivées. Les règles d'accord du participe passé sont les mêmes qu'au passé composé : avec « être », il s'accorde avec le sujet.",
+    "Le plus-que-parfait s'emploie souvent avec l'**imparfait**, le **passé composé** ou le **passé simple**, qui expriment l'action de référence : « Il **était fatigué** parce qu'il **avait couru** toute la journée. »"
+  ],
+  regle:"**Plus-que-parfait = auxiliaire avoir ou être à l'imparfait + participe passé.** Il exprime une action passée **antérieure** à une autre action passée.",
+  tableaux:[{titre:"Le plus-que-parfait",entetes:["","avec avoir (finir)","avec être (partir)"],lignes:[["je","j'avais fini","j'étais parti(e)"],["tu","tu avais fini","tu étais parti(e)"],["il / elle","il avait fini","il / elle était parti(e)"],["nous","nous avions fini","nous étions parti(e)s"],["vous","vous aviez fini","vous étiez parti(e)(s)"],["ils / elles","ils avaient fini","ils / elles étaient parti(e)s"]]}],
+  exemples:[
+    {t:"Quand je suis arrivé, le cours **avait** déjà **commencé**.",n:"Le cours a commencé avant mon arrivée : action antérieure au passé composé."},
+    {t:"Elle pleurait parce qu'elle **avait perdu** son livre.",n:"La perte du livre est antérieure aux pleurs et les explique."},
+    {t:"Ils **étaient partis** avant la pluie.",n:"Auxiliaire être à l'imparfait : le participe s'accorde avec « ils »."}
+  ],
+  retenir:["Le plus-que-parfait exprime une action passée avant une autre action passée.","Auxiliaire à l'imparfait + participe passé.","Accord du participe comme au passé composé.","On l'associe à l'imparfait ou au passé composé."],
+  plus:"Le plus-que-parfait est le temps de la **concordance** dans le discours indirect au passé : « Il a dit : « J'ai fini. » » devient « Il a dit qu'il **avait fini**. » On le trouve aussi dans l'expression d'un regret avec le **conditionnel passé** : « Si j'**avais su**, je serais venu. » Attention : ne confonds pas « il **avait** chanté » (plus-que-parfait) et « il **a** chanté » (passé composé).",
+  mini:{t:'qcm',q:"Hier, quand je suis arrivé, il ___ déjà fini son travail.",o:["avait","a","aura"],a:0,e:"L'action « finir son travail » est antérieure à mon arrivée : plus-que-parfait."},
+  exercices:[
+    {t:'fill',q:"Complète avec l'auxiliaire : Nous ___ déjà mangé quand tu es arrivé.",a:["avions"],e:"Plus-que-parfait : auxiliaire avoir à l'imparfait, 1re personne du pluriel."},
+    {t:'qcm',q:"Quelle phrase est au plus-que-parfait ?",o:["Elle était partie.","Elle est partie.","Elle partait."],a:0,e:"Auxiliaire être à l'imparfait + participe passé."},
+    {t:'fix',q:"Corrige la phrase : « Elle était parti avant nous. »",o:["Elle était partie avant nous.","Elle était parti avant nous.","Elle avait partie avant nous."],a:0,e:"Avec « être », le participe s'accorde avec le sujet féminin."},
+    {t:'match',q:"Associe chaque pronom à sa forme du verbe chanter au plus-que-parfait.",pairs:[["j'","avais chanté"],["il","avait chanté"],["nous","avions chanté"],["ils","avaient chanté"]],e:"Auxiliaire avoir à l'imparfait + participe « chanté »."},
+    {t:'vf',q:"Le plus-que-parfait exprime une action postérieure à une autre action passée.",a:false,e:"Il exprime une action antérieure."}
+  ],
+  quiz:[
+    {t:'qcm',q:"De quoi le plus-que-parfait est-il formé ?",o:["Un auxiliaire à l'imparfait et un participe passé","Un auxiliaire au présent et un participe passé","Un radical et une terminaison"],a:0,e:"J'avais chanté, il était parti."},
+    {t:'qcm',q:"Quelle phrase est au plus-que-parfait ?",o:["J'avais mangé avant de partir.","J'ai mangé avant de partir.","Je mangerai avant de partir."],a:0,e:"« J'avais mangé » : avoir à l'imparfait + participe passé."},
+    {t:'fill',q:"Conjugue au plus-que-parfait : Tu ___ (être) parti avant moi.",a:["étais"],e:"Être à l'imparfait, 2e personne du singulier : tu étais."},
+    {t:'vf',q:"« Ils étaient arrivés » est au plus-que-parfait.",a:true,e:"Être à l'imparfait + participe passé."},
+    {t:'fill',q:"Conjugue au plus-que-parfait : Elle ___ (avoir) fini ses devoirs.",a:["avait"],e:"Avoir à l'imparfait, 3e personne du singulier : elle avait."},
+    {t:'qcm',q:"Il pleurait parce qu'il ___ son chien. (perdre)",o:["avait perdu","a perdu","perdait"],a:0,e:"La perte est antérieure aux pleurs : plus-que-parfait."},
+    {t:'vf',q:"Le plus-que-parfait marque une action antérieure à une autre action passée.",a:true,e:"C'est sa valeur principale."},
+    {t:'qcm',q:"Dans « Nous étions rentrés avant la nuit », quel est l'auxiliaire ?",o:["être à l'imparfait","avoir à l'imparfait","être au présent"],a:0,e:"« Étions » : être à l'imparfait."},
+    {t:'fill',q:"Conjugue au plus-que-parfait : Vous ___ fini avant l'heure. (auxiliaire avoir)",a:["aviez"],e:"Avoir à l'imparfait, 2e personne du pluriel : vous aviez."},
+    {t:'fix',q:"Corrige la phrase : « Ils avaient partis tôt. »",o:["Ils étaient partis tôt.","Ils avaient partis tôt.","Ils étaient parti tôt."],a:0,e:"« Partir » se conjugue avec l'auxiliaire être : ils étaient partis."}
+  ]
+},
+
+"ortho-son":{
+  objectif:"Ne plus confondre « son » (déterminant) et « sont » (verbe être).",
+  explication:[
+    "« **sont** » est le verbe **être** conjugué à la 3e personne du **pluriel** : « Ils **sont** contents. » On peut le remplacer par « **étaient** » : « Ils étaient contents. » Il est toujours précédé d'un sujet pluriel (ils, elles, les enfants…).",
+    "« **son** » est un **déterminant possessif** : il se place devant un nom masculin singulier et indique à qui appartient ce nom : « Il range **son** cahier. » On peut le remplacer par « **mon** » ou « **ton** » : « Il range mon cahier. »",
+    "Dans une même phrase, on peut trouver les deux : « **Son** frère et sa sœur **sont** arrivés. » Le premier se remplace par « mon », le second par « étaient »."
+  ],
+  regle:"Remplace par « **étaient** » : si la phrase garde un sens, écris **sont**. Remplace par « **mon** » : si la phrase garde un sens, écris **son**.",
+  exemples:[
+    {t:"Les enfants **sont** dans la cour.",n:"« Les enfants étaient dans la cour » a un sens : c'est le verbe être."},
+    {t:"Karim range **son** cahier.",n:"« Karim range mon cahier » a un sens : c'est le déterminant possessif."},
+    {t:"**Son** père et sa mère **sont** partis.",n:"Le premier mot se remplace par « mon », le second par « étaient »."}
+  ],
+  retenir:["sont = verbe être, remplaçable par « étaient ».","son = déterminant possessif, remplaçable par « mon » ou « ton ».","« sont » a toujours un sujet pluriel.","Astuce : essaie « étaient » puis « mon »."],
+  plus:"Le mot « **son** » peut aussi être un **nom** qui désigne ce que l'on entend : « le **son** de la cloche ». Dans ce cas, on ne peut pas le remplacer par « mon » : il est précédé d'un article (le son). Ne le confonds pas non plus avec « **ses** » (les livres de quelqu'un : ses livres) : au pluriel, « son » devient « ses ».",
+  mini:{t:'qcm',q:"Les élèves ___ attentifs. Quel mot convient ?",o:["sont","son"],a:0,e:"« Les élèves étaient attentifs » a un sens : verbe être."},
+  exercices:[
+    {t:'fill',q:"Complète : Mes cousins ___ arrivés hier.",a:["sont"],e:"« Mes cousins étaient arrivés » a un sens : verbe être."},
+    {t:'fill',q:"Complète : Awa lit ___ livre préféré.",a:["son"],e:"« Awa lit mon livre préféré » a un sens : déterminant possessif."},
+    {t:'qcm',q:"Quelle phrase est correcte ?",o:["Son frère et sa sœur sont contents.","Sont frère et sa sœur son contents.","Son frère et sa sœur son contents."],a:0,e:"Le premier mot se remplace par « mon », le second par « étaient »."},
+    {t:'fix',q:"Corrige la phrase : « Les enfants son dans la cour. »",o:["Les enfants sont dans la cour.","Les enfants son dans la cour.","Les enfants sons dans la cour."],a:0,e:"« Les enfants étaient dans la cour » : verbe être, on écrit « sont »."},
+    {t:'vf',q:"« Sont » peut être remplacé par « étaient ».",a:true,e:"C'est l'astuce pour reconnaître le verbe être au pluriel."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Ils ___ en retard. Quel mot convient ?",o:["sont","son"],a:0,e:"« Ils étaient en retard » : verbe être."},
+    {t:'qcm',q:"Karim a oublié ___ sac. Quel mot convient ?",o:["son","sont"],a:0,e:"« Karim a oublié mon sac » a un sens."},
+    {t:'vf',q:"« Son » est un verbe.",a:false,e:"« Son » est un déterminant possessif (ou un nom, le son)."},
+    {t:'fill',q:"Complète : Les filles ___ dans le jardin.",a:["sont"],e:"« Les filles étaient dans le jardin » : verbe être."},
+    {t:'fill',q:"Complète : Il a perdu ___ stylo.",a:["son"],e:"« Il a perdu mon stylo » a un sens."},
+    {t:'qcm',q:"Par quel mot remplace-t-on « son » ?",o:["mon","étaient","ses"],a:0,e:"« Son » se remplace par « mon » ou « ton »."},
+    {t:'vf',q:"« Sont » s'écrit avec un sujet pluriel.",a:true,e:"Ils sont, elles sont, les enfants sont."},
+    {t:'qcm',q:"Quelle phrase est correcte ?",o:["Ses amis sont gentils.","Ses amis son gentils.","Sont amis sont gentils."],a:0,e:"« Ses » est le pluriel de « son » ; « sont » est le verbe être."},
+    {t:'fill',q:"Complète : Mes voisins ___ partis en voyage.",a:["sont"],e:"« Mes voisins étaient partis » : verbe être."},
+    {t:'fix',q:"Corrige la phrase : « Sont père travaille au marché. »",o:["Son père travaille au marché.","Sont père travaille au marché.","Sons père travaille au marché."],a:0,e:"« Mon père travaille au marché » a un sens : on écrit « son »."}
+  ]
+},
+
+"ortho-ou":{
+  objectif:"Ne plus confondre « ou » (choix) et « où » (lieu ou temps).",
+  explication:[
+    "« **où** » (avec un accent grave) indique un **lieu** ou un **temps** : « **Où** vas-tu ? » « La maison **où** j'habite est grande. » « Le jour **où** il est venu. » On peut le remplacer par « **à quel endroit** » ou « **dans lequel** ».",
+    "« **ou** » (sans accent) exprime un **choix** entre deux possibilités : « Veux-tu du thé **ou** du café ? » On peut le remplacer par « **ou bien** » : « du thé ou bien du café ».",
+    "Pour choisir : si « ou bien » a un sens, on écrit **ou** sans accent. Sinon, c'est le lieu ou le temps : on écrit **où** avec accent."
+  ],
+  regle:"**ou** (sans accent) = choix, on peut le remplacer par « **ou bien** ». **où** (avec accent) = lieu ou temps.",
+  exemples:[
+    {t:"**Où** habites-tu ?",n:"« Ou bien habites-tu ? » n'a pas de sens : c'est le lieu, on écrit « où »."},
+    {t:"Tu veux du riz **ou** des pâtes ?",n:"« Du riz ou bien des pâtes » a un sens : c'est un choix."},
+    {t:"C'est la ville **où** je suis né.",n:"« où » reprend « la ville » : c'est un lieu."}
+  ],
+  retenir:["ou = choix, remplaçable par « ou bien ».","où = lieu ou temps, avec un accent grave.","Où introduit souvent une question sur le lieu.","Astuce : essaie « ou bien »."],
+  plus:"On retrouve le même accent dans « **d'où** » (« D'où viens-tu ? »), « **là où** » et « **par où** ». Même en majuscule, on garde l'accent : « **Où** est ta sœur ? » Enfin, « où » peut exprimer le temps : « Le jour **où** tu es né » ; ne le remplace jamais par « ou bien » dans ce cas.",
+  mini:{t:'qcm',q:"Tu prends du thé ___ du café ? Quel mot convient ?",o:["ou","où"],a:0,e:"« Du thé ou bien du café » a un sens : c'est un choix."},
+  exercices:[
+    {t:'fill',q:"Complète : ___ vas-tu ce soir ?",a:["où"],e:"On demande le lieu : « où » avec un accent."},
+    {t:'fill',q:"Complète : Veux-tu un livre ___ un cahier ?",a:["ou"],e:"« Un livre ou bien un cahier » : c'est un choix."},
+    {t:'qcm',q:"Quelle phrase est correcte ?",o:["La ville où j'habite est grande.","La ville ou j'habite est grande.","La ville où bien j'habite est grande."],a:0,e:"« où » désigne le lieu : il prend un accent."},
+    {t:'fix',q:"Corrige la phrase : « Ou est ton cahier ? »",o:["Où est ton cahier ?","Ou est ton cahier ?","Ou bien est ton cahier ?"],a:0,e:"On demande le lieu : « où » avec un accent grave, même en majuscule."},
+    {t:'vf',q:"« Où » s'écrit avec un accent grave quand il indique un lieu.",a:true,e:"C'est la règle à retenir."}
+  ],
+  quiz:[
+    {t:'qcm',q:"___ habites-tu ? Quel mot convient ?",o:["Où","Ou"],a:0,e:"Il s'agit du lieu : « où » avec un accent."},
+    {t:'qcm',q:"Tu viens demain ___ après-demain ? Quel mot convient ?",o:["ou","où"],a:0,e:"Un choix entre deux jours : « ou »."},
+    {t:'vf',q:"« Ou » (choix) porte un accent.",a:false,e:"Le « ou » du choix s'écrit sans accent."},
+    {t:'fill',q:"Complète : Le village ___ je suis né est petit.",a:["où"],e:"« où » reprend « le village » : c'est un lieu."},
+    {t:'fill',q:"Complète : Tu préfères rester ___ partir ?",a:["ou"],e:"« Rester ou bien partir » : c'est un choix."},
+    {t:'qcm',q:"Par quelle expression remplace-t-on « ou » ?",o:["ou bien","à quel endroit","et puis"],a:0,e:"« Ou » (choix) se remplace par « ou bien »."},
+    {t:'vf',q:"« Où » peut indiquer le temps : « le jour où il est venu ».",a:true,e:"Le « où » peut exprimer le lieu ou le temps."},
+    {t:'qcm',q:"Quelle phrase est correcte ?",o:["D'où viens-tu ?","D'ou viens-tu ?","D'ou bien viens-tu ?"],a:0,e:"« D'où » garde l'accent."},
+    {t:'fill',q:"Complète : C'est la cour ___ nous jouons.",a:["où"],e:"« où » désigne le lieu."},
+    {t:'fix',q:"Corrige la phrase : « Tu veux du riz où du pain ? »",o:["Tu veux du riz ou du pain ?","Tu veux du riz où du pain ?","Tu veux du riz ou bien où du pain ?"],a:0,e:"Il s'agit d'un choix : « ou » sans accent."}
+  ]
+},
+
+"ortho-ce":{
+  objectif:"Ne plus confondre « ce » (démonstratif) et « se » (pronom réfléchi).",
+  explication:[
+    "« **ce** » est un **déterminant démonstratif** placé devant un nom masculin : « **Ce** livre est passionnant. » On peut le remplacer par « **cette** » ou « **ces** » : « cette histoire », « ces livres ». Il peut aussi être un **pronom démonstratif** : « **Ce** qui compte, c'est de réussir. » et « c'est ».",
+    "« **se** » est un **pronom personnel** qui se place **devant un verbe** pour former un verbe pronominal : « Il **se** lève tôt. » On peut le remplacer par « **me** » ou « **te** » : « Je me lève », « Tu te lèves ».",
+    "Pour choisir : si le mot est **devant un verbe** et qu'on peut mettre « me » à la place, écris **se**. S'il est **devant un nom** (et qu'on peut mettre « cette »), écris **ce**."
+  ],
+  regle:"**se** est devant un **verbe** (on peut mettre « me / te »). **ce** est devant un **nom** (on peut mettre « cette »).",
+  exemples:[
+    {t:"**Ce** garçon **se** lave les mains.",n:"« Ce » précède le nom « garçon » ; « se » précède le verbe « lave »."},
+    {t:"Awa **se** souvient de **ce** jour.",n:"« Se » : verbe pronominal « se souvenir ». « Ce » : devant le nom « jour »."},
+    {t:"**Ce** qui compte, c'est de **se** préparer.",n:"« Ce » est ici un pronom (ce qui). « Se » précède le verbe « préparer »."}
+  ],
+  retenir:["se = pronom devant un verbe, remplaçable par « me » ou « te ».","ce = devant un nom masculin, remplaçable par « cette ».","« ce qui », « ce que », « c'est » : ce est un pronom.","Astuce : essaie « me » puis « cette »."],
+  plus:"Devant une voyelle, « se » s'écrit « **s'** » (« Il s'habille ») et « ce » s'écrit « **c'** » (« c'est »). On écrit « ce » devant un nom qui commence par une voyelle en « **cet** » : « cet arbre ». Le verbe pronominal existe toujours avec « se » à l'infinitif : « **se** laver », « **se** souvenir ».",
+  mini:{t:'qcm',q:"Il ___ lève tôt. Quel mot convient ?",o:["se","ce"],a:0,e:"« Il me lève » n'a pas de sens, mais « je me lève » : « se » est devant un verbe."},
+  exercices:[
+    {t:'fill',q:"Complète : Karim ___ lave les mains.",a:["se"],e:"« Se » est devant le verbe « laver » (verbe pronominal)."},
+    {t:'fill',q:"Complète : ___ garçon est mon cousin.",a:["ce"],e:"« Ce » est devant le nom « garçon » : on peut mettre « cette »."},
+    {t:'qcm',q:"Quelle phrase est correcte ?",o:["Ce chat se repose sur le canapé.","Se chat ce repose sur le canapé.","Ce chat ce repose sur le canapé."],a:0,e:"« Ce » précède le nom, « se » précède le verbe."},
+    {t:'fix',q:"Corrige la phrase : « Awa ce souvient de son enfance. »",o:["Awa se souvient de son enfance.","Awa ce souvient de son enfance.","Awa ses souvient de son enfance."],a:0,e:"« Se souvenir » est un verbe pronominal : on écrit « se »."},
+    {t:'vf',q:"« Se » se place devant un nom.",a:false,e:"« Se » se place devant un verbe. « Ce » se place devant un nom."}
+  ],
+  quiz:[
+    {t:'qcm',q:"___ livre est intéressant. Quel mot convient ?",o:["Ce","Se"],a:0,e:"« Ce » précède un nom : « cette histoire »."},
+    {t:'qcm',q:"Elle ___ prépare pour l'examen. Quel mot convient ?",o:["se","ce"],a:0,e:"« Se préparer » est un verbe pronominal."},
+    {t:'vf',q:"« Se » peut être remplacé par « me » ou « te ».",a:true,e:"Je me prépare, tu te prépares, il se prépare."},
+    {t:'fill',q:"Complète : Il ___ couche à vingt heures.",a:["se"],e:"« Se coucher » est un verbe pronominal."},
+    {t:'fill',q:"Complète : Regarde ___ oiseau sur la branche.",a:["cet"],e:"Devant un nom masculin qui commence par une voyelle, on écrit « cet »."},
+    {t:'qcm',q:"Quelle phrase est correcte ?",o:["Ce matin, il se lève tôt.","Se matin, il ce lève tôt.","Ce matin, il ce lève tôt."],a:0,e:"« Ce » précède « matin », « se » précède « lève »."},
+    {t:'fix',q:"Corrige la phrase : « Se garçon ce lave. »",o:["Ce garçon se lave.","Se garçon se lave.","Ce garçon ce lave."],a:0,e:"« Ce » précède le nom, « se » précède le verbe."},
+    {t:'vf',q:"Dans « Ce qui compte, c'est de réussir », « ce » est un pronom.",a:true,e:"« Ce qui » est une tournure avec un pronom démonstratif."},
+    {t:'fill',q:"Complète : Nous ___ voyons demain. (nous voir l'un l'autre : forme pronominale)",a:["nous"],e:"Avec « nous », le pronom réfléchi est « nous » : nous nous voyons."},
+    {t:'qcm',q:"Par quel mot remplace-t-on « ce » devant un nom ?",o:["cette","me","te"],a:0,e:"« Ce garçon » → « cette fille »."}
+  ]
+},
+
+"ortho-ces":{
+  objectif:"Distinguer « ces », « ses », « c'est » et « s'est ».",
+  explication:[
+    "« **ces** » est un **déterminant démonstratif** pluriel : « **Ces** livres sont à moi. » Au singulier, il devient « ce » : « ce livre ». « **ses** » est un **déterminant possessif** pluriel : « Karim range **ses** livres. » Au singulier, il devient « son » : « son livre ».",
+    "« **c'est** » est le pronom « ce » suivi du verbe être : « **C'est** beau ! » On peut le remplacer par « **c'était** » : « C'était beau ! » « **s'est** » est le pronom « se » suivi du verbe être, dans les verbes pronominaux au passé composé : « Il **s'est** lavé. » On peut le remplacer par « **s'était** » : « Il s'était lavé. »",
+    "Astuce générale : **mets la phrase au singulier** pour distinguer « ces » (ce) et « ses » (son) ; **mets-la à l'imparfait** pour distinguer « c'est » (c'était) et « s'est » (s'était)."
+  ],
+  regle:"**ces** → « ce » au singulier. **ses** → « son » au singulier. **c'est** → « c'était ». **s'est** → « s'était ».",
+  tableaux:[{titre:"Quatre homophones",entetes:["Mot","Nature","Astuce"],lignes:[["ces","déterminant démonstratif pluriel","singulier : ce, cet, cette"],["ses","déterminant possessif pluriel","singulier : son, sa"],["c'est","ce + verbe être","c'était"],["s'est","se + verbe être","s'était"]]}],
+  exemples:[
+    {t:"**Ces** fleurs sentent bon.",n:"Au singulier : « cette fleur » : c'est « ces »."},
+    {t:"Awa range **ses** affaires.",n:"Au singulier : « son affaire » : c'est « ses »."},
+    {t:"**C'est** vrai : il **s'est** trompé.",n:"« C'était vrai » : c'est ; « il s'était trompé » : s'est."}
+  ],
+  retenir:["ces → ce ; ses → son.","c'est → c'était ; s'est → s'était.","« s'est » se trouve dans les verbes pronominaux au passé composé.","Toujours vérifier avec l'astuce du singulier ou de l'imparfait."],
+  plus:"Pour « **s'est** », le participe passé suivant s'accorde souvent avec le sujet : « Elle **s'est** lav**ée** », « Ils **se sont** lav**és** ». Attention à « **sait** » (verbe savoir : « Il **sait** la leçon ») qui se prononce comme « c'est » et « s'est ». Enfin, « **c'est** » peut être suivi d'un pluriel dans la langue courante (« c'est des livres »), mais à l'écrit on préfère « ce sont ».",
+  mini:{t:'qcm',q:"___ enfants jouent dans la cour. (les enfants que je montre)",o:["Ces","Ses"],a:0,e:"« Ce garçon » au singulier : on écrit « ces »."},
+  exercices:[
+    {t:'fill',q:"Complète : Awa a perdu ___ clés. (les clés d'Awa)",a:["ses"],e:"Au singulier on dirait « sa clé » : le possessif pluriel est « ses »."},
+    {t:'fill',q:"Complète : Il ___ trompé de chemin.",a:["s'est"],e:"« Il s'était trompé » a un sens : « s'est »."},
+    {t:'qcm',q:"Quelle phrase est correcte ?",o:["Ces livres sont à moi et c'est vrai.","Ses livres sont à moi et ces vrai.","Ces livres sont à moi et s'est vrai."],a:0,e:"« Ces » montre des livres ; « c'est » se remplace par « c'était »."},
+    {t:'fix',q:"Corrige la phrase : « Elle ces lavée avant le repas. »",o:["Elle s'est lavée avant le repas.","Elle c'est lavée avant le repas.","Elle ses lavée avant le repas."],a:0,e:"« Elle s'était lavée » a un sens : « s'est »."},
+    {t:'match',q:"Associe chaque mot à son astuce.",pairs:[["ces","ce au singulier"],["ses","son au singulier"],["c'est","c'était"],["s'est","s'était"]],e:"Chaque homophone a son remplacement."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Karim range ___ affaires. (les affaires de Karim)",o:["ses","ces"],a:0,e:"« Son affaire » : possessif pluriel « ses »."},
+    {t:'qcm',q:"___ génial ! Quel mot convient ?",o:["C'est","S'est"],a:0,e:"« C'était génial » a un sens."},
+    {t:'vf',q:"« S'est » peut se remplacer par « s'était ».",a:true,e:"Il s'est lavé → il s'était lavé."},
+    {t:'fill',q:"Complète : Regarde ___ oiseaux ! (montre-les)",a:["ces"],e:"« Cet oiseau » au singulier : « ces »."},
+    {t:'fill',q:"Complète : Il ___ blessé en jouant.",a:["s'est"],e:"« Il s'était blessé » : « s'est »."},
+    {t:'qcm',q:"Par quoi remplace-t-on « c'est » ?",o:["c'était","s'était","son"],a:0,e:"C'est → c'était."},
+    {t:'vf',q:"« Ses » est le pluriel de « son ».",a:true,e:"Son livre → ses livres."},
+    {t:'qcm',q:"Quelle phrase est correcte ?",o:["Elle s'est levée tôt.","Elle c'est levée tôt.","Elle ses levée tôt."],a:0,e:"C'est un verbe pronominal au passé composé : « s'est »."},
+    {t:'fill',q:"Complète : Fatou range ___ cahiers. (les cahiers de Fatou)",a:["ses"],e:"« Son cahier » au singulier : « ses »."},
+    {t:'fix',q:"Corrige la phrase : « Ses vrai : il c'est trompé. »",o:["C'est vrai : il s'est trompé.","Ses vrai : il s'est trompé.","C'est vrai : il c'est trompé."],a:0,e:"« C'était vrai » : c'est ; « il s'était trompé » : s'est."}
+  ]
+},
+
+"voc-propre-figure":{
+  objectif:"Distinguer le sens propre et le sens figuré d'un mot ou d'une expression.",
+  explication:[
+    "Beaucoup de mots ont **plusieurs sens**. Le **sens propre** est le sens premier, concret, celui que l'on comprend à la lettre : « La glace **fond** au soleil. » Le **sens figuré** est un sens imagé, souvent plus abstrait, qui vient du premier : « Il a **fondu** en larmes. »",
+    "Les expressions imagées fonctionnent presque toujours au sens figuré : « avoir un **cœur d'or** » (être très généreux), « être **dans la lune** » (être distrait), « **mettre la main à la pâte** » (participer au travail). Si on les comprenait à la lettre, elles n'auraient aucun sens.",
+    "Pour distinguer les deux sens, on peut se demander : **est-ce que la phrase se comprend à la lettre ?** Si c'est absurde, c'est un sens figuré. Le dictionnaire aide aussi : il indique « fig. » devant le sens figuré."
+  ],
+  regle:"**Sens propre** : sens premier et concret. **Sens figuré** : sens imagé, dérivé du sens propre. Une expression qui n'a pas de sens à la lettre est au sens figuré.",
+  tableaux:[{titre:"Propre ou figuré ?",entetes:["Sens propre","Sens figuré"],lignes:[["La glace fond au soleil.","Il fond en larmes."],["Il déchire une feuille.","Cette nouvelle lui déchire le cœur."],["Elle a une main dans la poche.","Elle a la main verte : elle réussit avec les plantes."],["Le vent souffle.","Il souffle sur les braises de la discorde."]]}],
+  exemples:[
+    {t:"La glace **fond** au soleil.",n:"Sens propre : la glace devient liquide."},
+    {t:"Karim est **dans la lune**.",n:"Sens figuré : il est distrait, il n'écoute pas."},
+    {t:"Elle a un **cœur d'or**.",n:"Sens figuré : elle est très généreuse. Son cœur n'est pas en or !"}
+  ],
+  retenir:["Sens propre = sens premier, concret.","Sens figuré = sens imagé, souvent abstrait.","Les expressions imagées sont au sens figuré.","Si la phrase n'a pas de sens à la lettre, c'est du figuré."],
+  plus:"Un sens figuré très courant finit parfois par ne plus être ressenti comme une image : on parle alors de **métaphore lexicalisée** (« le pied de la montagne », « les racines d'un problème »). Cette **polysémie** (un mot, plusieurs sens) est une richesse de la langue, mais elle demande de la vigilance : traduire mot à mot une expression figurée d'une langue à l'autre donne souvent un contresens.",
+  mini:{t:'qcm',q:"« Il a un cœur de pierre. » Cette expression est au sens…",o:["figuré","propre"],a:0,e:"Son cœur n'est pas en pierre : cela veut dire qu'il est sans pitié."},
+  exercices:[
+    {t:'qcm',q:"Dans quelle phrase « brûler » est-il employé au sens propre ?",o:["Le bois brûle dans le feu.","Il brûle d'impatience.","Elle brûle les étapes."],a:0,e:"Le bois se consume vraiment : c'est le sens propre."},
+    {t:'match',q:"Associe chaque expression à son sens.",pairs:[["être dans la lune","être distrait"],["avoir un chat dans la gorge","avoir la voix enrouée"],["mettre la main à la pâte","participer au travail"],["avoir le cœur sur la main","être généreux"]],e:"Ce sont des expressions figurées."},
+    {t:'vf',q:"Une expression figurée se comprend à la lettre.",a:false,e:"Au sens propre, elle serait absurde : c'est ce qui prouve qu'elle est figurée."},
+    {t:'fill',q:"Complète : Le sens premier et concret d'un mot est le sens ___ .",a:["propre"],e:"Sens propre / sens figuré."},
+    {t:'qcm',q:"Dans « Cette nouvelle m'a glacé le sang », « glacer » est employé au sens…",o:["figuré","propre"],a:0,e:"Le sang n'est pas devenu de la glace : l'expression traduit la peur."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Qu'est-ce que le sens figuré ?",o:["Un sens imagé, dérivé du sens premier","Le sens premier du mot","Un sens contraire"],a:0,e:"Le sens figuré est imagé et souvent abstrait."},
+    {t:'qcm',q:"« Elle a un cœur d'or » est une expression…",o:["figurée","propre"],a:0,e:"Elle signifie « elle est généreuse »."},
+    {t:'vf',q:"Dans « La rivière coule », « couler » est employé au sens propre.",a:true,e:"L'eau s'écoule vraiment."},
+    {t:'qcm',q:"Que signifie « avoir le cœur sur la main » ?",o:["être généreux","être malade","être en colère"],a:0,e:"C'est une expression figurée pour dire « donner volontiers »."},
+    {t:'qcm',q:"Dans « Le prix de l'essence s'envole », « s'envoler » est au sens…",o:["figuré","propre"],a:0,e:"Le prix ne vole pas : il augmente très vite."},
+    {t:'vf',q:"Le dictionnaire indique « fig. » pour le sens figuré.",a:true,e:"C'est l'abréviation de « figuré »."},
+    {t:'fill',q:"Complète : Le mot « pied » au sens ___ désigne la partie du corps. (propre ou figuré)",a:["propre"],e:"Le pied du corps : sens propre. Le pied de la montagne : sens figuré."},
+    {t:'qcm',q:"Quelle phrase utilise « pied » au sens figuré ?",o:["Nous campons au pied de la montagne.","Il a mal au pied.","Elle enlève ses chaussures du pied."],a:0,e:"La montagne n'a pas de pied : c'est une image."},
+    {t:'qcm',q:"Que signifie « être dans la lune » ?",o:["être distrait","être content","être malade"],a:0,e:"C'est une expression figurée pour « ne pas écouter »."},
+    {t:'fix',q:"Améliore la phrase pour employer le sens propre : « Il a de la glace dans le cœur. »",o:["Il a de la glace dans le verre.","Il a de la glace dans le cœur.","Il a de la glace dans les idées."],a:0,e:"« De la glace dans le verre » : sens propre. « Dans le cœur » : sens figuré."}
+  ]
+},
+
+"voc-champ-lexical":{
+  objectif:"Repérer un champ lexical dans un texte et le distinguer d'une famille de mots et d'un champ sémantique.",
+  explication:[
+    "Un **champ lexical** est l'ensemble des mots d'un texte qui se rapportent à **un même thème**. Autour de la mer : vague, navire, marin, port, plage, écume. Ces mots peuvent être de **natures différentes** (noms, verbes, adjectifs) et n'ont **pas le même radical**.",
+    "Il ne faut pas confondre le champ lexical avec la **famille de mots**. Une famille regroupe des mots de **même radical** (mer, marin, maritime). Un champ lexical regroupe des mots de **même thème** (mer, vague, navire, plage).",
+    "Le **champ sémantique** d'un mot, lui, est l'ensemble de **ses sens**. Le mot « glace » peut désigner l'eau gelée, un miroir ou un dessert. Repérer un champ lexical dominant est utile pour analyser un texte : il révèle le **thème** et l'**atmosphère**. Un champ lexical de la peur (trembler, cri, obscurité, frisson) crée une atmosphère angoissante."
+  ],
+  regle:"**Champ lexical** = mots de **même thème** (radicaux différents). **Famille de mots** = mots de **même radical**. **Champ sémantique** = ensemble des **sens** d'un mot.",
+  tableaux:[{titre:"Famille de mots ou champ lexical ?",entetes:["","Famille de mots","Champ lexical"],lignes:[["Lien","même radical","même thème"],["Exemple","mer, marin, maritime","mer, vague, navire, plage"],["Natures","dérivés d'un même mot","noms, verbes, adjectifs variés"]]}],
+  exemples:[
+    {t:"**bateau, voile, vent, marin, quai**",n:"Ces mots forment le champ lexical de la navigation."},
+    {t:"**trembler, cri, obscurité, frisson**",n:"Ces mots forment le champ lexical de la peur : ils créent une atmosphère angoissante."},
+    {t:"**glace** : eau gelée, miroir, dessert",n:"C'est le champ sémantique du mot « glace » : ses différents sens."}
+  ],
+  retenir:["Champ lexical : mots d'un même thème.","Famille de mots : même radical.","Champ sémantique : les différents sens d'un mot.","Le champ lexical dominant révèle le thème et l'atmosphère d'un texte."],
+  plus:"Pour relever un champ lexical dans un texte, **souligne** d'abord les mots liés au thème, puis **classe-les** (noms, verbes, adjectifs). Demande-toi enfin : **quel effet produit cette accumulation ?** Un champ lexical de la lumière (briller, éclat, aube) crée une impression de joie ; un champ lexical de la nuit (ombre, noir, silence) crée une impression de mystère ou d'angoisse. Les mots peuvent aussi être **connotés** : « demeure » ne dit pas seulement « maison », il ajoute une idée de noblesse.",
+  mini:{t:'qcm',q:"Quel groupe de mots forme un champ lexical de l'école ?",o:["cahier, leçon, maître, cartable","mer, marin, maritime","chanter, chanteur, chant"],a:0,e:"Ces mots renvoient tous au thème de l'école."},
+  exercices:[
+    {t:'find',q:"Touche les mots du champ lexical de l'école, puis valide.",s:"Karim range son cahier dans son cartable avant la leçon",a:["cahier","cartable","leçon"],e:"Cahier, cartable et leçon renvoient au thème de l'école."},
+    {t:'qcm',q:"Quelle série est une famille de mots ?",o:["chanter, chanteur, chant","mer, vague, navire","forêt, arbre, feuille"],a:0,e:"Même radical « chant » : c'est une famille de mots."},
+    {t:'match',q:"Associe chaque groupe de mots à son thème.",pairs:[["trembler, cri, frisson","la peur"],["vague, écume, navire","la mer"],["soleil, éclat, briller","la lumière"],["cahier, leçon, maître","l'école"]],e:"Ces séries forment des champs lexicaux."},
+    {t:'vf',q:"Les mots d'un champ lexical ont tous le même radical.",a:false,e:"C'est la famille de mots qui a le même radical."},
+    {t:'fill',q:"Complète : Un mot qui a plusieurs sens a un champ ___ (lexical ou sémantique ?)",a:["sémantique"],e:"Le champ sémantique regroupe les sens d'un mot."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Qu'est-ce qu'un champ lexical ?",o:["Des mots d'un même thème","Des mots de même radical","Des mots de sens contraire"],a:0,e:"Un champ lexical rassemble les mots qui renvoient à un même thème."},
+    {t:'qcm',q:"Quel groupe forme le champ lexical de la mer ?",o:["vague, port, navire, plage","forêt, feuille, branche","cahier, stylo, règle"],a:0,e:"Ce sont des mots de la mer."},
+    {t:'vf',q:"Les mots « chant », « chanter » et « chanteur » forment une famille de mots.",a:true,e:"Ils ont le même radical « chant » : c'est une famille de mots, pas seulement un champ lexical."},
+    {t:'qcm',q:"Quel effet produit un champ lexical de la peur ?",o:["Une atmosphère angoissante","Une ambiance joyeuse","Un rythme rapide"],a:0,e:"Trembler, cri, obscurité : ces mots créent l'angoisse."},
+    {t:'qcm',q:"Quel mot n'appartient pas au champ lexical de la forêt ?",o:["cartable","arbre","feuille"],a:0,e:"Le cartable appartient au thème de l'école."},
+    {t:'fill',q:"Complète : L'ensemble des sens d'un mot est son champ ___ .",a:["sémantique"],e:"« Glace » : eau gelée, miroir, dessert."},
+    {t:'vf',q:"Un champ lexical peut réunir des noms, des verbes et des adjectifs.",a:true,e:"Ce qui compte, c'est le thème commun."},
+    {t:'qcm',q:"Quelle série n'est PAS un champ lexical mais une famille de mots ?",o:["terre, terrain, terrasse","arbre, feuille, branche","vague, plage, port"],a:0,e:"Le radical « terr- » se retrouve dans chaque mot."},
+    {t:'fill',q:"Complète : « Glace » a plusieurs sens : c'est le ___ sémantique du mot.",a:["champ"],e:"Le champ sémantique regroupe les sens d'un mot."},
+    {t:'fix',q:"Corrige : « Le champ lexical, c'est un ensemble de mots de même radical. »",o:["Le champ lexical, c'est un ensemble de mots de même thème.","Le champ lexical, c'est un ensemble de mots de même radical.","Le champ lexical, c'est un ensemble de mots de sens contraire."],a:0,e:"Ce sont les mots de même radical qui forment une famille."}
+  ]
+},
+
+"voc-registres":{
+  objectif:"Reconnaître les niveaux de langue (familier, courant, soutenu) et choisir celui qui convient à la situation.",
+  explication:[
+    "On ne parle pas de la même façon à un ami, à un professeur ou lors d'un discours officiel. On distingue trois **niveaux de langue**. Le **langage familier** s'emploie entre amis ou en famille, à l'oral : « Il a une **bagnole** ». Le **langage courant** convient à la plupart des situations, à l'école comme dans la vie quotidienne : « Il a une **voiture** ». Le **langage soutenu** s'emploie dans les textes littéraires, les discours et les écrits officiels : « Il possède une **automobile** ».",
+    "Chaque niveau se reconnaît au **vocabulaire** (bouquin / livre / ouvrage), à la **construction des phrases** (« T'as vu ? » / « Tu as vu ? » / « As-tu vu ? ») et au respect de la négation complète (« Je sais pas » / « Je ne sais pas »).",
+    "Il n'y a pas de bon ou de mauvais niveau en soi : ce qui compte, c'est de **choisir celui qui convient** à la situation et à la personne à qui l'on s'adresse. Écrire un devoir ou une lettre demande un langage courant ou soutenu, jamais familier."
+  ],
+  regle:"**Familier** (entre proches) → **courant** (usage général) → **soutenu** (discours, littérature). On choisit le niveau selon **la situation** et **l'interlocuteur**.",
+  tableaux:[{titre:"Trois niveaux, un même sens",entetes:["Familier","Courant","Soutenu"],lignes:[["bagnole","voiture","automobile"],["bouquin","livre","ouvrage"],["boulot","travail","labeur"],["baraque","maison","demeure"],["bouffer","manger","se restaurer"]]}],
+  exemples:[
+    {t:"J'ai plus de fric.",n:"Langage familier : « fric » est familier et la négation est incomplète."},
+    {t:"Je n'ai plus d'argent.",n:"Langage courant : la négation est complète et le vocabulaire standard."},
+    {t:"Je suis dépourvu de ressources.",n:"Langage soutenu : le vocabulaire est recherché."}
+  ],
+  retenir:["Trois niveaux : familier, courant, soutenu.","Chaque niveau a son vocabulaire et sa construction.","On choisit selon la situation et l'interlocuteur.","À l'écrit scolaire, on évite le langage familier."],
+  plus:"Le langage **familier** est fréquent à l'oral, mais ses tournures ne conviennent pas à un devoir ou à une lettre formelle. Le **soutenu** peut sonner étrange dans une conversation courante. Il ne faut pas confondre les niveaux de langue avec les **variations régionales** : chaque pays francophone a aussi ses expressions propres, qui ne sont ni « fautives » ni « familières » par nature. Le niveau de langue dépend de la situation ; la variation régionale, du lieu.",
+  mini:{t:'qcm',q:"« Il est parti au boulot. » Quel niveau de langue ?",o:["familier","courant","soutenu"],a:0,e:"« Boulot » est familier ; le mot courant est « travail »."},
+  exercices:[
+    {t:'qcm',q:"Quel mot est du langage soutenu ?",o:["demeure","baraque","maison"],a:0,e:"« Demeure » est soutenu ; « maison » est courant ; « baraque » est familier."},
+    {t:'match',q:"Associe chaque mot à son niveau de langue.",pairs:[["bagnole","familier"],["voiture","courant"],["automobile","soutenu"]],e:"Bagnole est familier, voiture est courant, automobile est soutenu."},
+    {t:'vf',q:"Dans un devoir, on doit employer le langage familier.",a:false,e:"Un devoir demande un langage courant ou soutenu."},
+    {t:'fill',q:"Complète : Le niveau de langue utilisé avec ses amis est le langage ___ .",a:["familier"],e:"Entre amis, on parle le plus souvent en langage familier."},
+    {t:'fix',q:"Réécris en langage courant : « Il bouffe du riz. »",o:["Il mange du riz.","Il bouffe du riz.","Il se restaure de riz."],a:0,e:"« Manger » est le verbe courant."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Combien y a-t-il de niveaux de langue ?",o:["3","2","5"],a:0,e:"Familier, courant et soutenu."},
+    {t:'qcm',q:"Quel mot est familier ?",o:["boulot","travail","labeur"],a:0,e:"« Boulot » est le mot familier."},
+    {t:'vf',q:"Le langage soutenu s'emploie dans les discours officiels.",a:true,e:"C'est l'un de ses usages courants."},
+    {t:'qcm',q:"Quel mot est du langage courant ?",o:["maison","baraque","demeure"],a:0,e:"« Maison » est courant."},
+    {t:'fill',q:"Complète : Le langage qui convient à la plupart des situations est le langage ___ .",a:["courant"],e:"C'est le niveau standard."},
+    {t:'qcm',q:"Quelle phrase est au langage familier ?",o:["T'as vu ce film ?","Avez-vous vu ce film ?","Tu as vu ce film ?"],a:0,e:"« T'as » est une forme familière."},
+    {t:'vf',q:"Le langage familier convient à une lettre à un directeur.",a:false,e:"Une lettre formelle demande un langage courant ou soutenu."},
+    {t:'qcm',q:"Quel mot est du langage soutenu ?",o:["labeur","travail","boulot"],a:0,e:"« Labeur » est soutenu."},
+    {t:'fill',q:"Complète : Un mot recherché, employé dans un discours officiel, est du niveau ___ .",a:["soutenu"],e:"Soutenu = recherché."},
+    {t:'fix',q:"Transforme en langage courant : « J'ai pas de fric. »",o:["Je n'ai pas d'argent.","J'ai pas de fric.","Je ne dispose d'aucune ressource."],a:0,e:"Négation complète et vocabulaire courant."}
+  ]
+},
+
+"expr-recit":{
+  objectif:"Écrire un récit cohérent en suivant le schéma narratif, avec des temps du passé et des connecteurs de temps.",
+  explication:[
+    "**Raconter**, c'est présenter une suite d'événements dans un ordre clair. Avant d'écrire, prépare ton histoire : qui sont les personnages ? où et quand se passe-t-elle ? quel problème doivent-ils résoudre ? Le récit suit le **schéma narratif** : situation initiale, élément perturbateur, péripéties, dénouement, situation finale.",
+    "Choisis un **narrateur** : à la 1re personne (« je ») ou à la 3e (« il », « elle »), et **garde-le du début à la fin**. Choisis aussi ton temps du passé : l'**imparfait** pour le décor, le **passé simple** (ou le passé composé) pour les actions qui font avancer l'histoire. Les **connecteurs de temps** relient les événements : d'abord, puis, soudain, alors, ensuite, enfin, quelques jours plus tard.",
+    "Pour rendre ton récit vivant, ajoute des détails que l'on voit, entend ou sent, quelques **dialogues**, les **sentiments** du personnage. Commence par une phrase qui donne envie de lire. Enfin, **relis-toi** : corrige l'orthographe et supprime les répétitions (« et puis… et puis… »)."
+  ],
+  regle:"**Récit = schéma narratif + temps du passé cohérents** (imparfait pour le décor, passé simple ou passé composé pour les actions) **+ connecteurs de temps**, avec un narrateur qui ne change pas.",
+  tableaux:[{titre:"Le schéma narratif",entetes:["Étape","Rôle","Exemple"],lignes:[["Situation initiale","présenter personnages, lieu, époque","Il était une fois un village au bord du fleuve."],["Élément perturbateur","rompre l'équilibre","Un matin, la rivière cessa de couler."],["Péripéties","les actions pour résoudre le problème","Le jeune Karim partit chercher la source."],["Dénouement","le problème est résolu","Il dégagea le passage et l'eau revint."],["Situation finale","la nouvelle situation","Depuis ce jour, le village vécut en paix."]]}],
+  exemples:[
+    {t:"Il **était** une fois un pêcheur qui **vivait** près du fleuve.",n:"Situation initiale, à l'imparfait : on présente le personnage et le lieu."},
+    {t:"**Soudain**, un cri **retentit**.",n:"Élément perturbateur : le connecteur « soudain » et le passé simple marquent l'événement qui change tout."},
+    {t:"**Quelques jours plus tard**, tout **était** rentré dans l'ordre.",n:"Situation finale, avec un connecteur de temps."}
+  ],
+  retenir:["Un récit suit le schéma narratif.","Garder le même narrateur du début à la fin.","Imparfait pour le décor, passé simple ou passé composé pour les actions.","Les connecteurs de temps organisent l'histoire."],
+  plus:"Le récit joue sur le **rythme**. Une **scène** (souvent avec un dialogue) ralentit le récit et fait vivre l'action ; un **sommaire** l'accélère (« Pendant trois ans, il travailla sans repos ») ; une **pause** arrête l'action pour décrire ; une **ellipse** saute une période sans la raconter. Choisir avec soin ces procédés rend le récit plus intéressant.",
+  mini:{t:'qcm',q:"Dans « Il pleuvait quand un cri retentit », le verbe à l'imparfait décrit…",o:["le décor","une action rapide","un ordre"],a:0,e:"« Pleuvait » installe le décor ; « retentit » est l'action qui arrive."},
+  exercices:[
+    {t:'match',q:"Associe chaque étape du schéma narratif à son rôle.",pairs:[["Situation initiale","présente personnages et lieu"],["Élément perturbateur","rompt l'équilibre"],["Péripéties","les actions pour résoudre le problème"],["Dénouement","le problème est résolu"]],e:"Ce sont les grandes étapes d'un récit."},
+    {t:'qcm',q:"Quel mot est un connecteur de temps ?",o:["Soudain","Parce que","Donc"],a:0,e:"« Soudain » marque le moment où quelque chose arrive."},
+    {t:'fill',q:"Conjugue à l'imparfait : Il ___ (pleuvoir) depuis le matin quand un cri retentit.",a:["pleuvait"],e:"Le décor se met à l'imparfait."},
+    {t:'vf',q:"On peut changer de narrateur à chaque phrase.",a:false,e:"Le narrateur doit rester le même du début à la fin."},
+    {t:'qcm',q:"Quelle phrase est une situation initiale ?",o:["Il était une fois un pêcheur qui vivait près du fleuve.","Soudain, un cri retentit.","Depuis ce jour, tout était calme."],a:0,e:"Elle présente le personnage et le lieu, à l'imparfait."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Quelle est la première étape du schéma narratif ?",o:["La situation initiale","Le dénouement","Les péripéties"],a:0,e:"On présente d'abord les personnages, le lieu et l'époque."},
+    {t:'qcm',q:"Quel temps emploie-t-on pour décrire le décor dans un récit au passé ?",o:["L'imparfait","Le futur","L'impératif"],a:0,e:"L'imparfait sert à décrire et à installer le décor."},
+    {t:'vf',q:"Les connecteurs de temps aident à organiser les événements.",a:true,e:"D'abord, puis, ensuite, enfin…"},
+    {t:'qcm',q:"Qu'est-ce que l'élément perturbateur ?",o:["L'événement qui rompt l'équilibre du début","La fin de l'histoire","La description du lieu"],a:0,e:"Il lance l'histoire."},
+    {t:'fill',q:"Complète : Il était une fois un roi qui ___ (vivre) dans un grand palais.",a:["vivait"],e:"Situation initiale : imparfait."},
+    {t:'qcm',q:"Quel connecteur de temps convient au début d'un dénouement ?",o:["Enfin","Mais","Parce que"],a:0,e:"« Enfin » annonce la résolution."},
+    {t:'vf',q:"Un récit doit garder le même narrateur du début à la fin.",a:true,e:"C'est un principe de cohérence."},
+    {t:'qcm',q:"À quoi sert la situation finale ?",o:["À montrer la nouvelle situation après l'histoire","À présenter les personnages","À créer le problème"],a:0,e:"Elle boucle le récit."},
+    {t:'fill',q:"Complète : Le récit se termine par la situation ___ .",a:["finale"],e:"Schéma narratif : situation finale."},
+    {t:'fix',q:"Corrige le mélange des temps : « Il marche dans la forêt quand il entendait un cri. »",o:["Il marchait dans la forêt quand il entendit un cri.","Il marche dans la forêt quand il entendait un cri.","Il marchera dans la forêt quand il entendait un cri."],a:0,e:"Décor à l'imparfait (« marchait »), action au passé simple (« entendit »)."}
+  ]
+},
+
+"expr-dialogue":{
+  objectif:"Insérer un dialogue dans un récit en respectant la ponctuation et distinguer discours direct et discours indirect.",
+  explication:[
+    "Rapporter les paroles d'un personnage, c'est faire un **dialogue**. Au **discours direct**, on reproduit les paroles exactes : on les annonce par deux-points et on les met entre **guillemets** ou après un **tiret**. À chaque **changement de locuteur**, on va à la ligne et on ouvre un nouveau tiret. « — Où vas-tu ? demande Awa. — Au marché, répond Karim. »",
+    "Le **verbe de parole** peut précéder ou suivre les paroles. Quand il les suit, il s'écrit dans une **incise**, **sans majuscule**, même après un point d'interrogation ou d'exclamation : « — Viens ! dit-elle. » On choisit des verbes précis : demander, répondre, s'écrier, murmurer, ajouter, protester.",
+    "Au **discours indirect**, les paroles sont intégrées à la phrase, sans guillemets, dans une **subordonnée** introduite par « que », « si » ou un mot interrogatif. Il faut adapter les **pronoms**, les **temps** et les **marqueurs de temps** : « Il a dit : « J'arriverai demain. » » devient « Il a dit qu'il arriverait **le lendemain**. »"
+  ],
+  regle:"**Discours direct** : paroles exactes, entre guillemets ou après un tiret, avec incise sans majuscule. **Discours indirect** : subordonnée sans guillemets, avec adaptation des pronoms et des temps.",
+  tableaux:[{titre:"Direct et indirect",entetes:["Discours direct","Discours indirect"],lignes:[["Il dit : « Je viens. »","Il dit qu'il vient."],["Elle demande : « Où va-t-il ? »","Elle demande où il va."],["Il a dit : « J'arriverai demain. »","Il a dit qu'il arriverait le lendemain."]]}],
+  exemples:[
+    {t:"— Où vas-tu ? demande Awa.",n:"Discours direct : le tiret annonce la réplique, l'incise « demande Awa » ne commence pas par une majuscule."},
+    {t:"— Au marché, répond Karim.",n:"Le changement de locuteur est marqué par un retour à la ligne et un nouveau tiret."},
+    {t:"Awa demande à Karim où il va.",n:"Discours indirect : la question devient une subordonnée, sans guillemets ni point d'interrogation."}
+  ],
+  retenir:["Direct : guillemets ou tirets, verbes de parole en incise.","Un changement de locuteur = retour à la ligne + tiret.","Indirect : subordonnée, pas de guillemets.","Au discours indirect, on adapte pronoms, temps et marqueurs de temps."],
+  plus:"Un dialogue bien écrit ne ressemble pas à une conversation enregistrée : il est **plus vif et plus dense**. Il doit **révéler le caractère** des personnages, **faire avancer l'action** et rester **vraisemblable**. On alterne les répliques avec de courtes phrases qui décrivent les gestes (« Karim baissa les yeux ») pour éviter que le texte ne soit qu'une liste de répliques. Enfin, le **discours indirect libre** (« Il pensa : elle viendrait sûrement ») mêle les pensées du personnage au récit sans verbe de parole ni guillemets.",
+  mini:{t:'qcm',q:"Quel signe annonce des paroles au discours direct ?",o:["Les deux-points suivis de guillemets ou un tiret","Le point-virgule","Les points de suspension"],a:0,e:"Les deux-points, puis les guillemets ou le tiret, ouvrent la parole."},
+  exercices:[
+    {t:'qcm',q:"Quelle phrase est au discours indirect ?",o:["Il dit qu'il viendra demain.","Il dit : « Je viendrai demain. »","— Je viendrai demain, dit-il."],a:0,e:"Il n'y a pas de guillemets et la phrase contient une subordonnée en « que »."},
+    {t:'fix',q:"Corrige la ponctuation : « — Viens ! Dit-elle. »",o:["— Viens ! dit-elle.","— Viens ! Dit-elle.","— Viens, ! dit-elle."],a:0,e:"L'incise ne prend pas de majuscule, même après un point d'exclamation."},
+    {t:'fill',q:"Complète : Elle a dit : « Je viens. » → Elle a dit qu'___ venait.",a:["elle"],e:"Au discours indirect, « je » devient « elle » et « viens » devient « venait »."},
+    {t:'match',q:"Associe chaque verbe de parole à son sens.",pairs:[["demander","poser une question"],["s'écrier","dire en criant"],["murmurer","parler à voix basse"],["répondre","donner la réponse"]],e:"Chaque verbe précise la manière de parler."},
+    {t:'vf',q:"Au discours indirect, on garde les guillemets.",a:false,e:"Le discours indirect n'a pas de guillemets."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Comment marque-t-on un changement de locuteur au discours direct ?",o:["Retour à la ligne et nouveau tiret","Point-virgule","Point d'exclamation"],a:0,e:"C'est la convention du dialogue."},
+    {t:'qcm',q:"Quelle phrase est au discours direct ?",o:["Il dit : « Je viens. »","Il dit qu'il vient.","Il dit de venir."],a:0,e:"Les paroles sont reproduites entre guillemets."},
+    {t:'vf',q:"L'incise ne commence pas par une majuscule.",a:true,e:"« — Viens ! dit-elle. »"},
+    {t:'fill',q:"Complète : Il dit : « Je viens. » → Il dit qu'___ vient.",a:["il"],e:"« Je » devient « il » au discours indirect."},
+    {t:'qcm',q:"Quel verbe de parole exprime l'idée de crier ?",o:["s'écrier","murmurer","ajouter"],a:0,e:"S'écrier = dire en criant."},
+    {t:'qcm',q:"Au discours indirect, « demain » devient souvent…",o:["le lendemain","hier","aujourd'hui"],a:0,e:"On adapte les marqueurs de temps."},
+    {t:'vf',q:"Un dialogue doit être une copie exacte d'une conversation.",a:false,e:"Il est plus vif et plus dense qu'une vraie conversation."},
+    {t:'fill',q:"Complète : Elle demande : « Où va-t-il ? » → Elle demande où il ___ .",a:["va"],e:"On garde le verbe, sans inversion."},
+    {t:'qcm',q:"Comment appelle-t-on la courte proposition qui indique qui parle (« dit-elle ») ?",o:["une incise","une épithète","un COD"],a:0,e:"C'est une incise."},
+    {t:'fix',q:"Corrige : « Il a dit qu'il viendrait demain. » (le narrateur raconte le lendemain)",o:["Il a dit qu'il viendrait le lendemain.","Il a dit qu'il viendrait demain.","Il a dit qu'il viendra demain."],a:0,e:"« Demain » devient « le lendemain » au discours indirect passé."}
+  ]
+},
+
+"expr-resume":{
+  objectif:"Résumer un texte en gardant l'essentiel, avec ses propres mots, dans une longueur donnée.",
+  explication:[
+    "**Résumer**, c'est **réduire un texte en gardant l'essentiel**, avec ses propres mots. On ne recopie pas des phrases entières, on ne juge pas le texte et on n'y ajoute rien. La longueur est souvent imposée : par exemple **le quart** ou **le tiers** du texte, avec une marge de plus ou moins dix pour cent.",
+    "Voici la méthode. **1. Lire** le texte deux fois pour en comprendre le sujet et le plan. **2. Repérer** l'idée principale de chaque paragraphe (soulignée ou notée en marge). **3. Supprimer** les exemples, les anecdotes, les répétitions, les images. **4. Reformuler** avec ses mots, en regroupant plusieurs idées en une seule phrase. **5. Compter** les mots et **relire**.",
+    "On respecte l'**ordre des idées** du texte et son **point de vue**. On emploie des **mots de liaison** qui montrent la logique (mais, donc, en effet…), sans copier ceux du texte. Selon la consigne du professeur, on peut aussi introduire le résumé par une formule comme « L'auteur explique que… » : il faut donc toujours **lire la consigne**."
+  ],
+  regle:"**Résumer = garder l'idée principale, supprimer exemples et détails, reformuler avec ses mots**, respecter l'ordre du texte et la longueur demandée.",
+  tableaux:[{titre:"Que garder, que supprimer ?",entetes:["On garde","On supprime"],lignes:[["les idées principales","les exemples et les anecdotes"],["l'enchaînement logique","les répétitions et les reformulations"],["les mots de liaison essentiels (mais, donc…)","les images et les comparaisons"],["le point de vue de l'auteur","son avis personnel de celui qui résume"]]}],
+  exemples:[
+    {t:"Les enfants qui lisent chaque jour un roman ou un journal enrichissent progressivement leur vocabulaire.",n:"Phrase du texte de départ."},
+    {t:"La lecture régulière enrichit le vocabulaire.",n:"Contraction : on garde l'essentiel avec un nom (« la lecture ») au lieu de la longue subordonnée."},
+    {t:"Résumé du quart : un texte de 400 mots donne un résumé d'environ 100 mots.",n:"Le résumé suit la longueur imposée, avec une petite marge."}
+  ],
+  retenir:["Résumer, c'est garder l'essentiel avec ses propres mots.","On supprime exemples, anecdotes, répétitions et images.","On respecte l'ordre des idées et la longueur demandée.","On n'ajoute ni jugement ni idée personnelle."],
+  plus:"Pour réduire une phrase, on peut **transformer un verbe en nom** (« les enfants lisent beaucoup » → « la lecture intensive »), **remplacer une énumération** par un mot général (« pommes, poires, bananes » → « des fruits »), utiliser des **synonymes plus courts** et supprimer les **adverbes** inutiles. Évite de **paraphraser** (redire la même chose avec d'autres mots) : un résumé n'est pas un texte plus court qui suit chaque phrase, c'est une **synthèse** des idées.",
+  mini:{t:'qcm',q:"Quel élément peut-on supprimer dans un résumé ?",o:["Les exemples et les anecdotes","L'idée principale","L'enchaînement logique"],a:0,e:"Les exemples illustrent les idées : ils ne sont pas indispensables au résumé."},
+  exercices:[
+    {t:'qcm',q:"Un texte de 400 mots doit être résumé au quart. Combien de mots vise-t-on ?",o:["environ 100","environ 200","environ 300"],a:0,e:"Le quart de 400 fait 100."},
+    {t:'vf',q:"Dans un résumé, on peut donner son avis personnel.",a:false,e:"Le résumé reste fidèle au texte : on n'y ajoute ni avis ni idée."},
+    {t:'qcm',q:"Quelle phrase est la meilleure contraction de : « Il mange des pommes, des poires et des bananes chaque jour. » ?",o:["Il mange des fruits chaque jour.","Il mange chaque jour.","Il aime beaucoup les fruits."],a:0,e:"On remplace l'énumération par un mot général en gardant le sens."},
+    {t:'match',q:"Associe chaque élément à son traitement dans un résumé.",pairs:[["idée principale","on la garde"],["exemple","on le supprime"],["répétition","on la supprime"],["mot de liaison essentiel (mais, donc)","on le garde sous une forme reformulée"]],e:"On garde ce qui structure le raisonnement."},
+    {t:'fill',q:"Complète : Résumer, c'est garder l'___ du texte.",a:["essentiel"],e:"L'essentiel : les idées principales."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Résumer un texte, c'est…",o:["le réduire en gardant l'essentiel","le recopier","le critiquer"],a:0,e:"Le résumé conserve l'essentiel."},
+    {t:'qcm',q:"Que fait-on en premier dans la méthode ?",o:["Lire le texte","Compter les mots","Écrire la conclusion"],a:0,e:"On lit d'abord pour comprendre."},
+    {t:'vf',q:"On peut recopier des phrases entières du texte dans un résumé.",a:false,e:"On reformule avec ses propres mots."},
+    {t:'qcm',q:"Un texte de 300 mots doit être résumé au tiers. Combien de mots ?",o:["environ 100","environ 150","environ 200"],a:0,e:"Le tiers de 300 fait 100."},
+    {t:'vf',q:"On respecte l'ordre des idées du texte.",a:true,e:"C'est une règle du résumé."},
+    {t:'qcm',q:"Quel élément est le plus utile à supprimer ?",o:["Un exemple détaillé","L'idée directrice","Un mot de liaison logique important"],a:0,e:"Les exemples illustrent, ils ne portent pas l'idée."},
+    {t:'fill',q:"Complète : Pour résumer, on reformule avec ses ___ mots.",a:["propres"],e:"On ne recopie pas le texte."},
+    {t:'qcm',q:"« Pommes, poires, bananes » peut se résumer par…",o:["des fruits","des pommes","des légumes"],a:0,e:"On remplace l'énumération par un terme général."},
+    {t:'vf',q:"Il est utile de compter les mots à la fin.",a:true,e:"On vérifie que la longueur est respectée."},
+    {t:'fix',q:"Améliore : « Résumé : l'auteur est un peu trop sévère, à mon avis. »",o:["Résumé : l'auteur critique la place des écrans chez les jeunes.","Résumé : l'auteur est un peu trop sévère, à mon avis.","Résumé : je pense que l'auteur a tort."],a:0,e:"Un résumé rapporte les idées de l'auteur, sans jugement personnel."}
+  ]
+},
+
+"litt-conte":{
+  objectif:"Reconnaître le conte et la légende, connaître leurs caractéristiques et leur lien avec la tradition orale, notamment en Afrique.",
+  explication:[
+    "Le **conte** est un récit **imaginaire**, souvent **transmis oralement** de génération en génération. Il commence souvent par une formule (« Il était une fois… ») et suit un schéma stable : une situation de départ, des épreuves, une fin. Les personnages sont des **types** : le héros courageux, le rusé, le méchant, l'aide magique. Le **merveilleux** y est naturel : animaux qui parlent, objets magiques. Beaucoup de contes se terminent par une **morale**.",
+    "La **légende** est un récit qui mêle **faits réels** (un personnage, un lieu, une époque) et éléments **merveilleux**. Elle sert à expliquer l'origine d'un lieu, d'un peuple ou à honorer un héros. La légende de **Soundiata Keïta**, fondateur de l'empire du Mali, en est un exemple célèbre : elle a été transmise par les griots et mise par écrit par Djibril Tamsir Niane dans « Soundjata ou l'épopée mandingue » (1960).",
+    "En Afrique de l'Ouest, la **tradition orale** est très riche. Le **griot** est à la fois conteur, musicien et gardien de la mémoire du peuple. Dans de nombreux contes, le lièvre rusé et la hyène naïve s'affrontent. Le poète et conteur sénégalais **Birago Diop** a mis par écrit ces récits dans « Les Contes d'Amadou Koumba » (1947)."
+  ],
+  regle:"**Conte** : récit imaginaire, personnages types, merveilleux, structure stable, souvent avec une morale. **Légende** : récit qui mêle fait réel et merveilleux, transmis pour honorer un héros ou expliquer une origine.",
+  tableaux:[{titre:"Conte et légende",entetes:["","Conte","Légende"],lignes:[["Origine","imaginaire","souvent un fait ou un personnage réel"],["But","divertir, instruire (morale)","honorer, expliquer, garder la mémoire"],["Merveilleux","présent","présent"],["Exemple","Les Contes d'Amadou Koumba","la légende de Soundiata Keïta"]]}],
+  exemples:[
+    {t:"Il était une fois un lièvre très rusé qui vivait au bord d'un fleuve.",n:"La formule « Il était une fois » ouvre un conte : le lièvre représente la ruse."},
+    {t:"Quand le griot commença son récit, tout le village se tut.",n:"Le griot transmet la mémoire du peuple par la parole."},
+    {t:"Le roi Soundiata, dit la légende, ne marchait pas encore à sept ans, puis il se dressa et arracha un baobab.",n:"Un fait historique (un roi) mêlé à du merveilleux (la force extraordinaire) : c'est une légende."}
+  ],
+  retenir:["Le conte est imaginaire ; la légende s'appuie sur un fait ou un personnage réel.","Le merveilleux est présent dans les deux.","La tradition orale transmet contes et légendes.","Le griot est le gardien de la mémoire en Afrique de l'Ouest."],
+  plus:"Le **schéma quinaire** du conte suit les cinq étapes : situation initiale, élément perturbateur, péripéties, dénouement, situation finale. Les personnages répondent souvent au **schéma actantiel** : un héros veut obtenir un objet ou atteindre un but, avec l'aide d'un **adjuvant** et contre un **opposant**. Le conte oral est **vivant** : le conteur adapte les paroles, les gestes, les silences selon son public, ce qui explique les nombreuses variantes d'un même conte.",
+  mini:{t:'qcm',q:"Quelle formule ouvre souvent un conte ?",o:["Il était une fois","Selon les sources","À ce sujet"],a:0,e:"C'est la formule d'ouverture traditionnelle."},
+  exercices:[
+    {t:'match',q:"Associe chaque mot à sa définition.",pairs:[["conte","récit imaginaire souvent transmis oralement"],["légende","récit mêlant faits réels et merveilleux"],["griot","gardien de la tradition orale"],["morale","leçon que l'on tire de l'histoire"]],e:"Ce sont les notions de base."},
+    {t:'qcm',q:"Qui était Soundiata Keïta ?",o:["Le fondateur de l'empire du Mali, héros d'une légende","Un poète du XIXe siècle","Un personnage de conte européen"],a:0,e:"Il est le fondateur de l'empire du Mali (XIIIe siècle)."},
+    {t:'vf',q:"Le conte se transmet souvent à l'oral.",a:true,e:"Le conteur transmet les récits par la parole."},
+    {t:'fill',q:"Complète : Un récit qui mêle réalité historique et merveilleux est une ___ .",a:["légende"],e:"La légende s'appuie sur un fait réel."},
+    {t:'qcm',q:"Quel personnage type trouve-t-on souvent dans les contes ?",o:["le héros","le narrateur-auteur","le photographe"],a:0,e:"Le héros, le rusé, le méchant, l'aide magique."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Qu'est-ce qu'un conte ?",o:["Un récit imaginaire souvent transmis oralement","Un récit d'histoire","Un poème"],a:0,e:"Le conte est fictif et populaire."},
+    {t:'qcm',q:"Quelle est la différence essentielle entre conte et légende ?",o:["La légende s'appuie sur des faits ou des personnages réels","La légende n'a pas de personnages","Le conte est toujours écrit"],a:0,e:"La légende mêle réalité et merveilleux."},
+    {t:'vf',q:"Le griot est un gardien de la tradition orale.",a:true,e:"Conteur, musicien et gardien de la mémoire."},
+    {t:'qcm',q:"Quel élément est typique du conte ?",o:["Le merveilleux","Le compte rendu","Le résumé"],a:0,e:"Le conte accueille le merveilleux."},
+    {t:'fill',q:"Complète : Beaucoup de contes se terminent par une ___ .",a:["morale"],e:"La morale est une leçon."},
+    {t:'qcm',q:"Qui a mis par écrit « Les Contes d'Amadou Koumba » ?",o:["Birago Diop","Victor Hugo","Molière"],a:0,e:"Birago Diop, poète et conteur sénégalais."},
+    {t:'vf',q:"Un conte est toujours écrit par un seul auteur connu.",a:false,e:"Beaucoup de contes viennent de la tradition orale et ont plusieurs variantes."},
+    {t:'qcm',q:"Comment appelle-t-on l'aide du héros dans le schéma actantiel ?",o:["l'adjuvant","l'opposant","le destinataire"],a:0,e:"L'adjuvant aide, l'opposant gêne."},
+    {t:'fill',q:"Complète : Le récit transmis de bouche à oreille relève de la tradition ___ .",a:["orale"],e:"La tradition orale."},
+    {t:'fix',q:"Corrige : « La légende est un récit entièrement inventé, sans aucun fait réel. »",o:["La légende est un récit qui mêle faits réels et merveilleux.","La légende est un récit entièrement inventé, sans aucun fait réel.","La légende est un récit scientifique."],a:0,e:"La légende s'appuie sur un fait ou un personnage réel."}
+  ]
+},
+
+"litt-fable":{
+  objectif:"Reconnaître une fable, sa structure (récit et morale) et son intention satirique.",
+  explication:[
+    "La **fable** est un court récit, en vers ou en prose, qui met le plus souvent en scène des **animaux** et se termine par une **morale**, c'est-à-dire une leçon de vie. Les animaux représentent des **types humains** : le renard est rusé, le corbeau vaniteux, le loup cruel, l'agneau innocent.",
+    "Une fable comporte deux parties : un **récit** (une petite histoire avec un début, un problème et une fin) et une **morale**, qui peut être explicite (écrite en une phrase) ou implicite (à deviner). La morale est placée le plus souvent **à la fin**, parfois au début. La fable vise à **instruire en amusant** : elle critique les défauts des hommes sans les nommer.",
+    "Les grands **fabulistes** sont Ésope (Grèce antique), Phèdre (Rome) et surtout **Jean de La Fontaine** (1621-1695), auteur des « Fables » : « Le Corbeau et le Renard », « La Cigale et la Fourmi », « Le Loup et l'Agneau », « Le Lièvre et la Tortue ». Ses fables sont écrites en vers de longueurs variées, ce qui leur donne un rythme vivant."
+  ],
+  regle:"Une **fable** = **récit** (le plus souvent avec des animaux) + **morale**. Les animaux représentent des **types humains** : la fable critique les défauts des hommes de façon indirecte.",
+  tableaux:[{titre:"Les éléments d'une fable",entetes:["Élément","Rôle","Exemple"],lignes:[["Récit","raconter une petite histoire","Le renard flatte le corbeau pour lui prendre son fromage."],["Personnages","des animaux qui représentent des types humains","renard = le rusé ; corbeau = le vaniteux"],["Morale","tirer une leçon","« Tout flatteur vit aux dépens de celui qui l'écoute. »"]]}],
+  exemples:[
+    {t:"« Tout flatteur vit aux dépens de celui qui l'écoute. »",n:"C'est la morale du « Corbeau et du Renard » : elle met en garde contre les flatteurs."},
+    {t:"« La raison du plus fort est toujours la meilleure. »",n:"Premier vers du « Loup et de l'Agneau » : La Fontaine critique l'injustice du plus puissant."},
+    {t:"« Rien ne sert de courir ; il faut partir à point. »",n:"Morale du « Lièvre et de la Tortue » : mieux vaut la persévérance que la précipitation."}
+  ],
+  retenir:["La fable est un court récit, souvent avec des animaux.","Elle se termine par une morale.","Les animaux représentent des types humains.","La Fontaine est le plus célèbre fabuliste français."],
+  plus:"La fable est un genre **satirique** : elle critique la société de son temps (la cour du roi, les puissants) en se cachant derrière des animaux. Elle est aussi **argumentative** : le récit est une illustration au service d'une morale. On appelle **promythium** la morale placée au début et **épimythium** la morale placée à la fin. La Fontaine s'inspire d'Ésope et de Phèdre, mais donne à ses fables un style personnel : vers libres, dialogues vifs, humour.",
+  mini:{t:'qcm',q:"Comment appelle-t-on la leçon qui termine une fable ?",o:["la morale","le dénouement","la légende"],a:0,e:"La morale résume la leçon de l'histoire."},
+  exercices:[
+    {t:'qcm',q:"Qui est l'auteur du « Corbeau et du Renard » ?",o:["Jean de La Fontaine","Molière","Victor Hugo"],a:0,e:"La Fontaine est le fabuliste français le plus célèbre."},
+    {t:'match',q:"Associe chaque animal au défaut ou à la qualité qu'il représente dans les fables.",pairs:[["le renard","la ruse"],["le corbeau","la vanité"],["le loup","la cruauté"],["l'agneau","l'innocence"]],e:"Les animaux sont des types humains."},
+    {t:'vf',q:"Dans une fable, les animaux représentent souvent des types humains.",a:true,e:"C'est la marque de la fable."},
+    {t:'fill',q:"Complète : Une fable se termine par une ___ .",a:["morale"],e:"Récit + morale."},
+    {t:'qcm',q:"Quelle est l'intention de la fable ?",o:["Instruire en amusant","Décrire un paysage","Résumer un texte"],a:0,e:"Elle critique les défauts humains sans les nommer."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Qu'est-ce qu'une fable ?",o:["Un court récit avec une morale","Un long roman","Une pièce de théâtre"],a:0,e:"Récit + morale."},
+    {t:'qcm',q:"Quels personnages a-t-on le plus souvent dans une fable ?",o:["Des animaux","Des dieux grecs","Des robots"],a:0,e:"Les animaux représentent des types humains."},
+    {t:'vf',q:"La morale d'une fable est toujours placée au début.",a:false,e:"Le plus souvent à la fin, parfois au début."},
+    {t:'qcm',q:"Quel animal représente la ruse dans « Le Corbeau et le Renard » ?",o:["le renard","le corbeau","le fromage"],a:0,e:"Le renard est rusé."},
+    {t:'fill',q:"Complète : Jean de La ___ est un célèbre fabuliste français.",a:["fontaine"],e:"Jean de La Fontaine."},
+    {t:'qcm',q:"Quel autre fabuliste de l'Antiquité a inspiré La Fontaine ?",o:["Ésope","Homère","Sophocle"],a:0,e:"Ésope, fabuliste grec."},
+    {t:'vf',q:"La fable critique les défauts des hommes en les cachant derrière des animaux.",a:true,e:"C'est son intention satirique."},
+    {t:'qcm',q:"Comment appelle-t-on la morale placée à la fin d'une fable ?",o:["l'épimythium","le promythium","l'antithèse"],a:0,e:"Épi- : à la fin ; pro- : au début."},
+    {t:'fill',q:"Complète : Dans « Le Loup et l'Agneau », le loup représente le plus ___ .",a:["fort"],e:"« La raison du plus fort est toujours la meilleure. »"},
+    {t:'fix',q:"Corrige : « La fable est un genre qui ne contient jamais de leçon. »",o:["La fable est un genre qui contient une morale.","La fable est un genre qui ne contient jamais de leçon.","La fable est un genre qui ne contient que des descriptions."],a:0,e:"La morale est essentielle."}
+  ]
+},
+
+"litt-registres":{
+  objectif:"Reconnaître les principaux registres littéraires (comique, tragique, pathétique, lyrique, épique, satirique) et leurs procédés.",
+  explication:[
+    "Un **registre** est la **tonalité** d'un texte : l'effet que l'auteur cherche à produire sur le lecteur (faire rire, émouvoir, admirer, critiquer…). Un même texte peut mêler plusieurs registres. Pour identifier un registre, on relève les **procédés** (vocabulaire, figures de style, ponctuation, rythme) et on se demande **quelle émotion** ils font naître.",
+    "Le registre **comique** fait rire : exagération, jeux de mots, quiproquo, situations absurdes. Le registre **tragique** montre des personnages écrasés par le destin ou la fatalité, avec des thèmes comme la mort et l'impuissance. Le registre **pathétique** cherche à émouvoir et à apitoyer : plaintes, exclamations, vocabulaire de la souffrance.",
+    "Le registre **lyrique** exprime des sentiments personnels (amour, nostalgie, tristesse) à la 1re personne, avec des images et des exclamations. Le registre **épique** exalte un héros et ses exploits avec des hyperboles et des verbes d'action. Le registre **satirique** critique en se moquant : ironie, caricature, exagération."
+  ],
+  regle:"Pour trouver un registre : **relève les procédés** (lexique, figures, ponctuation, rythme) puis **dis l'effet produit** (rire, pitié, admiration, critique…).",
+  tableaux:[{titre:"Les principaux registres",entetes:["Registre","Effet recherché","Procédés"],lignes:[["comique","faire rire","exagération, quiproquo, jeux de mots"],["tragique","faire ressentir la fatalité","destin, dilemme, vocabulaire de la mort"],["pathétique","émouvoir, apitoyer","exclamations, plaintes, souffrance"],["lyrique","exprimer des sentiments personnels","1re personne, exclamations, images"],["épique","exalter un héros","hyperboles, verbes d'action"],["satirique","critiquer en se moquant","ironie, caricature, exagération"]]}],
+  exemples:[
+    {t:"Le héros, seul contre mille guerriers, fit trembler la terre.",n:"Registre épique : l'hyperbole (« mille guerriers », « fit trembler la terre ») exalte l'exploit."},
+    {t:"Le pauvre enfant pleurait, sans toit, sans pain, sans mère.",n:"Registre pathétique : l'énumération de manques suscite la pitié."},
+    {t:"Ce ministre, gros comme un baobab, se croit léger comme une plume.",n:"Registre satirique : la comparaison exagérée moque la prétention du personnage."}
+  ],
+  retenir:["Un registre est une tonalité : l'effet recherché sur le lecteur.","Un texte peut mêler plusieurs registres.","On repère les procédés puis on dit l'effet produit.","Comique, tragique, pathétique, lyrique, épique, satirique."],
+  plus:"Les registres se combinent : une scène peut être à la fois **tragique** et **pathétique** (destin cruel et pitié). Il faut aussi distinguer le **registre** (la tonalité) du **genre** (théâtre, roman, poésie). Le registre **polémique** attaque une thèse ou une personne avec vivacité ; le registre **ironique** dit le contraire de ce que l'on pense (« Quel beau temps ! » sous la pluie) ; le registre **fantastique** fait surgir l'inexplicable dans le réel ; le registre **réaliste** cherche à donner l'impression de la vraie vie.",
+  mini:{t:'qcm',q:"Quel registre cherche à faire rire ?",o:["comique","tragique","épique"],a:0,e:"Le registre comique provoque le rire."},
+  exercices:[
+    {t:'qcm',q:"« Ô nuit, tu recueilles mes larmes et mes souvenirs ! » Quel registre ?",o:["lyrique","comique","satirique"],a:0,e:"La 1re personne, l'apostrophe et l'exclamation expriment un sentiment personnel."},
+    {t:'match',q:"Associe chaque registre à l'effet recherché.",pairs:[["comique","faire rire"],["pathétique","émouvoir, apitoyer"],["épique","exalter un héros"],["satirique","critiquer en se moquant"]],e:"Chaque registre a son effet."},
+    {t:'vf',q:"Un texte ne peut avoir qu'un seul registre.",a:false,e:"Plusieurs registres peuvent se mêler."},
+    {t:'fill',q:"Complète : Le registre qui exprime des sentiments personnels est le registre ___ .",a:["lyrique"],e:"Lyrique : sentiments personnels."},
+    {t:'qcm',q:"Quel procédé caractérise souvent le registre épique ?",o:["l'hyperbole","l'ironie","le quiproquo"],a:0,e:"L'hyperbole agrandit l'exploit du héros."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Qu'est-ce qu'un registre ?",o:["Une tonalité qui produit un effet sur le lecteur","Un genre littéraire","Un type de phrase"],a:0,e:"Registre = tonalité."},
+    {t:'qcm',q:"Quel registre montre des personnages écrasés par le destin ?",o:["tragique","comique","lyrique"],a:0,e:"Le tragique évoque la fatalité."},
+    {t:'vf',q:"Le registre pathétique cherche à émouvoir.",a:true,e:"Il suscite la pitié."},
+    {t:'qcm',q:"Quel registre utilise l'ironie et la caricature pour critiquer ?",o:["satirique","épique","lyrique"],a:0,e:"La satire critique en se moquant."},
+    {t:'fill',q:"Complète : Le registre qui cherche à faire rire est le registre ___ .",a:["comique"],e:"Comique."},
+    {t:'qcm',q:"« Rien ne pouvait l'arrêter : le destin avait décidé. » Quel registre ?",o:["tragique","comique","satirique"],a:0,e:"Le destin est inévitable : registre tragique."},
+    {t:'vf',q:"Le registre est la même chose que le genre littéraire.",a:false,e:"Le genre (théâtre, roman…) est différent de la tonalité (registre)."},
+    {t:'qcm',q:"Quel registre exalte un héros grâce aux hyperboles ?",o:["épique","pathétique","comique"],a:0,e:"L'épique glorifie l'exploit."},
+    {t:'fill',q:"Complète : Dire le contraire de ce que l'on pense, c'est employer l'___ .",a:["ironie"],e:"L'ironie dit le contraire de ce que l'on pense."},
+    {t:'fix',q:"Corrige : « Le registre lyrique exprime les exploits d'un héros. »",o:["Le registre lyrique exprime des sentiments personnels.","Le registre lyrique exprime les exploits d'un héros.","Le registre lyrique fait rire par le quiproquo."],a:0,e:"C'est le registre épique qui exalte un héros."}
   ]
 }
 };
