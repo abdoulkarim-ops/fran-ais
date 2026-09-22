@@ -321,7 +321,7 @@ summary{font:800 17px var(--f-head);min-height:44px;display:flex;align-items:cen
    ===================================================================== */
 
 /* ============================ 1. CONFIGURATION ============================ */
-const APP={nom:'Le Français avec Abdoul Karim',version:'1.2.0',objectifJour:2,tailleQuiz:10,seuil:6};
+const APP={nom:'Le Français avec Abdoul Karim',version:'1.3.0',objectifJour:2,tailleQuiz:10,seuil:6};
 const CLASSES=[['6e','Sixième','Collège'],['5e','Cinquième','Collège'],['4e','Quatrième','Collège'],['3e','Troisième','Collège'],['2nde','Seconde','Lycée'],['1ère','Première','Lycée'],['Terminale','Terminale','Lycée']];
 const CL=CLASSES.map(c=>c[0]);
 const rg=(a,b)=>CL.slice(CL.indexOf(a),CL.indexOf(b)+1);
@@ -2456,19 +2456,69 @@ const Repo={
     Store.set('users',us);
     if(this.session()==='guest'){Store.set('progress:'+id,Store.get('progress:guest',emptyProgress()));Store.del('guest');Store.del('progress:guest')}
     Store.set('session',id);
+    cloudSyncAfterAuth(id,c,f.pwd);
     return{ok:true};
   },
   async login(contact,pwd){
     if(Date.now()<fails.until)return{ok:false,error:"Trop d'essais. Attends "+Math.ceil((fails.until-Date.now())/1000)+" secondes puis réessaie."};
     const c=normContact(contact);
-    const u=c&&Object.values(this.users()).find(x=>x.contact===c.v);
-    const good=u&&(await hashPwd(pwd||'',u.salt))===u.hash;
-    if(!good){fails.n++;if(fails.n>=5){fails={n:0,until:Date.now()+30000}}return{ok:false,error:"E-mail, téléphone ou mot de passe incorrect."}}
-    fails={n:0,until:0};Store.set('session',u.id);return{ok:true};
+    const localUser=c&&Object.values(this.users()).find(x=>x.contact===c.v);
+    if(localUser){
+      const good=(await hashPwd(pwd||'',localUser.salt))===localUser.hash;
+      if(good){
+        fails={n:0,until:0};Store.set('session',localUser.id);
+        if(!localUser.cloudUid)cloudSyncAfterAuth(localUser.id,c,pwd);
+        return{ok:true};
+      }
+    }
+    /* Pas de compte sur cet appareil : essaie un compte en ligne existant (créé sur un autre appareil), si c'est une adresse e-mail. */
+    if(c&&c.type==='email'&&window.Cloud&&Cloud.ready&&navigator.onLine){
+      try{
+        const r=await Cloud.loginEmail(c.v,pwd);
+        if(r.ok){
+          const [student,progress]=await Promise.all([Cloud.loadStudent(r.uid),Cloud.loadProgress(r.uid)]);
+          const id=uid(),salt=mkSalt(),hash=await hashPwd(pwd,salt);
+          const us=this.users();
+          us[id]={id,prenom:(student&&student.prenom)||'',nom:(student&&student.nom)||'',contact:c.v,contactType:c.type,salt,hash,classe:(student&&student.classe)&&CL.includes(student.classe)?student.classe:CL[0],created:Date.now(),cloudUid:r.uid};
+          Store.set('users',us);
+          if(progress)Store.set('progress:'+id,progress);
+          fails={n:0,until:0};Store.set('session',id);
+          return{ok:true,restored:true};
+        }
+      }catch(e){}
+    }
+    fails.n++;if(fails.n>=5){fails={n:0,until:Date.now()+30000}}
+    return{ok:false,error:"E-mail, téléphone ou mot de passe incorrect."};
   },
-  logout(){Store.set('session',null)},
-  remove(id){if(id==='guest'){Store.del('guest')}else{const us=this.users();delete us[id];Store.set('users',us)}Store.del('progress:'+id);Store.set('session',null)}
+  logout(){Store.set('session',null);if(window.Cloud&&Cloud.logout)Cloud.logout().catch(()=>{})},
+  remove(id){if(id==='guest'){Store.del('guest')}else{const us=this.users();delete us[id];Store.set('users',us)}Store.del('progress:'+id);Store.set('session',null);if(window.Cloud&&Cloud.logout)Cloud.logout().catch(()=>{})}
 };
+
+/* ---- Synchronisation en ligne (Firebase), toujours "au mieux" : si le
+   réseau ou le service ne répond pas, l'appli continue avec les données
+   locales, seules à faire foi hors connexion. ---- */
+async function cloudSyncAfterAuth(localId,contact,pwd){
+  if(!(window.Cloud&&Cloud.ready)||!contact||contact.type!=='email'||!navigator.onLine)return;
+  try{
+    let r=await Cloud.registerEmail(contact.v,pwd);
+    if(!r.ok&&r.code==='auth/email-already-in-use')r=await Cloud.loginEmail(contact.v,pwd);
+    if(!r.ok)return;
+    const us=Repo.users();const u=us[localId];if(!u)return;
+    u.cloudUid=r.uid;Store.set('users',us);
+    if(S.user&&S.user.id===localId)S.user.cloudUid=r.uid;
+    await pushCloud(localId);
+    if(S.user&&S.user.id===localId)checkTeacher();
+  }catch(e){}
+}
+async function pushCloud(localId){
+  if(!(window.Cloud&&Cloud.ready))return;
+  const us=Repo.users();const u=us[localId];if(!u||!u.cloudUid)return;
+  const p=Repo.progress(localId);
+  try{
+    await Cloud.saveProgress(u.cloudUid,p);
+    await Cloud.saveStudent(u.cloudUid,{prenom:u.prenom,nom:u.nom,classe:u.classe,contact:u.contact,points:p.points,lessons:Object.keys(p.lessons).length,quizzes:p.quizzes.length,avgQuiz:avgQuiz(p),updatedAt:Date.now()});
+  }catch(e){}
+}
 
 /* ============================ 5. PROGRESSION ============================ */
 const day=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -2489,7 +2539,14 @@ const BADGES=[
 ];
 function bump(p){const d=day();p.days[d]=(p.days[d]||0)+1;p.bestStreak=Math.max(p.bestStreak||0,streak(p))}
 function evalBadges(p){const got=[];BADGES.forEach(b=>{if(!p.badges[b.id]&&b.test(p)){p.badges[b.id]=Date.now();got.push(b)}});return got}
-function commit(){Repo.saveProgress(S.user.id,S.prog)}
+let cloudTimer=null;
+function commit(){
+  Repo.saveProgress(S.user.id,S.prog);
+  if(S.user&&!S.user.guest&&S.user.cloudUid){
+    clearTimeout(cloudTimer);
+    cloudTimer=setTimeout(()=>{pushCloud(S.user.id).catch(()=>{})},2500);
+  }
+}
 function recLesson(id){const p=S.prog;let gain=0;if(!p.lessons[id]){p.lessons[id]=Date.now();gain=20;bump(p)}p.points+=gain;const nb=evalBadges(p);commit();return{gain,nb}}
 function recRun(id,mode,score,total){
   const p=S.prog;let gain=0;
@@ -2504,8 +2561,16 @@ function recRun(id,mode,score,total){
 }
 
 /* ============================ ÉTAT ET NAVIGATION ============================ */
-const S={screen:'home',params:{},stack:[],user:null,prog:emptyProgress(),cur:null,curFor:'',run:null,result:null,ui:{open:{grammaire:true},exTab:'exos'}};
-function syncUser(){S.user=Repo.current();S.prog=S.user?Repo.progress(S.user.id):emptyProgress()}
+const S={screen:'home',params:{},stack:[],user:null,prog:emptyProgress(),cur:null,curFor:'',run:null,result:null,ui:{open:{grammaire:true},exTab:'exos'},teacher:false,teacherData:[],teacherLoading:false};
+function syncUser(){S.user=Repo.current();S.prog=S.user?Repo.progress(S.user.id):emptyProgress();S.teacher=false;checkTeacher()}
+async function checkTeacher(){
+  if(!(S.user&&!S.user.guest&&S.user.cloudUid&&window.Cloud&&Cloud.ready))return;
+  try{
+    const isT=await Cloud.isTeacher(S.user.cloudUid);
+    if(S.user&&S.user.cloudUid&&isT!==S.teacher){S.teacher=isT;if(S.screen==='profile')render(true)}
+  }catch(e){}
+}
+window.onCloudReady=function(){if(S.user&&!S.user.guest)checkTeacher()};
 function ensureUser(){if(!S.user){Repo.startGuest();syncUser()}}
 function go(screen,params={},opt={}){
   if(opt.reset)S.stack=[];else if(!opt.replace)S.stack.push({screen:S.screen,params:S.params});
@@ -2822,14 +2887,37 @@ function vProfile(){
   <h2 class="t2">Apparence</h2><div class="seg" role="group" aria-label="Apparence">${[['auto','Automatique'],['light','Clair'],['dark','Sombre']].map(([v,l])=>`<button data-a="theme" data-v="${v}" aria-pressed="${th===v}">${l}</button>`).join('')}</div>
   <h2 class="t2">Bientôt dans l'appli</h2>
   <div class="row soon" style="--cat:#1E3FAE"><span class="cico">🤖</span><span class="grow"><b>Assistant Français</b><small>Pose tes questions, explications adaptées à ta classe</small></span><span class="tag">Bientôt</span></div>
-  <div class="row soon" style="--cat:#A67C00"><span class="cico">🧑‍🏫</span><span class="grow"><b>Espace professeur</b><small>Leçons, annonces et résultats de la classe</small></span><span class="tag">Bientôt</span></div>
+  ${S.teacher?`<div class="row" style="--cat:#A67C00;cursor:pointer" data-a="openTeacher"><span class="cico">🧑‍🏫</span><span class="grow"><b>Espace professeur</b><small>Voir les résultats de tes élèves</small></span><span class="tag">Ouvrir</span></div>`:`<div class="row soon" style="--cat:#A67C00"><span class="cico">🧑‍🏫</span><span class="grow"><b>Espace professeur</b><small>Leçons, annonces et résultats de la classe</small></span><span class="tag">Bientôt</span></div>`}
   <h2 class="t2">Mes données</h2><p class="note" style="margin-top:0">Tes informations et ta progression sont enregistrées sur cet appareil uniquement.</p>
   <div class="stack"><button class="btn" data-a="askReset">Effacer ma progression</button>${u?`<button class="btn btn-danger" data-a="askDelete">${u.guest?'Effacer mes données':'Supprimer mon compte'}</button>`:''}</div>
   <p class="note" style="text-align:center;margin-top:24px">${APP.nom}<br>Version ${APP.version}</p></div>`;
 }
 
+/* ---------- Espace professeur ---------- */
+function vTeacher(){
+  const list=S.teacherData||[];
+  const byClasse={};
+  list.forEach(x=>{const k=(x.classe&&CL.includes(x.classe))?x.classe:'Sans classe';(byClasse[k]=byClasse[k]||[]).push(x)});
+  const order=CL.concat(['Sans classe']);
+  const classes=Object.keys(byClasse).sort((a,b)=>order.indexOf(a)-order.indexOf(b));
+  const body=classes.length?classes.map(c=>{
+    const items=byClasse[c].slice().sort((a,b)=>(a.nom||'').localeCompare(b.nom||'',"fr"));
+    return `<h2 class="t2">${esc(c)} <span class="muted small">(${items.length})</span></h2>`+items.map(x=>`
+      <div class="card" style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><b>${esc(((x.prenom||'')+' '+(x.nom||'')).trim()||'(sans nom)')}</b><span class="small muted">${x.points||0} pts</span></div>
+        <div class="small muted" style="margin-top:4px">${x.lessons||0} leçon(s) terminée(s) · ${x.quizzes||0} quiz · moyenne ${x.avgQuiz==null?'—':fmt(x.avgQuiz)+'/10'}</div>
+      </div>`).join('');
+  }).join(''):'<p class="note">Aucun élève n\'a encore relié son compte à une adresse e-mail.</p>';
+  return `${brandBar()}<div class="screen" style="padding-top:8px">
+  <h1 class="t1">Espace professeur</h1>
+  <p class="note" style="margin-top:0">Résultats des élèves qui se sont inscrits avec une adresse e-mail. Les comptes créés avec un numéro de téléphone restent seulement sur leur appareil.</p>
+  ${S.teacherLoading?'<p class="note">Chargement…</p>':body}
+  <button class="btn" data-a="refreshTeacher" style="margin-top:14px">Actualiser</button>
+  </div>`;
+}
+
 /* ---------- Affichage ---------- */
-const VIEWS={home:vHome,class:vClass,register:vRegister,login:vLogin,courses:vCourses,lesson:vLesson,exos:vExos,run:vRun,result:vResult,progress:vProgress,profile:vProfile};
+const VIEWS={home:vHome,class:vClass,register:vRegister,login:vLogin,courses:vCourses,lesson:vLesson,exos:vExos,run:vRun,result:vResult,progress:vProgress,profile:vProfile,teacher:vTeacher};
 function render(keep){
   const y=window.scrollY,s=S.screen;
   const view=(VIEWS[s]||vHome)(S.params||{});
@@ -2900,6 +2988,17 @@ const A={
     if(btn)btn.disabled=false;
     if(!r.ok){err(r.error);return}
     syncUser();toast('Bienvenue '+S.user.prenom+' !');tab('home');
+  },
+  async openTeacher(){
+    if(!S.teacher){toast('Cet espace est réservé aux comptes professeur.');return}
+    S.teacherLoading=true;S.teacherData=[];go('teacher');
+    const list=window.Cloud&&Cloud.ready?await Cloud.listStudents():[];
+    S.teacherData=list;S.teacherLoading=false;render(true);
+  },
+  async refreshTeacher(){
+    S.teacherLoading=true;render(true);
+    const list=window.Cloud&&Cloud.ready?await Cloud.listStudents():[];
+    S.teacherData=list;S.teacherLoading=false;render(true);
   },
   async doLogin(){
     const err=m=>{const e=$('#formerr');if(e)e.textContent=m};err('');
@@ -2980,6 +3079,80 @@ if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostnam
 applyTheme(Store.get('theme','auto'));
 syncUser();
 render();
+</script>
+<script type="module">
+/* =====================================================================
+   Comptes en ligne et progression partagée (Firebase).
+   Bloc autonome : si Firebase ne répond pas (pas de réseau, service
+   indisponible), Cloud.ready passe quand même à true et chaque fonction
+   renvoie un échec silencieux. Le reste de l'appli continue de
+   fonctionner entièrement en local, comme avant.
+   POUR CHANGER DE PROJET FIREBASE : remplace seulement firebaseConfig.
+   ===================================================================== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, getDoc, collection, getDocs
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCmbyOwIeqIexiHceiPVSWj78oXGVAWMt8",
+  authDomain: "francais-abdoul-karim.firebaseapp.com",
+  projectId: "francais-abdoul-karim",
+  storageBucket: "francais-abdoul-karim.firebasestorage.app",
+  messagingSenderId: "331726426883",
+  appId: "1:331726426883:web:78996fd73c48f95e62cf36"
+};
+
+const Cloud = { ready:false, auth:null, db:null };
+window.Cloud = Cloud;
+
+function friendlyError(err){
+  const c=(err&&err.code)||'';
+  if(c==='auth/email-already-in-use')return "Un compte en ligne existe déjà avec cette adresse.";
+  if(c==='auth/invalid-email')return "Adresse e-mail invalide.";
+  if(c==='auth/weak-password')return "Mot de passe trop court pour le compte en ligne (6 caractères minimum).";
+  if(c==='auth/invalid-credential'||c==='auth/wrong-password'||c==='auth/user-not-found')return "E-mail ou mot de passe incorrect.";
+  return "Connexion au service en ligne impossible pour le moment.";
+}
+
+function markReady(){
+  Cloud.ready=true;
+  if(window.onCloudReady)try{window.onCloudReady()}catch(e){}
+}
+
+try{
+  const app=initializeApp(firebaseConfig);
+  Cloud.auth=getAuth(app);
+  Cloud.db=getFirestore(app);
+
+  Cloud.registerEmail=async(email,pwd)=>{
+    try{const r=await createUserWithEmailAndPassword(Cloud.auth,email,pwd);return{ok:true,uid:r.user.uid}}
+    catch(e){return{ok:false,error:friendlyError(e),code:e&&e.code}}
+  };
+  Cloud.loginEmail=async(email,pwd)=>{
+    try{const r=await signInWithEmailAndPassword(Cloud.auth,email,pwd);return{ok:true,uid:r.user.uid}}
+    catch(e){return{ok:false,error:friendlyError(e),code:e&&e.code}}
+  };
+  Cloud.logout=async()=>{try{await signOut(Cloud.auth)}catch(e){}};
+  Cloud.saveProgress=async(uid,progress)=>{try{await setDoc(doc(Cloud.db,'progress',uid),progress);return true}catch(e){return false}};
+  Cloud.loadProgress=async(uid)=>{try{const s=await getDoc(doc(Cloud.db,'progress',uid));return s.exists()?s.data():null}catch(e){return null}};
+  Cloud.saveStudent=async(uid,summary)=>{try{await setDoc(doc(Cloud.db,'students',uid),summary);return true}catch(e){return false}};
+  Cloud.loadStudent=async(uid)=>{try{const s=await getDoc(doc(Cloud.db,'students',uid));return s.exists()?s.data():null}catch(e){return null}};
+  Cloud.isTeacher=async(uid)=>{try{const s=await getDoc(doc(Cloud.db,'teachers',uid));return s.exists()}catch(e){return false}};
+  Cloud.listStudents=async()=>{
+    try{const snap=await getDocs(collection(Cloud.db,'students'));const out=[];snap.forEach(d=>out.push(Object.assign({uid:d.id},d.data())));return out}
+    catch(e){return[]}
+  };
+
+  markReady();
+}catch(e){
+  /* Aucun accès au service (bloqué, hors ligne dès le chargement, erreur de configuration…) :
+     l'appli reste entièrement locale. */
+  markReady();
+}
 </script>
 </body>
 </html>
