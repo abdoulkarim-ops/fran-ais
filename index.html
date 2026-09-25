@@ -321,18 +321,20 @@ summary{font:800 17px var(--f-head);min-height:44px;display:flex;align-items:cen
    ===================================================================== */
 
 /* ============================ 1. CONFIGURATION ============================ */
-const APP={nom:'Le Français avec Abdoul Karim',version:'1.3.0',objectifJour:2,tailleQuiz:10,seuil:6};
+const APP={nom:'Le Français avec Abdoul Karim',version:'1.4.0',objectifJour:2,tailleQuiz:10,seuil:6};
 const CLASSES=[['6e','Sixième','Collège'],['5e','Cinquième','Collège'],['4e','Quatrième','Collège'],['3e','Troisième','Collège'],['2nde','Seconde','Lycée'],['1ère','Première','Lycée'],['Terminale','Terminale','Lycée']];
 const CL=CLASSES.map(c=>c[0]);
 const rg=(a,b)=>CL.slice(CL.indexOf(a),CL.indexOf(b)+1);
 const CATS=[
-  {id:'grammaire',e:'📖',nom:'Grammaire',c:'#1E3FAE'},
-  {id:'conjugaison',e:'✍️',nom:'Conjugaison',c:'#C2571A'},
-  {id:'orthographe',e:'📝',nom:'Orthographe',c:'#0E7C86'},
-  {id:'vocabulaire',e:'📚',nom:'Vocabulaire',c:'#8A4FB8'},
-  {id:'expression',e:'💬',nom:'Expression écrite',c:'#A67C00'},
-  {id:'litterature',e:'📕',nom:'Littérature',c:'#C8283A'}
+  {id:'grammaire',e:'📖',nom:'Grammaire',c:'#1E3FAE',grp:'langue'},
+  {id:'conjugaison',e:'✍️',nom:'Conjugaison',c:'#C2571A',grp:'langue'},
+  {id:'orthographe',e:'📝',nom:'Orthographe',c:'#0E7C86',grp:'langue'},
+  {id:'vocabulaire',e:'📚',nom:'Vocabulaire',c:'#8A4FB8',grp:'langue'},
+  {id:'expression',e:'💬',nom:'Expression écrite',c:'#A67C00',grp:'langue'},
+  {id:'etude-langue',e:'🗣️',nom:'Étude de la langue',c:'#2E7D5B',grp:'langue'},
+  {id:'litterature',e:'📕',nom:'Littérature',c:'#C8283A',grp:'litt'}
 ];
+const GROUPS=[{id:'litt',e:'📘',nom:'Cours de littérature'},{id:'langue',e:'🗣️',nom:'Cours de langue'}];
 const CAT=Object.fromEntries(CATS.map(c=>[c.id,c]));
 const TYPES={qcm:'QCM',vf:'Vrai ou faux',fill:'Compléter la phrase',find:'Trouver la bonne réponse',fix:'Corriger une erreur',match:'Associer les éléments'};
 const LEVELS=[{min:0,nom:'Débutant'},{min:40,nom:'Apprenti'},{min:100,nom:'Confirmé'},{min:180,nom:'Avancé'},{min:280,nom:'Expert'},{min:400,nom:'Maître'}];
@@ -393,7 +395,16 @@ const CATALOG=[
   L('litt-roman','litterature','Étudier un roman',rg('2nde','Terminale')),
   L('litt-conte','litterature','Le conte et la légende',rg('6e','5e')),
   L('litt-fable','litterature','La fable',rg('6e','3e')),
-  L('litt-registres','litterature','Les registres littéraires',rg('4e','Terminale'))
+  L('litt-registres','litterature','Les registres littéraires',rg('4e','Terminale')),
+  L('langue-communication','etude-langue','La communication et son schéma',rg('1ère','1ère')),
+  L('langue-enonciation','etude-langue',"Le système d'énonciation",rg('1ère','1ère')),
+  L('langue-denotation','etude-langue','Dénotation et connotation',rg('1ère','1ère')),
+  L('langue-emprunt','etude-langue','Néologisme et emprunt',rg('1ère','1ère')),
+  L('langue-ponctuation','etude-langue','La ponctuation forte et faible',rg('1ère','1ère')),
+  L('langue-cohesion','etude-langue','Cohérence, cohésion et progression thématique',rg('1ère','1ère')),
+  L('langue-lexique','etude-langue','Lexique commun et lexique spécialisé',rg('1ère','1ère')),
+  L('langue-injonctif','etude-langue','Le texte injonctif',rg('1ère','1ère')),
+  L('langue-homonymes','etude-langue','Homonymes, homophones et paronymes',rg('1ère','1ère'))
 ];
 
 /* ============================ 3. CONTENU ============================ */
@@ -2382,6 +2393,349 @@ const CONTENT={
     {t:'fill',q:"Complète : Dire le contraire de ce que l'on pense, c'est employer l'___ .",a:["ironie"],e:"L'ironie dit le contraire de ce que l'on pense."},
     {t:'fix',q:"Corrige : « Le registre lyrique exprime les exploits d'un héros. »",o:["Le registre lyrique exprime des sentiments personnels.","Le registre lyrique exprime les exploits d'un héros.","Le registre lyrique fait rire par le quiproquo."],a:0,e:"C'est le registre épique qui exalte un héros."}
   ]
+},
+
+/* ---- Leçons ajoutées (V1.4 — Étude de la langue, Première) ---- */
+"langue-communication":{
+  objectif:"Définir la communication, distinguer ses deux formes et connaître le schéma qui la représente.",
+  explication:[
+    "**Communiquer**, c'est échanger ou transmettre une information entre au moins deux personnes. La **communication** est donc l'ensemble de ce processus d'échange. Elle prend deux grandes formes. La communication **verbale** utilise la langue, à l'oral (la parole) ou à l'écrit. La communication **non verbale** n'utilise ni la parole ni l'écrit : elle passe par les gestes, les postures, les expressions du visage, le regard (on parle de **kinésique**), par la distance entre les personnes (la **proxémique**), ou encore par des signes comme un panneau, une sirène, un drapeau.",
+    "Pour analyser un échange, les linguistes utilisent un **schéma de communication**. Un **émetteur** envoie un **message** à un **récepteur**, à travers un **canal** (l'air pour la voix, le papier pour l'écrit, un écran…). Ce message est composé grâce à un **code** commun aux deux personnes (une langue, des gestes partagés) et il est influencé par le **contexte** (le lieu, le moment, la relation entre les deux personnes). Le récepteur peut à son tour répondre : c'est la **rétroaction**, ou feed-back, qui fait de lui un émetteur à son tour.",
+    "Ce schéma aide à comprendre pourquoi une communication peut échouer : un **bruit** (au sens large : un vrai bruit, mais aussi une mauvaise connexion, un mot mal compris, une différence de code) peut brouiller le message entre l'émetteur et le récepteur."
+  ],
+  regle:"**Communication verbale** : par la parole ou l'écrit. **Communication non verbale** : gestes, regard, posture, signes visuels. Le **schéma** : émetteur → message (via un canal, avec un code) → récepteur, dans un contexte, avec une possible rétroaction.",
+  tableaux:[{titre:"Les éléments du schéma de communication",entetes:["Élément","Rôle"],lignes:[["Émetteur","celui qui envoie le message"],["Récepteur","celui qui reçoit le message"],["Message","l'information transmise"],["Canal","le moyen physique de transmission (voix, écrit, écran…)"],["Code","le système de signes partagé (langue, gestes…)"],["Contexte","la situation qui entoure l'échange"],["Rétroaction","la réponse du récepteur, qui devient à son tour émetteur"]]}],
+  exemples:[
+    {t:"Karim téléphone à sa sœur pour lui donner l'heure du rendez-vous.",n:"Communication verbale orale : Karim est l'émetteur, sa sœur la réceptrice, le téléphone le canal, le français le code."},
+    {t:"Le gardien lève la main pour arrêter les voitures.",n:"Communication non verbale : le geste (kinésique) remplace la parole."},
+    {t:"« Allô, tu m'entends ? » « Oui, je t'entends. »",n:"La seconde phrase est une rétroaction : le récepteur devient émetteur à son tour."}
+  ],
+  retenir:["Communiquer, c'est échanger ou transmettre une information.","Deux formes : communication verbale et communication non verbale.","Le schéma : émetteur, message, canal, code, récepteur, contexte, rétroaction.","Un bruit peut perturber la transmission du message."],
+  plus:"La communication non verbale se divise en plusieurs branches : la **kinésique** étudie les gestes et les mimiques, la **proxémique** étudie l'usage de l'espace et des distances entre les personnes, et la **paralinguistique** étudie ce qui accompagne la voix sans être des mots (le ton, le débit, les silences, les soupirs). Ces éléments non verbaux accompagnent presque toujours la communication verbale et peuvent renforcer un message, le nuancer, ou même le contredire (dire « ça va » d'une voix qui tremble).",
+  mini:{t:'qcm',q:"Un élève hoche la tête pour dire oui. Quelle forme de communication est-ce ?",o:["non verbale","verbale orale","verbale écrite"],a:0,e:"Aucun mot n'est prononcé ni écrit : c'est un geste, donc de la communication non verbale."},
+  exercices:[
+    {t:'qcm',q:"Quel élément du schéma correspond au téléphone dans un appel ?",o:["le canal","le code","le contexte"],a:0,e:"Le canal est le moyen physique par lequel passe le message."},
+    {t:'vf',q:"La communication verbale peut être orale ou écrite.",a:true,e:"Les deux utilisent la langue, à l'oral ou à l'écrit."},
+    {t:'fill',q:"Complète : Le message est transmis grâce à un ___ commun aux deux personnes (une langue, par exemple).",a:["code"],e:"Le code est le système de signes partagé."},
+    {t:'match',q:"Associe chaque élément du schéma à sa définition.",pairs:[["émetteur","celui qui envoie le message"],["récepteur","celui qui reçoit le message"],["contexte","la situation de l'échange"],["rétroaction","la réponse du récepteur"]],e:"Ce sont les éléments de base du schéma de communication."},
+    {t:'qcm',q:"Lever le pouce pour dire « bravo » relève de…",o:["la kinésique","la proxémique","la communication écrite"],a:0,e:"C'est un geste : cela relève de la kinésique."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Que signifie « communiquer » ?",o:["Échanger ou transmettre une information","Écrire un texte long","Parler fort"],a:0,e:"C'est la définition de base."},
+    {t:'qcm',q:"Combien de formes de communication existe-t-il ?",o:["2","3","4"],a:0,e:"Verbale et non verbale."},
+    {t:'vf',q:"Un panneau de signalisation est une forme de communication non verbale.",a:true,e:"Il transmet une information sans mots parlés ou écrits au sens strict."},
+    {t:'qcm',q:"Quel élément du schéma désigne celui qui reçoit le message ?",o:["le récepteur","l'émetteur","le canal"],a:0,e:"Le récepteur reçoit le message envoyé par l'émetteur."},
+    {t:'fill',q:"Complète : La réponse du récepteur, qui devient à son tour émetteur, s'appelle la ___ .",a:["rétroaction"],e:"C'est le terme technique pour cette réponse."},
+    {t:'qcm',q:"Quel élément désigne la situation qui entoure l'échange (lieu, moment, relation) ?",o:["le contexte","le code","le canal"],a:0,e:"Le contexte influence la façon dont le message est compris."},
+    {t:'vf',q:"Un bruit, au sens du schéma de communication, ne peut être qu'un vrai son.",a:false,e:"Un bruit peut aussi être une mauvaise connexion, un mot mal compris, une différence de code."},
+    {t:'qcm',q:"L'étude des gestes et des mimiques s'appelle…",o:["la kinésique","la proxémique","la paralinguistique"],a:0,e:"La kinésique étudie les gestes, postures et expressions du visage."},
+    {t:'qcm',q:"Quel exemple illustre la communication verbale écrite ?",o:["Une lettre","Un regard insistant","Un sifflet d'arbitre"],a:0,e:"La lettre utilise l'écrit, donc la langue : communication verbale."},
+    {t:'fix',q:"Corrige : « Le récepteur est celui qui envoie le message. »",o:["Le récepteur est celui qui reçoit le message.","Le récepteur est celui qui envoie le message.","Le récepteur est le moyen de transmission du message."],a:0,e:"C'est l'émetteur qui envoie ; le récepteur reçoit."}
+  ]
+},
+
+"langue-enonciation":{
+  objectif:"Distinguer énoncé et énonciation, et repérer les indices qui ancrent un texte dans une situation.",
+  explication:[
+    "L'**énonciation** est l'acte par lequel quelqu'un (l'**énonciateur**) produit une parole ou un écrit, à un moment et dans un lieu précis, en s'adressant à quelqu'un (le **destinataire**). L'**énoncé** est le résultat de cet acte : ce qui est effectivement dit ou écrit. Un même énoncé peut être répété par des énonciateurs différents, dans des situations différentes : son sens peut alors changer.",
+    "Un énoncé est dit **ancré dans la situation d'énonciation** quand on ne peut le comprendre pleinement sans savoir qui parle, à qui, où et quand. Il contient des **indices d'énonciation** (ou « embrayeurs ») : les pronoms personnels **je / tu / nous / vous**, les déterminants possessifs (**mon, ton**), les adverbes de lieu et de temps liés au moment de la parole (**ici, maintenant, hier, demain**), et les temps comme le **présent** ou le **passé composé**, liés au moment où l'on parle.",
+    "À l'inverse, un énoncé est dit **coupé de la situation d'énonciation** quand il reste vrai et compréhensible quel que soit le moment, le lieu ou la personne qui le prononce : c'est le cas des vérités générales, des définitions, des récits à la 3e personne. Il emploie la 3e personne, des repères de temps indépendants du moment de la parole (**ce jour-là, la veille**), et souvent le présent de vérité générale, l'imparfait ou le passé simple."
+  ],
+  regle:"**Énoncé ancré** : indices liés au moment de la parole (je, tu, ici, maintenant, présent). **Énoncé coupé** : indépendant de la situation (3e personne, ce jour-là, vérité générale).",
+  tableaux:[{titre:"Ancré ou coupé ?",entetes:["Ancré dans la situation","Coupé de la situation"],lignes:[["je, tu, nous, vous","il, elle, ils, elles"],["ici, maintenant","là-bas, à cet endroit, à ce moment"],["hier, demain, aujourd'hui","la veille, le lendemain, ce jour-là"],["présent, passé composé (souvent)","présent de vérité générale, passé simple"]]}],
+  exemples:[
+    {t:"« **Je** pars **demain**. »",n:"Énoncé ancré : « je » et « demain » ne se comprennent que si l'on sait qui parle et quand."},
+    {t:"« **L'eau bout** à 100 degrés. »",n:"Énoncé coupé de la situation : c'est une vérité générale, vraie quel que soit le moment ou la personne qui parle."},
+    {t:"« **Il** partit **le lendemain**, sans un mot. »",n:"Énoncé coupé : la 3e personne et « le lendemain » ne dépendent pas du moment où l'on raconte l'histoire."}
+  ],
+  retenir:["Énonciation : l'acte de parler ou d'écrire. Énoncé : le résultat.","Énoncé ancré : dépend du moment et du lieu de la parole (je, ici, maintenant).","Énoncé coupé : indépendant de la situation (il, ce jour-là, vérité générale).","Les indices d'énonciation s'appellent aussi des embrayeurs."],
+  plus:"Le passage d'un énoncé ancré à un énoncé coupé se voit bien dans le **discours rapporté** : « Il a dit : « Je viendrai demain » » (ancré) devient « Il a dit qu'il viendrait **le lendemain** » (coupé, car raconté après coup, à distance). Une lettre personnelle est en général fortement ancrée (je, tu, aujourd'hui) ; un article encyclopédique est en général coupé de toute situation d'énonciation particulière.",
+  mini:{t:'qcm',q:"« Ici, il pleut souvent en cette saison. » Cet énoncé est…",o:["ancré dans la situation","coupé de la situation"],a:0,e:"« Ici » ne se comprend que si l'on sait où se trouve celui qui parle."},
+  exercices:[
+    {t:'qcm',q:"Quel énoncé est ancré dans la situation d'énonciation ?",o:["Viens me voir demain.","Le Soleil se lève à l'est.","Elle partit sans se retourner."],a:0,e:"« Demain » dépend du moment où l'on parle."},
+    {t:'vf',q:"« Il » et « elle » sont des indices d'un énoncé coupé de la situation.",a:true,e:"Contrairement à « je » et « tu », ils ne désignent pas les personnes de l'échange."},
+    {t:'fill',q:"Complète : L'acte de produire une parole dans une situation précise s'appelle l'___ .",a:["énonciation"],e:"L'énonciation est l'acte ; l'énoncé, le résultat."},
+    {t:'match',q:"Associe chaque expression ancrée à son équivalent coupé de la situation.",pairs:[["hier","la veille"],["demain","le lendemain"],["aujourd'hui","ce jour-là"],["ici","à cet endroit"]],e:"Ce sont les transformations classiques lors du passage au discours rapporté."},
+    {t:'qcm',q:"« L'homme est un être social » est un énoncé…",o:["coupé de la situation","ancré dans la situation"],a:0,e:"C'est une vérité générale, valable quels que soient le moment et le lieu."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Quelle est la différence entre énoncé et énonciation ?",o:["L'énonciation est l'acte, l'énoncé le résultat","Ce sont deux mots pour la même chose","L'énoncé est toujours écrit"],a:0,e:"L'énonciation produit l'énoncé."},
+    {t:'qcm',q:"Quel indice appartient à un énoncé ancré ?",o:["maintenant","le lendemain","ce jour-là"],a:0,e:"« Maintenant » dépend du moment où l'on parle."},
+    {t:'vf',q:"Un énoncé coupé de la situation reste vrai quel que soit le moment où on le lit.",a:true,e:"C'est le cas des définitions et des vérités générales."},
+    {t:'qcm',q:"Quel pronom est un indice d'énonciation ancré ?",o:["je","il","elle"],a:0,e:"« Je » désigne celui qui parle : c'est un embrayeur."},
+    {t:'fill',q:"Complète : Les indices d'énonciation sont aussi appelés des ___ .",a:["embrayeurs"],e:"C'est le terme technique."},
+    {t:'qcm',q:"Dans quel type de texte l'énonciation est-elle le plus souvent fortement ancrée ?",o:["une lettre personnelle","un article encyclopédique","un conte traditionnel"],a:0,e:"Une lettre utilise je, tu, ici, maintenant."},
+    {t:'vf',q:"Le présent de vérité générale appartient à un énoncé ancré.",a:false,e:"Il caractérise au contraire un énoncé coupé de la situation, car il vaut en tout temps."},
+    {t:'qcm',q:"« Nous partons ce soir » est un énoncé…",o:["ancré","coupé"],a:0,e:"« Nous » et « ce soir » dépendent du moment et des personnes qui parlent."},
+    {t:'qcm',q:"Quel repère de temps convient à un énoncé coupé de la situation ?",o:["la veille","hier","demain"],a:0,e:"« La veille » ne dépend pas du moment où l'on parle, contrairement à « hier »."},
+    {t:'fix',q:"Corrige : « L'énoncé est l'acte de parler, l'énonciation en est le résultat. »",o:["L'énonciation est l'acte de parler, l'énoncé en est le résultat.","L'énoncé est l'acte de parler, l'énonciation en est le résultat.","Énoncé et énonciation désignent la même chose."],a:0,e:"C'est l'inverse : l'énonciation est l'acte, l'énoncé le résultat produit."}
+  ]
+},
+
+"langue-denotation":{
+  objectif:"Distinguer le sens dénoté (objectif) et le sens connoté (subjectif) d'un mot, et comprendre le rôle de la polysémie.",
+  explication:[
+    "Un mot **polysémique** a plusieurs sens : c'est le cas de la grande majorité des mots d'une langue. Le mot « feuille » désigne la partie verte d'une plante, une feuille de papier, ou même une personne peu courageuse (« une feuille morte »). Le sens exact dépend du **contexte** dans lequel le mot est employé.",
+    "La **dénotation** est le sens **objectif** d'un mot, celui que l'on trouve dans le dictionnaire, commun à tous les locuteurs d'une langue, indépendamment de leurs sentiments. La **connotation** est le sens **subjectif**, l'ensemble des idées, des valeurs ou des émotions qu'un mot évoque, en plus de son sens dénoté. Ces connotations varient parfois selon les cultures, les époques ou les personnes.",
+    "Par exemple, le mot « renard » dénote un mammifère de la famille des canidés. Mais il connote, dans beaucoup de cultures, la **ruse** : dire « c'est un renard » ne parle pas de l'animal, mais du caractère rusé d'une personne. Un même mot peut porter des connotations différentes selon le contexte : « rouge » dénote une couleur, mais connote la passion, le danger, ou une idée politique, selon la situation."
+  ],
+  regle:"**Dénotation** = sens objectif, du dictionnaire. **Connotation** = sens subjectif, les idées et émotions associées. Un mot **polysémique** a plusieurs sens, choisis par le contexte.",
+  tableaux:[{titre:"Dénotation et connotation",entetes:["Mot","Dénotation","Connotation possible"],lignes:[["renard","mammifère canidé","la ruse"],["hiver","saison froide","la tristesse, la vieillesse"],["colombe","oiseau","la paix"],["serpent","reptile","la traîtrise, le danger"]]}],
+  exemples:[
+    {t:"Le **renard** a traversé la route près du village.",n:"Sens dénoté : l'animal lui-même, sans jugement."},
+    {t:"Cet homme est un vrai **renard** en affaires.",n:"Sens connoté : la ruse, l'habileté à tromper, associées à cet animal dans la culture."},
+    {t:"L'**hiver** de sa vie approchait.",n:"« Hiver » connote ici la vieillesse, la fin de la vie, au-delà de son sens météorologique."}
+  ],
+  retenir:["La dénotation est le sens objectif, du dictionnaire.","La connotation est le sens subjectif, chargé d'émotions ou d'idées.","Un mot polysémique a plusieurs sens possibles.","Le contexte permet de choisir le sens qui convient."],
+  plus:"Les connotations sont exploitées volontairement en littérature et en publicité pour créer un effet chez le lecteur, sans le dire explicitement : parler d'un « nid douillet » plutôt que d'un « appartement » ajoute une connotation de confort et de chaleur. Les connotations peuvent aussi être **culturelles** : la couleur blanche connote le deuil dans certaines cultures et la pureté ou la fête dans d'autres. Il ne faut pas confondre la connotation, qui reste attachée au mot lui-même, et le **sens figuré**, qui est un sens complètement différent du sens propre (voir la leçon sur le sens propre et le sens figuré).",
+  mini:{t:'qcm',q:"Dans « ce renard rusé nous a bien trompés », le mot « renard » est employé avec…",o:["une connotation","seulement sa dénotation"],a:0,e:"L'idée de ruse dépasse la simple définition de l'animal : c'est une connotation."},
+  exercices:[
+    {t:'qcm',q:"Quelle est la dénotation du mot « colombe » ?",o:["un oiseau","la paix","la fidélité"],a:0,e:"La dénotation est le sens objectif du dictionnaire : l'oiseau."},
+    {t:'vf',q:"La connotation est identique pour tous les locuteurs, dans toutes les cultures.",a:false,e:"Les connotations peuvent varier selon les cultures, les époques ou les personnes."},
+    {t:'fill',q:"Complète : Le sens objectif d'un mot, celui du dictionnaire, s'appelle la ___ .",a:["dénotation"],e:"Dénotation = sens objectif."},
+    {t:'match',q:"Associe chaque mot à une connotation qu'il porte souvent.",pairs:[["serpent","la traîtrise"],["colombe","la paix"],["hiver","la vieillesse"],["renard","la ruse"]],e:"Ce sont des connotations culturelles courantes en français."},
+    {t:'qcm',q:"Un mot qui a plusieurs sens possibles est dit…",o:["polysémique","homonyme","paronyme"],a:0,e:"Polysémique : qui a plusieurs sens."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Qu'est-ce que la dénotation ?",o:["Le sens objectif d'un mot","Le sens subjectif d'un mot","Un synonyme du mot"],a:0,e:"La dénotation est neutre, factuelle, celle du dictionnaire."},
+    {t:'qcm',q:"Qu'est-ce que la connotation ?",o:["Le sens subjectif, chargé d'idées ou d'émotions","Le sens du dictionnaire","L'orthographe d'un mot"],a:0,e:"La connotation ajoute des idées et des émotions au sens de base."},
+    {t:'vf',q:"Un mot polysémique n'a qu'un seul sens possible.",a:false,e:"Polysémique signifie au contraire qu'il a plusieurs sens."},
+    {t:'qcm',q:"Quelle phrase utilise « serpent » avec une connotation négative ?",o:["C'est un vrai serpent, il ment sans cesse.","Le serpent mesure deux mètres.","On a observé un serpent dans le jardin."],a:0,e:"Ici, « serpent » évoque la traîtrise, au-delà du simple animal."},
+    {t:'fill',q:"Complète : Le sens subjectif et affectif d'un mot s'appelle la ___ .",a:["connotation"],e:"Connotation = sens subjectif."},
+    {t:'qcm',q:"Que choisit-on pour déterminer le sens d'un mot polysémique ?",o:["le contexte","l'orthographe","la longueur du mot"],a:0,e:"Le contexte permet de savoir quel sens retenir."},
+    {t:'vf',q:"Les connotations peuvent varier d'une culture à l'autre.",a:true,e:"La couleur blanche, par exemple, ne connote pas la même chose partout."},
+    {t:'qcm',q:"Dans « l'hiver de sa vie », le mot hiver est employé avec une connotation de…",o:["vieillesse","froid météorologique","voyage"],a:0,e:"Ici, hiver évoque la dernière période de la vie."},
+    {t:'qcm',q:"Pourquoi utilise-t-on parfois les connotations en littérature ?",o:["Pour créer un effet sans le dire explicitement","Pour respecter la grammaire","Pour raccourcir le texte"],a:0,e:"Les connotations suggèrent des idées de façon indirecte."},
+    {t:'fix',q:"Corrige : « La dénotation d'un mot varie selon les personnes et les cultures. »",o:["La connotation d'un mot varie selon les personnes et les cultures.","La dénotation d'un mot varie selon les personnes et les cultures.","La dénotation et la connotation sont identiques."],a:0,e:"C'est la connotation qui varie ; la dénotation reste stable, objective."}
+  ]
+},
+
+"langue-emprunt":{
+  objectif:"Reconnaître un néologisme et un emprunt, et connaître les principaux procédés de création de mots nouveaux.",
+  explication:[
+    "Une langue est vivante : elle crée sans cesse de nouveaux mots pour nommer de nouvelles réalités. On appelle **néologisme** tout mot nouvellement créé dans une langue, ou un mot déjà existant employé avec un sens nouveau. Il existe plusieurs procédés pour créer un néologisme. La **dérivation** ajoute un préfixe ou un suffixe à un radical existant (télé + phone → téléphone ; covid + -19 + -er → covider, informel). La **composition** assemble deux mots déjà existants (porte-monnaie, réseau + social → réseau social). La **siglaison** crée un sigle ou un acronyme à partir des initiales d'un groupe de mots (ONU, OVNI). Le **mot-valise** fusionne deux mots en un seul (courriel = courrier + électronique ; franglais = français + anglais).",
+    "L'**emprunt** est un mot pris à une autre langue, intégré tel quel ou légèrement adapté à la langue d'accueil. Le français a emprunté de nombreux mots à l'anglais (« week-end », « email », « sport »), à l'arabe (« algèbre », « sucre », « café »), à l'italien (« piano », « balcon »), ou à des langues africaines (« griot », « bissap »). Certains emprunts, très anciens, ne sont presque plus perçus comme étrangers.",
+    "Emprunts et néologismes enrichissent en permanence le vocabulaire d'une langue. Ils posent parfois la question de la **norme** : certains sont acceptés officiellement et entrent dans le dictionnaire, d'autres restent informels ou disparaissent avec le temps."
+  ],
+  regle:"**Néologisme** : mot nouveau, créé par dérivation, composition, siglaison ou mot-valise. **Emprunt** : mot pris à une autre langue, intégré au français.",
+  tableaux:[{titre:"Les procédés de néologie",entetes:["Procédé","Principe","Exemple"],lignes:[["dérivation","préfixe/suffixe + radical","télé + phone → téléphone"],["composition","assemblage de mots existants","porte-monnaie"],["siglaison","initiales d'un groupe de mots","ONU, OVNI"],["mot-valise","fusion de deux mots","courriel (courrier + électronique)"]]}],
+  exemples:[
+    {t:"**Covoiturage** est un néologisme formé par composition (co- + voiturage).",n:"Il désigne une pratique récente : partager un trajet en voiture."},
+    {t:"**Week-end** est un emprunt à l'anglais.",n:"Le mot est entré tel quel dans le vocabulaire courant du français."},
+    {t:"**OVNI** (objet volant non identifié) est un néologisme formé par siglaison.",n:"Chaque lettre correspond à l'initiale d'un mot du groupe nominal."}
+  ],
+  retenir:["Un néologisme est un mot nouveau ou un sens nouveau donné à un mot existant.","Procédés : dérivation, composition, siglaison, mot-valise.","Un emprunt est un mot pris à une autre langue.","Ces procédés montrent qu'une langue est vivante et évolue sans cesse."],
+  plus:"Certains néologismes sont créés officiellement par des commissions de terminologie pour proposer une alternative française à un emprunt anglais : « courriel » a été proposé pour concurrencer « email », « baladeur » pour « walkman ». Tous n'ont pas le même succès dans l'usage réel. Le français est lui-même une source d'emprunts pour d'autres langues (l'anglais a emprunté « rendez-vous », « déjà vu », « chef »), ce qui montre que les échanges entre les langues se font dans les deux sens.",
+  mini:{t:'qcm',q:"Le mot « courriel » (courrier + électronique) est formé par…",o:["un mot-valise","un emprunt","une siglaison"],a:0,e:"Deux mots sont fusionnés en un seul : c'est un mot-valise."},
+  exercices:[
+    {t:'qcm',q:"Quel mot est un emprunt à l'anglais ?",o:["week-end","porte-monnaie","OVNI"],a:0,e:"« Week-end » vient directement de l'anglais."},
+    {t:'vf',q:"Un néologisme peut être un mot déjà existant employé avec un sens nouveau.",a:true,e:"C'est l'un des deux cas de néologisme."},
+    {t:'fill',q:"Complète : Le procédé qui crée un sigle comme ONU à partir des initiales d'un groupe de mots s'appelle la ___ .",a:["siglaison"],e:"Siglaison : formation d'un sigle."},
+    {t:'match',q:"Associe chaque mot à son procédé de formation.",pairs:[["téléphone","dérivation"],["porte-monnaie","composition"],["ONU","siglaison"],["courriel","mot-valise"]],e:"Chaque mot illustre un procédé différent."},
+    {t:'qcm',q:"Quel mot vient de l'arabe ?",o:["algèbre","balcon","piano"],a:0,e:"« Algèbre » est un emprunt à l'arabe."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Qu'est-ce qu'un néologisme ?",o:["Un mot nouveau ou un sens nouveau donné à un mot existant","Un mot très ancien","Un mot mal orthographié"],a:0,e:"C'est la définition du néologisme."},
+    {t:'qcm',q:"Qu'est-ce qu'un emprunt ?",o:["Un mot pris à une autre langue","Un mot inventé de toutes pièces","Une faute d'orthographe"],a:0,e:"L'emprunt vient d'une autre langue."},
+    {t:'vf',q:"« Covoiturage » est un mot formé par composition.",a:true,e:"Co- et voiturage s'assemblent."},
+    {t:'qcm',q:"Quel mot illustre le procédé du mot-valise ?",o:["franglais (français + anglais)","téléphone","week-end"],a:0,e:"Deux mots fusionnent en un seul mot."},
+    {t:'fill',q:"Complète : Ajouter un préfixe ou un suffixe à un radical s'appelle la ___ .",a:["dérivation"],e:"Dérivation : formation par préfixe/suffixe."},
+    {t:'qcm',q:"Quel mot est un emprunt à l'italien ?",o:["piano","café","sport"],a:0,e:"« Piano » vient de l'italien."},
+    {t:'vf',q:"Tous les néologismes finissent par entrer officiellement dans le dictionnaire.",a:false,e:"Certains restent informels ou disparaissent avec le temps."},
+    {t:'qcm',q:"Quel est le procédé de formation du mot « OVNI » ?",o:["la siglaison","la dérivation","l'emprunt"],a:0,e:"OVNI reprend les initiales d'un groupe de mots."},
+    {t:'qcm',q:"Pourquoi une langue crée-t-elle des néologismes ?",o:["Pour nommer de nouvelles réalités","Pour compliquer la grammaire","Pour remplacer tous les mots anciens"],a:0,e:"C'est une langue vivante qui s'adapte au monde qui change."},
+    {t:'fix',q:"Corrige : « Un néologisme est un mot pris à une autre langue. »",o:["Un emprunt est un mot pris à une autre langue.","Un néologisme est un mot pris à une autre langue.","Un néologisme est toujours un sigle."],a:0,e:"C'est l'emprunt qui vient d'une autre langue ; le néologisme est un mot nouveau, créé ou détourné dans la langue elle-même."}
+  ]
+},
+
+"langue-ponctuation":{
+  objectif:"Distinguer la ponctuation forte et la ponctuation faible, et connaître le rôle de chaque signe.",
+  explication:[
+    "La **ponctuation** organise le texte et guide sa lecture : elle indique les pauses, les intonations, les liens logiques entre les idées. On distingue traditionnellement la ponctuation **forte**, qui marque la fin d'une phrase ou une pause importante, et la ponctuation **faible**, qui sépare des éléments à l'intérieur d'une même phrase, sans la terminer.",
+    "La **ponctuation forte** regroupe le **point** (fin d'une phrase déclarative ou impérative), le **point d'interrogation** (fin d'une question), le **point d'exclamation** (fin d'une phrase exclamative ou d'un ordre exclamatif), et les **points de suspension** (une phrase inachevée, une hésitation, un sous-entendu). Après ces signes, sauf les points de suspension, la phrase suivante commence par une majuscule.",
+    "La **ponctuation faible** regroupe la **virgule** (elle sépare des mots, des groupes ou de courtes propositions, sans terminer la phrase), le **point-virgule** (il sépare deux propositions proches par le sens, plus fortement que la virgule mais sans clore la phrase), et les **deux-points** (ils annoncent une explication, une énumération, une citation ou une conséquence). D'autres signes ont un rôle particulier : les **guillemets** encadrent une citation ou un discours rapporté, les **parenthèses** ajoutent une remarque, et le **tiret** introduit une réplique de dialogue ou isole un ajout."
+  ],
+  regle:"**Ponctuation forte** : point, point d'interrogation, point d'exclamation, points de suspension — elle termine la phrase. **Ponctuation faible** : virgule, point-virgule, deux-points — elle organise l'intérieur de la phrase, sans la clore.",
+  tableaux:[{titre:"Les signes de ponctuation",entetes:["Signe","Type","Rôle"],lignes:[[".","forte","termine une phrase déclarative"],["?","forte","termine une question"],["!","forte","termine une exclamation ou un ordre"],["…","forte","phrase inachevée, sous-entendu"],[",","faible","sépare des éléments dans la phrase"],[";","faible","sépare deux propositions proches"],[":","faible","annonce une explication, une énumération, une citation"]]}],
+  exemples:[
+    {t:"Le maître entra dans la classe**.**",n:"Point : ponctuation forte, la phrase se termine."},
+    {t:"Karim, Awa et Fatou sont venus**,** ils ont apporté des livres**,** des cahiers et des crayons.",n:"Les virgules séparent des éléments sans terminer la phrase : ponctuation faible."},
+    {t:"Il n'est pas venu**:** il était malade.",n:"Les deux-points annoncent une explication : ponctuation faible."}
+  ],
+  retenir:["Ponctuation forte : point, point d'interrogation, point d'exclamation, points de suspension.","Ponctuation faible : virgule, point-virgule, deux-points.","La ponctuation forte termine la phrase ; la faible l'organise à l'intérieur.","Guillemets, parenthèses et tiret ont des rôles particuliers."],
+  plus:"Le choix de la ponctuation influence fortement le **rythme** et le **sens** d'un texte : des phrases courtes séparées par des points créent un effet haché, rapide ; des virgules et points-virgules enchaînés créent une phrase ample, qui accumule les détails. Une même phrase peut changer complètement de sens selon la ponctuation : « Le professeur, dit l'élève, est absent » n'a pas le même sens que « Le professeur dit : « L'élève est absent. » » Bien ponctuer un texte, c'est donc aussi une façon de bien le faire comprendre.",
+  mini:{t:'qcm',q:"Quel signe fait partie de la ponctuation forte ?",o:["le point d'exclamation","la virgule","les deux-points"],a:0,e:"Le point d'exclamation termine une phrase : ponctuation forte."},
+  exercices:[
+    {t:'qcm',q:"Quel signe termine une phrase interrogative ?",o:["le point d'interrogation","la virgule","le point-virgule"],a:0,e:"Le point d'interrogation marque la fin d'une question."},
+    {t:'vf',q:"Le point-virgule appartient à la ponctuation forte.",a:false,e:"Il appartient à la ponctuation faible : il ne termine pas la phrase."},
+    {t:'fill',q:"Complète : Le signe qui annonce une explication ou une énumération est le(s) ___ .",a:["deux-points","deux points"],e:"Les deux-points annoncent ce qui suit."},
+    {t:'match',q:"Associe chaque signe à son rôle.",pairs:[[".","termine une phrase déclarative"],["!","termine une exclamation"],[",","sépare des éléments sans clore la phrase"],[":","annonce une explication ou une citation"]],e:"Chaque signe a un rôle précis."},
+    {t:'qcm',q:"Quel signe fait partie de la ponctuation faible ?",o:["la virgule","le point","le point d'exclamation"],a:0,e:"La virgule organise l'intérieur de la phrase sans la terminer."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Quels signes appartiennent à la ponctuation forte ?",o:["Le point, le point d'interrogation, le point d'exclamation, les points de suspension","La virgule et le point-virgule","Les guillemets et les parenthèses"],a:0,e:"Ce sont les signes qui terminent une phrase."},
+    {t:'qcm',q:"Quels signes appartiennent à la ponctuation faible ?",o:["La virgule, le point-virgule, les deux-points","Le point et le point d'exclamation","Les points de suspension"],a:0,e:"Ce sont les signes qui organisent l'intérieur d'une phrase."},
+    {t:'vf',q:"Après un point d'interrogation, la phrase suivante commence par une majuscule.",a:true,e:"Comme après un point, sauf cas particulier."},
+    {t:'qcm',q:"Quel signe indique une phrase inachevée ou un sous-entendu ?",o:["les points de suspension","le point-virgule","la virgule"],a:0,e:"Les points de suspension suggèrent quelque chose de non-dit."},
+    {t:'fill',q:"Complète : Le signe qui sépare deux propositions proches par le sens, sans terminer la phrase, est le ___ .",a:["point-virgule"],e:"Le point-virgule est plus fort qu'une virgule, mais ne clôt pas la phrase."},
+    {t:'qcm',q:"Quel signe encadre une citation ou des paroles rapportées ?",o:["les guillemets","les parenthèses","le tiret"],a:0,e:"Les guillemets marquent un discours rapporté ou une citation."},
+    {t:'vf',q:"La ponctuation influence le rythme d'un texte.",a:true,e:"Des phrases courtes créent un effet différent de longues phrases avec virgules."},
+    {t:'qcm',q:"Quel signe introduit une réplique dans un dialogue ?",o:["le tiret","le point-virgule","les deux-points seuls"],a:0,e:"Le tiret annonce un changement de locuteur."},
+    {t:'qcm',q:"Dans « Il n'est pas venu : il était malade », à quoi servent les deux-points ?",o:["à annoncer une explication","à séparer deux phrases sans lien","à terminer la phrase"],a:0,e:"Ils annoncent la cause de l'absence."},
+    {t:'fix',q:"Corrige : « Le point-virgule termine toujours une phrase, comme le point. »",o:["Le point-virgule ne termine pas la phrase, contrairement au point.","Le point-virgule termine toujours une phrase, comme le point.","Le point et le point-virgule sont interchangeables."],a:0,e:"Le point-virgule appartient à la ponctuation faible : il n'achève pas la phrase."}
+  ]
+},
+
+"langue-cohesion":{
+  objectif:"Comprendre ce qui rend un texte cohérent, connaître les procédés de cohésion et les types de progression thématique.",
+  explication:[
+    "Un texte n'est pas une simple suite de phrases juxtaposées au hasard : il doit être **cohérent**, c'est-à-dire que ses idées s'enchaînent logiquement, sans contradiction, et **cohésif**, c'est-à-dire que ses phrases sont reliées entre elles par des moyens linguistiques visibles. La **cohérence** concerne le sens global du texte ; la **cohésion** concerne les outils grammaticaux qui assurent ce lien phrase après phrase.",
+    "Parmi les procédés de cohésion, on trouve les **connecteurs logiques** (mais, donc, car, ensuite, cependant…), qui indiquent la relation entre deux idées (opposition, cause, conséquence, temps). On trouve aussi les **reprises anaphoriques** : un mot ou un groupe déjà cité est repris plus loin par un pronom (il, elle, celui-ci), un synonyme, ou un groupe nominal qui le désigne autrement (« le chat » repris par « ce félin » puis par « lui »). Ces reprises évitent les répétitions et guident le lecteur.",
+    "La **progression thématique** décrit comment l'information nouvelle (le **rhème**) s'articule avec ce qui est déjà connu (le **thème**), phrase après phrase. Dans la progression **à thème constant**, le même thème reste sujet de plusieurs phrases successives (« Karim se leva. Il s'habilla. Il partit. »). Dans la progression **linéaire**, le rhème d'une phrase devient le thème de la phrase suivante (« Awa portait un livre. Ce livre racontait une légende. »). Dans la progression **à thèmes éclatés** (ou dérivés), plusieurs thèmes différents se rattachent à un même thème général (« Le village était calme. Les maisons étaient blanches. Les rues étaient désertes. »)."
+  ],
+  regle:"**Cohérence** : le sens global tient debout, sans contradiction. **Cohésion** : les liens visibles entre les phrases (connecteurs, reprises). **Progression thématique** : constante, linéaire, ou à thèmes éclatés.",
+  tableaux:[{titre:"Les trois types de progression thématique",entetes:["Type","Principe","Exemple simplifié"],lignes:[["à thème constant","le même thème reste sujet","Karim se leva. Il s'habilla. Il partit."],["linéaire","le rhème devient le thème suivant","Awa portait un livre. Ce livre racontait une légende."],["à thèmes éclatés","plusieurs thèmes dérivent d'un thème général","Le village était calme. Les maisons étaient blanches. Les rues étaient désertes."]]}],
+  exemples:[
+    {t:"**Karim** ouvrit la porte. **Il** entra. **Il** salua tout le monde.",n:"Progression à thème constant : « Karim », puis « il », reste le sujet des trois phrases."},
+    {t:"On lui offrit **un livre**. **Ce livre** venait de loin.",n:"Progression linéaire : le rhème « un livre » de la première phrase devient le thème de la seconde."},
+    {t:"Hier, **il** est arrivé en retard **car** son bus avait du retard**, mais** il s'est vite excusé.",n:"Les connecteurs « car » et « mais » relient logiquement les propositions : c'est de la cohésion."}
+  ],
+  retenir:["Cohérence : le sens global du texte est logique.","Cohésion : les outils grammaticaux qui relient les phrases (connecteurs, reprises).","Une reprise anaphorique évite de répéter le même mot.","Trois types de progression thématique : constante, linéaire, à thèmes éclatés."],
+  plus:"Un texte peut être grammaticalement correct phrase par phrase et pourtant **incohérent** si les idées se contredisent ou si l'enchaînement logique fait défaut. À l'inverse, un texte peut manquer de **cohésion** (peu de connecteurs, reprises maladroites) tout en restant globalement compréhensible, mais sa lecture sera plus difficile. Un bon texte combine généralement les trois types de progression thématique selon les besoins : la progression à thème constant convient à la description d'un même personnage, la progression linéaire fait avancer une explication étape par étape.",
+  mini:{t:'qcm',q:"« Karim entra. Il salua. Il s'assit. » Quel type de progression thématique ?",o:["à thème constant","linéaire","à thèmes éclatés"],a:0,e:"« Karim », puis « il », reste le sujet de chaque phrase."},
+  exercices:[
+    {t:'qcm',q:"Que désigne la cohérence d'un texte ?",o:["Le sens global, logique, du texte","La longueur des phrases","Le nombre de virgules"],a:0,e:"La cohérence concerne le sens d'ensemble."},
+    {t:'vf',q:"Une reprise anaphorique permet d'éviter une répétition.",a:true,e:"On remplace un mot déjà cité par un pronom ou un synonyme."},
+    {t:'fill',q:"Complète : Le procédé qui relie logiquement deux idées (mais, donc, car…) s'appelle un ___ logique.",a:["connecteur"],e:"Un connecteur logique indique la relation entre deux idées."},
+    {t:'match',q:"Associe chaque type de progression à sa description.",pairs:[["à thème constant","le même sujet reste thème de plusieurs phrases"],["linéaire","le rhème devient le thème suivant"],["à thèmes éclatés","plusieurs thèmes dérivent d'un thème général"],["cohésion","les liens grammaticaux entre les phrases"]],e:"Ce sont les notions clés de la leçon."},
+    {t:'qcm',q:"Quelle phrase illustre une reprise anaphorique ?",o:["Awa lisait un roman. Ce roman la passionnait.","Awa lisait un roman. Karim jouait dehors.","Awa lisait. Karim aussi."],a:0,e:"« Ce roman » reprend « un roman » cité juste avant."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Quelle est la différence entre cohérence et cohésion ?",o:["La cohérence est le sens global, la cohésion les liens grammaticaux visibles","Ce sont deux mots identiques","La cohésion concerne seulement l'orthographe"],a:0,e:"La cohérence porte sur le sens, la cohésion sur les outils qui relient les phrases."},
+    {t:'qcm',q:"Qu'est-ce qu'une reprise anaphorique ?",o:["La reprise d'un élément déjà cité, par un pronom ou un synonyme","Une répétition exacte du même mot","Une nouvelle idée sans lien avec ce qui précède"],a:0,e:"Elle évite les répétitions tout en gardant le lien avec ce qui précède."},
+    {t:'vf',q:"Un connecteur logique peut exprimer une opposition, une cause ou une conséquence.",a:true,e:"Mais (opposition), car (cause), donc (conséquence)."},
+    {t:'qcm',q:"Dans la progression linéaire, que devient le rhème d'une phrase ?",o:["le thème de la phrase suivante","un nouveau rhème sans lien","toujours un pronom"],a:0,e:"C'est le principe de la progression linéaire."},
+    {t:'fill',q:"Complète : L'information déjà connue dans une phrase s'appelle le ___ , et l'information nouvelle le rhème.",a:["thème"],e:"Thème = connu ; rhème = nouveau."},
+    {t:'qcm',q:"Quelle progression convient bien à la description d'un même personnage sur plusieurs phrases ?",o:["à thème constant","linéaire","à thèmes éclatés"],a:0,e:"Le personnage reste le thème central de chaque phrase."},
+    {t:'vf',q:"Un texte peut être cohérent sans être bien ponctué ni relié par des connecteurs.",a:false,e:"Sans cohésion, la cohérence devient difficile à percevoir pour le lecteur."},
+    {t:'qcm',q:"« Le village était calme. Les maisons étaient blanches. Les rues étaient désertes. » Quelle progression ?",o:["à thèmes éclatés","linéaire","à thème constant"],a:0,e:"Plusieurs thèmes (maisons, rues) dérivent du thème général « le village »."},
+    {t:'qcm',q:"Quel exemple est un connecteur logique de cause ?",o:["car","donc","cependant"],a:0,e:"« Car » introduit une cause."},
+    {t:'fix',q:"Corrige : « La cohésion désigne le sens global et logique d'un texte. »",o:["La cohérence désigne le sens global et logique d'un texte.","La cohésion désigne le sens global et logique d'un texte.","La cohésion et la cohérence n'ont aucun rapport avec le texte."],a:0,e:"C'est la cohérence qui désigne le sens global ; la cohésion, les liens grammaticaux visibles."}
+  ]
+},
+
+"langue-lexique":{
+  objectif:"Distinguer le lexique commun et le lexique spécialisé, et comprendre leur usage selon les situations.",
+  explication:[
+    "Le **lexique** (ou vocabulaire) d'une langue est l'ensemble de ses mots. On distingue le **lexique commun**, formé des mots employés par tous les locuteurs dans la vie quotidienne (manger, maison, content, marcher), et le **lexique spécialisé**, formé de **termes techniques** propres à un domaine particulier : la médecine, le droit, l'informatique, la grammaire, l'agriculture… Un même locuteur passe de l'un à l'autre selon la situation : un médecin utilisera « fièvre » (lexique commun) en famille, et « hyperthermie » (lexique spécialisé) dans un dossier médical.",
+    "Le lexique spécialisé a plusieurs caractéristiques. Il vise la **précision** : chaque terme technique désigne une réalité définie sans ambiguïté, contrairement à un mot du lexique commun qui peut être plus flou ou polysémique. Il se comprend surtout entre **spécialistes** d'un même domaine, ce qui peut rendre un texte difficile pour un non-initié : un texte médical rempli de termes techniques (« lésion », « pathologie », « symptomatologie ») reste peu clair pour quelqu'un qui n'a pas fait d'études de médecine.",
+    "Beaucoup de termes spécialisés viennent du **grec** et du **latin** (des racines comme « -logie » pour l'étude d'un sujet, « -ite » pour une inflammation en médecine), ce qui explique une certaine ressemblance entre les vocabulaires spécialisés de plusieurs langues. Un même mot peut parfois exister dans les deux lexiques avec un sens différent : « racine » dans le lexique commun désigne la partie d'une plante ; en mathématiques, elle désigne une opération (racine carrée) ; en grammaire, la partie de base d'un mot."
+  ],
+  regle:"**Lexique commun** : mots de la vie quotidienne, compris de tous. **Lexique spécialisé** : termes techniques propres à un domaine, précis mais réservés le plus souvent aux spécialistes.",
+  tableaux:[{titre:"Lexique commun et lexique spécialisé",entetes:["Domaine","Lexique commun","Lexique spécialisé"],lignes:[["médecine","fièvre, mal de ventre","hyperthermie, douleur abdominale"],["droit","accord, promesse","contrat, clause"],["grammaire","mot qui montre à qui appartient","déterminant possessif"],["informatique","mémoire de l'ordinateur","RAM"]]}],
+  exemples:[
+    {t:"Le médecin explique à son patient qu'il a **de la fièvre**.",n:"Lexique commun : compréhensible par tout le monde."},
+    {t:"Le médecin note dans le dossier : **« hyperthermie à 39°C »**.",n:"Lexique spécialisé : terme précis, réservé au domaine médical."},
+    {t:"En grammaire, la **racine** d'un mot porte son sens de base ; en botanique, la racine ancre la plante dans le sol.",n:"Un même mot appartient au lexique commun et au lexique spécialisé, avec des sens différents selon le domaine."}
+  ],
+  retenir:["Le lexique commun est compris de tous, dans la vie quotidienne.","Le lexique spécialisé est propre à un domaine, précis et technique.","Beaucoup de termes spécialisés viennent du grec ou du latin.","Un même mot peut exister dans les deux lexiques, avec des sens différents."],
+  plus:"Le passage du lexique spécialisé au lexique commun se produit parfois avec le temps : des mots nés dans un domaine technique entrent dans l'usage courant, souvent avec un sens élargi ou figuré (« virus », d'abord terme médical, s'emploie aussi pour l'informatique et au sens figuré pour une mauvaise influence qui se propage). À l'inverse, la **vulgarisation** consiste à expliquer un sujet technique avec des mots du lexique commun, pour le rendre accessible à un public non spécialiste — c'est exactement ce que fait un bon manuel scolaire.",
+  mini:{t:'qcm',q:"Quel mot appartient au lexique spécialisé de la médecine ?",o:["hyperthermie","fièvre","chaud"],a:0,e:"C'est un terme technique réservé au domaine médical."},
+  exercices:[
+    {t:'qcm',q:"Quel mot appartient au lexique commun ?",o:["maison","clause","pathologie"],a:0,e:"« Maison » est utilisé par tous, dans la vie quotidienne."},
+    {t:'vf',q:"Le lexique spécialisé vise la précision dans un domaine donné.",a:true,e:"Chaque terme technique désigne une réalité définie sans ambiguïté."},
+    {t:'fill',q:"Complète : L'ensemble des mots de la vie quotidienne, compris de tous, forme le lexique ___ .",a:["commun"],e:"Lexique commun = mots de tous les jours."},
+    {t:'match',q:"Associe chaque mot courant à son équivalent spécialisé en médecine.",pairs:[["fièvre","hyperthermie"],["mal de ventre","douleur abdominale"],["maladie","pathologie"],["guérir","se rétablir cliniquement"]],e:"Chaque paire illustre le passage du lexique commun au lexique spécialisé."},
+    {t:'qcm',q:"D'où viennent souvent les termes du lexique spécialisé ?",o:["du grec et du latin","de l'argot","des langues régionales uniquement"],a:0,e:"De nombreuses racines techniques viennent du grec et du latin."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Qu'est-ce que le lexique commun ?",o:["Les mots employés par tous, dans la vie quotidienne","Les mots réservés aux spécialistes","Les mots empruntés à d'autres langues"],a:0,e:"Le lexique commun est partagé par tous les locuteurs."},
+    {t:'qcm',q:"Qu'est-ce que le lexique spécialisé ?",o:["Les termes techniques propres à un domaine","Les mots anciens qui ne s'emploient plus","Les mots familiers"],a:0,e:"Le lexique spécialisé appartient à un domaine précis (médecine, droit…)."},
+    {t:'vf',q:"Un même mot peut appartenir au lexique commun et au lexique spécialisé, avec des sens différents.",a:true,e:"C'est le cas de « racine », par exemple."},
+    {t:'qcm',q:"Quel mot est un terme spécialisé du droit ?",o:["clause","accord","promesse"],a:0,e:"« Clause » est un terme technique du domaine juridique."},
+    {t:'fill',q:"Complète : Expliquer un sujet technique avec des mots simples, accessibles à tous, s'appelle la ___ .",a:["vulgarisation"],e:"La vulgarisation rend un savoir spécialisé compréhensible par tous."},
+    {t:'qcm',q:"Pourquoi un texte spécialisé peut-il être difficile à comprendre pour un non-spécialiste ?",o:["Il utilise des termes techniques précis, peu connus du grand public","Il est toujours mal écrit","Il ne contient aucun verbe"],a:0,e:"Les termes techniques ne sont compris que par les spécialistes du domaine."},
+    {t:'vf',q:"Le lexique spécialisé est toujours plus flou que le lexique commun.",a:false,e:"C'est l'inverse : le lexique spécialisé vise justement la précision."},
+    {t:'qcm',q:"Quel domaine utilise le terme spécialisé « hyperthermie » ?",o:["la médecine","le droit","l'informatique"],a:0,e:"C'est un terme médical."},
+    {t:'qcm',q:"Quel exemple illustre un mot passé du lexique spécialisé au lexique commun ?",o:["virus (d'abord médical, aussi employé en informatique et au sens figuré)","maison","content"],a:0,e:"« Virus » a élargi son usage au-delà du seul domaine médical."},
+    {t:'fix',q:"Corrige : « Le lexique commun est réservé aux spécialistes d'un domaine. »",o:["Le lexique spécialisé est réservé aux spécialistes d'un domaine.","Le lexique commun est réservé aux spécialistes d'un domaine.","Le lexique commun et le lexique spécialisé sont réservés aux mêmes personnes."],a:0,e:"C'est le lexique spécialisé qui est propre à un domaine ; le lexique commun est partagé par tous."}
+  ]
+},
+
+"langue-injonctif":{
+  objectif:"Reconnaître un texte injonctif, ses formes verbales et sa structure, et savoir en rédiger un.",
+  explication:[
+    "Le **texte injonctif** a pour but de faire agir le destinataire : il donne des ordres, des conseils, des consignes ou des instructions à suivre pour atteindre un résultat précis. On le trouve dans une recette de cuisine, une notice de montage, un règlement, un mode d'emploi, ou les consignes d'un exercice scolaire.",
+    "Plusieurs formes verbales expriment l'injonction. L'**impératif** est la plus directe : « Mélange les œufs et la farine. » L'**infinitif** donne une consigne plus neutre, souvent utilisée dans les recettes et les notices : « Mélanger les œufs et la farine. » Le **futur simple** peut exprimer un ordre atténué, presque une certitude à respecter : « Vous éteindrez vos téléphones avant l'examen. » Le **subjonctif**, après « il faut que » ou « il est nécessaire que », exprime aussi une injonction : « Il faut que tu relises ton texte. »",
+    "Un texte injonctif est en général organisé par **étapes**, souvent numérotées ou introduites par des connecteurs de temps (d'abord, ensuite, puis, enfin). Il emploie un vocabulaire précis et concret, sans ambiguïté, pour que l'action attendue soit claire. Les **verbes d'action** y sont nombreux, et les phrases sont le plus souvent courtes et directes."
+  ],
+  regle:"Le **texte injonctif** donne des ordres ou des instructions, avec l'**impératif**, l'**infinitif**, le **futur** ou le **subjonctif**. Il s'organise en étapes claires, avec un vocabulaire précis.",
+  tableaux:[{titre:"Les formes verbales de l'injonction",entetes:["Forme","Effet","Exemple"],lignes:[["impératif","ordre direct","Verse le lait."],["infinitif","consigne neutre (recettes, notices)","Verser le lait."],["futur simple","ordre atténué, presque une certitude","Vous verserez le lait."],["subjonctif (après il faut que)","obligation exprimée indirectement","Il faut que tu verses le lait."]]}],
+  exemples:[
+    {t:"**Épluchez** les pommes de terre, puis **coupez**-les en morceaux.",n:"Texte injonctif à l'impératif, typique d'une recette de cuisine."},
+    {t:"**Ne pas dépasser** la dose indiquée.",n:"Injonction à l'infinitif, courante dans une notice ou un mode d'emploi."},
+    {t:"**Il faut que** vous **respectiez** le règlement intérieur.",n:"Injonction exprimée par le subjonctif après « il faut que »."}
+  ],
+  retenir:["Le texte injonctif fait agir le destinataire : ordres, conseils, consignes.","Formes verbales : impératif, infinitif, futur, subjonctif.","Il s'organise en étapes, avec des connecteurs de temps.","Vocabulaire précis, verbes d'action, phrases courtes."],
+  plus:"Le choix de la forme verbale dépend souvent du **degré de politesse ou d'autorité** recherché : l'impératif est direct et peut sembler autoritaire ; l'infinitif garde une certaine neutralité, utile pour un mode d'emploi qui s'adresse à n'importe qui ; le futur adoucit l'ordre en le présentant comme une évidence à venir. Le texte injonctif se distingue du texte **explicatif**, qui informe sans chercher à faire agir directement : « L'eau bout à 100 degrés » informe, alors que « Portez l'eau à ébullition » ordonne une action.",
+  mini:{t:'qcm',q:"« Ajoute une pincée de sel. » Quelle forme verbale de l'injonction est utilisée ?",o:["l'impératif","l'infinitif","le futur"],a:0,e:"« Ajoute » est à l'impératif, une forme directe de l'ordre."},
+  exercices:[
+    {t:'qcm',q:"Quel texte est un texte injonctif ?",o:["Une recette de cuisine","Un poème sur l'automne","Un article encyclopédique"],a:0,e:"La recette donne des instructions à suivre pour agir."},
+    {t:'vf',q:"L'infinitif peut exprimer une injonction.",a:true,e:"C'est fréquent dans les recettes et les notices : « Mélanger, verser… »."},
+    {t:'fill',q:"Complète : Après « il faut que », le verbe se met au ___ .",a:["subjonctif"],e:"Il faut que tu partes : subjonctif."},
+    {t:'match',q:"Associe chaque phrase à sa forme verbale d'injonction.",pairs:[["Verse le lait.","impératif"],["Verser le lait.","infinitif"],["Vous verserez le lait.","futur"],["Il faut que tu verses le lait.","subjonctif"]],e:"Quatre façons différentes d'exprimer la même consigne."},
+    {t:'qcm',q:"Comment est souvent organisé un texte injonctif ?",o:["En étapes claires, avec des connecteurs de temps","Sans aucun ordre particulier","Uniquement en une seule phrase"],a:0,e:"D'abord, ensuite, puis, enfin… structurent les étapes."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Quel est le but d'un texte injonctif ?",o:["Faire agir le destinataire","Décrire un paysage","Raconter une histoire"],a:0,e:"C'est sa fonction principale : donner des ordres ou des instructions."},
+    {t:'qcm',q:"Quelle forme verbale est la plus directe pour exprimer un ordre ?",o:["l'impératif","l'infinitif","le conditionnel"],a:0,e:"L'impératif exprime l'ordre de façon directe."},
+    {t:'vf',q:"Le futur simple peut exprimer un ordre atténué.",a:true,e:"« Vous fermerez la porte » sonne comme un ordre présenté comme une évidence."},
+    {t:'qcm',q:"Quel texte est typiquement injonctif ?",o:["Une notice de montage","Un roman","Une lettre d'amour"],a:0,e:"La notice donne des instructions précises à suivre."},
+    {t:'fill',q:"Complète : Un texte injonctif est en général organisé en ___ , souvent numérotées.",a:["étapes"],e:"Les étapes structurent l'action à accomplir."},
+    {t:'qcm',q:"Quelle phrase est à l'infinitif injonctif ?",o:["Ne pas fumer.","Ne fume pas.","Tu ne fumeras pas."],a:0,e:"L'infinitif est utilisé sans sujet exprimé, forme neutre."},
+    {t:'vf',q:"Le texte injonctif se confond toujours avec le texte explicatif.",a:false,e:"Le texte explicatif informe ; le texte injonctif cherche à faire agir."},
+    {t:'qcm',q:"Quel type de vocabulaire domine dans un texte injonctif ?",o:["des verbes d'action, un vocabulaire précis","des adjectifs de couleur","des rimes"],a:0,e:"Le vocabulaire doit être clair pour que l'action soit bien comprise."},
+    {t:'qcm',q:"« Il est nécessaire que vous arriviez à l'heure. » Quelle forme d'injonction ?",o:["le subjonctif","l'impératif","l'infinitif"],a:0,e:"Après « il est nécessaire que », le verbe est au subjonctif."},
+    {t:'fix',q:"Corrige : « Le texte injonctif a pour but d'informer sans chercher à faire agir. »",o:["Le texte injonctif a pour but de faire agir le destinataire.","Le texte injonctif a pour but d'informer sans chercher à faire agir.","Le texte injonctif ne contient jamais de verbes."],a:0,e:"C'est le texte explicatif qui informe sans chercher à faire agir ; l'injonctif, lui, vise l'action."}
+  ]
+},
+
+"langue-homonymes":{
+  objectif:"Distinguer homonymes, homophones et paronymes, et comprendre les risques de confusion qu'ils créent.",
+  explication:[
+    "Le français est riche en mots qui se ressemblent sans avoir le même sens, ce qui peut créer des confusions. On appelle **homonymes** deux mots qui se prononcent (et souvent s'écrivent) de la même façon, mais qui ont des sens différents : « le pot » (récipient) et « la peau » (de fruit, de personne) sont homonymes, tout comme « le livre » (à lire) et « la livre » (poids ou monnaie). Les homonymes peuvent avoir la même orthographe (on parle alors d'**homographes**, comme « la ferme » (l'exploitation) et « il ferme » (le verbe fermer)) ou une orthographe différente.",
+    "Les **homophones** sont des mots qui se prononcent de la même façon mais qui s'écrivent différemment : « son / sont », « ces / ses / c'est / s'est », « a / à », « ou / où » en sont des exemples déjà étudiés dans les leçons d'orthographe. Tous les homophones sont des homonymes (puisqu'ils se prononcent pareil), mais tous les homonymes ne sont pas homophones si leur prononciation diffère légèrement selon le contexte.",
+    "Les **paronymes** sont des mots dont la forme est très **proche**, mais pas identique : ils se distinguent par une lettre ou un son, ce qui peut entraîner une confusion à l'oral comme à l'écrit. Par exemple, « conjecture » (une supposition) et « conjoncture » (une situation économique) ; « éminent » (remarquable) et « imminent » (qui va se produire bientôt) ; « collision » (un choc) et « collusion » (une entente secrète). Contrairement aux homophones, les paronymes ne se prononcent pas exactement de la même façon, mais suffisamment proche pour créer des erreurs."
+  ],
+  regle:"**Homonymes** : même prononciation, sens différents (homographes si même orthographe). **Homophones** : même prononciation, orthographes différentes. **Paronymes** : formes très proches mais non identiques, prononciation légèrement différente.",
+  tableaux:[{titre:"Trois relations de sens",entetes:["Relation","Définition","Exemple"],lignes:[["homonymes (homographes)","même son et même orthographe, sens différent","la ferme / il ferme"],["homophones","même son, orthographe différente","son / sont"],["paronymes","formes proches, son légèrement différent","éminent / imminent"]]}],
+  exemples:[
+    {t:"**Le pot** est cassé ; **la peau** du fruit est abîmée.",n:"« Pot » et « peau » sont homonymes : même son, sens totalement différents."},
+    {t:"**Son** frère et lui **sont** partis.",n:"« Son » et « sont » sont homophones : même prononciation, orthographes différentes, déjà vus en orthographe."},
+    {t:"Un danger **imminent** menaçait la ville, selon un **éminent** spécialiste.",n:"« Imminent » et « éminent » sont des paronymes : très proches, mais leur confusion change complètement le sens."}
+  ],
+  retenir:["Homonymes : même prononciation, sens différents.","Homophones : même prononciation, orthographes différentes.","Paronymes : formes très proches, mais pas identiques.","Ces ressemblances sont une source fréquente d'erreurs et de jeux de mots."],
+  plus:"Ces ressemblances sonores sont exploitées volontairement en littérature et dans l'humour : les **calembours** jouent sur les homonymes et les homophones pour créer un effet comique ou un double sens (« Le roi se meurt » / « Le roi se meurt-il ? »). À l'inverse, la confusion involontaire entre deux paronymes peut être une véritable faute de vocabulaire dans un devoir ou un discours officiel : confondre « évoquer » (rappeler brièvement) et « invoquer » (faire appel à une autorité, une raison) change le sens d'une phrase entière. Il est donc utile de vérifier le sens exact d'un mot dès qu'un doute existe entre deux termes proches.",
+  mini:{t:'qcm',q:"« Conjecture » et « conjoncture » sont…",o:["des paronymes","des homophones exacts","des synonymes"],a:0,e:"Leur forme est très proche mais leur prononciation et leur sens diffèrent : ce sont des paronymes."},
+  exercices:[
+    {t:'qcm',q:"Quelle paire est composée d'homophones ?",o:["ou / où","conjecture / conjoncture","éminent / imminent"],a:0,e:"« Ou » et « où » se prononcent exactement pareil, avec une orthographe différente."},
+    {t:'vf',q:"Tous les homophones sont aussi des homonymes.",a:true,e:"Puisqu'ils se prononcent de façon identique, ils entrent dans la définition large des homonymes."},
+    {t:'fill',q:"Complète : Des mots à la forme très proche, mais pas identique, comme « collision » et « collusion », sont des ___ .",a:["paronymes"],e:"Paronymes : formes proches, sens différents."},
+    {t:'match',q:"Associe chaque paire de mots à sa relation.",pairs:[["son / sont","homophones"],["la ferme / il ferme","homonymes (homographes)"],["éminent / imminent","paronymes"]],e:"Chaque paire illustre une relation différente entre les mots."},
+    {t:'qcm',q:"Quel jeu de mots repose sur les homonymes ou les homophones ?",o:["le calembour","la métaphore","l'hyperbole"],a:0,e:"Le calembour joue sur la ressemblance sonore des mots."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Que sont des homonymes ?",o:["Des mots qui se prononcent de la même façon, avec des sens différents","Des mots de sens identique","Des mots de la même famille"],a:0,e:"C'est la définition des homonymes."},
+    {t:'qcm',q:"Que sont des homophones ?",o:["Des mots à la même prononciation mais à l'orthographe différente","Des mots à l'orthographe identique uniquement","Des synonymes"],a:0,e:"Les homophones se distinguent par l'orthographe, pas par le son."},
+    {t:'vf',q:"Les paronymes se prononcent exactement de la même façon.",a:false,e:"Leur prononciation est proche mais pas identique, contrairement aux homophones."},
+    {t:'qcm',q:"Quelle paire illustre des paronymes ?",o:["évoquer / invoquer","son / sont","ou / où"],a:0,e:"Leur forme est proche mais leur son et leur sens diffèrent légèrement."},
+    {t:'fill',q:"Complète : Des homonymes qui ont aussi la même orthographe sont appelés des ___ .",a:["homographes"],e:"Homographes : même écriture, en plus du même son."},
+    {t:'qcm',q:"Quel est le risque principal des paronymes ?",o:["Les confondre et changer le sens d'une phrase","Les rendre impossibles à prononcer","Les faire disparaître de la langue"],a:0,e:"Une confusion entre paronymes peut fausser complètement le sens voulu."},
+    {t:'vf',q:"Le calembour est un jeu de mots basé sur les ressemblances sonores.",a:true,e:"Il exploite les homonymes ou les homophones pour créer un effet comique."},
+    {t:'qcm',q:"« La ferme » et « il ferme » sont…",o:["des homonymes homographes","des paronymes","des antonymes"],a:0,e:"Même son, même orthographe, sens différents : homonymes homographes."},
+    {t:'qcm',q:"Pourquoi est-il utile de vérifier le sens d'un mot proche d'un autre ?",o:["Pour éviter de confondre deux paronymes et fausser le sens","Pour allonger ses phrases","Pour éviter les répétitions"],a:0,e:"Une confusion de paronymes peut créer un contresens."},
+    {t:'fix',q:"Corrige : « Les homophones ont la même orthographe et des prononciations différentes. »",o:["Les homophones ont la même prononciation et des orthographes différentes.","Les homophones ont la même orthographe et des prononciations différentes.","Les homophones et les paronymes sont exactement la même chose."],a:0,e:"C'est l'inverse : même son, orthographe différente."}
+  ]
 }
 };
 /* ===== FIN DU CONTENU ===== */
@@ -2678,7 +3032,7 @@ function vLogin(){
 /* ---------- Cours ---------- */
 function vCourses(){
   const cl=S.user&&S.user.classe,p=S.prog;
-  const cats=CATS.map((cat,ci)=>{
+  const renderCat=cat=>{
     const lessons=CATALOG.filter(l=>l.cat===cat.id&&(!cl||CONTENT[l.id]||l.classes.includes(cl)));
     const avail=lessons.filter(l=>CONTENT[l.id]),doneN=avail.filter(l=>p.lessons[l.id]).length;
     const open=S.ui.open[cat.id]===true;
@@ -2690,10 +3044,14 @@ function vCourses(){
       return `<button class="row ${done?'done':''}" style="--cat:${cat.c}" data-a="lesson" data-id="${l.id}"><span class="num">${done?'✔':'▶'}</span><span class="grow"><b>${esc(l.titre)}</b><small>${rev?'Révision, prévu pour '+rgLabel(l):(done?'Terminée':rgLabel(l))}</small></span><span class="chev">›</span></button>`;
     }).join('');
     return `<section class="acc" style="--cat:${cat.c}"><button class="acc-h" data-a="toggleCat" data-id="${cat.id}" aria-expanded="${open}"><span class="cico" style="--cat:${cat.c}">${cat.e}</span><span class="grow"><b>${cat.nom}</b><small>${lessons.length} leçon${lessons.length>1?'s':''}, ${doneN} terminée${doneN>1?'s':''}</small></span><span class="chev" aria-hidden="true">${open?'−':'+'}</span></button>${open?`<div class="acc-b">${rows||'<p class="muted small">Aucune leçon pour le moment.</p>'}</div>`:''}</section>`;
+  };
+  const groups=GROUPS.map(g=>{
+    const gcats=CATS.filter(c=>c.grp===g.id);
+    return `<div class="grp-block" style="margin-top:22px"><h2 class="t2" style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span aria-hidden="true">${g.e}</span>${esc(g.nom)}</h2>${gcats.map(renderCat).join('')}</div>`;
   }).join('');
   return `${brandBar()}<div class="screen" style="padding-top:8px"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h1 class="t1">Mes cours</h1><button class="chip" data-a="go" data-to="class" data-from="courses">${cl?esc(cl):'Ma classe'}</button></div>
   ${cl?'':'<div class="card" style="margin:14px 0;background:var(--hl-soft);border-color:var(--hl)"><p style="margin:0">Choisis ta classe pour voir les cours de ton niveau.</p></div>'}
-  <div style="margin-top:16px">${cats}</div></div>`;
+  ${groups}</div>`;
 }
 
 /* ---------- Leçon ---------- */

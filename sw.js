@@ -4,7 +4,7 @@
    POUR PUBLIER UNE MISE À JOUR : change le numéro de VERSION ci-dessous
    (et APP.version dans index.html), puis republie tous les fichiers.
    ===================================================================== */
-const VERSION = '1.3.0';
+const VERSION = '1.4.0';
 const SHELL = 'fak-shell-' + VERSION;
 const FONTS = 'fak-fonts';
 
