@@ -321,7 +321,7 @@ summary{font:800 17px var(--f-head);min-height:44px;display:flex;align-items:cen
    ===================================================================== */
 
 /* ============================ 1. CONFIGURATION ============================ */
-const APP={nom:'Le Français avec Abdoul Karim',version:'1.4.0',objectifJour:2,tailleQuiz:10,seuil:6};
+const APP={nom:'Le Français avec Abdoul Karim',version:'1.4.1',objectifJour:2,tailleQuiz:10,seuil:6};
 const CLASSES=[['6e','Sixième','Collège'],['5e','Cinquième','Collège'],['4e','Quatrième','Collège'],['3e','Troisième','Collège'],['2nde','Seconde','Lycée'],['1ère','Première','Lycée'],['Terminale','Terminale','Lycée']];
 const CL=CLASSES.map(c=>c[0]);
 const rg=(a,b)=>CL.slice(CL.indexOf(a),CL.indexOf(b)+1);
@@ -2919,16 +2919,29 @@ const S={screen:'home',params:{},stack:[],user:null,prog:emptyProgress(),cur:nul
 function syncUser(){S.user=Repo.current();S.prog=S.user?Repo.progress(S.user.id):emptyProgress();S.teacher=false;checkTeacher()}
 async function checkTeacher(){
   if(!(S.user&&!S.user.guest&&S.user.cloudUid&&window.Cloud&&Cloud.ready))return;
-  try{
-    const isT=await Cloud.isTeacher(S.user.cloudUid);
-    if(S.user&&S.user.cloudUid&&isT!==S.teacher){S.teacher=isT;if(S.screen==='profile')render(true)}
-  }catch(e){}
+  const uid=S.user.cloudUid;
+  /* Le premier appel juste après une connexion peut échouer si le jeton
+     d'authentification n'est pas encore complètement propagé côté Firestore.
+     On réessaie donc quelques fois avant d'abandonner, plutôt que de rester
+     bloqué sur un échec ponctuel. */
+  for(let attempt=0;attempt<3;attempt++){
+    try{
+      const isT=await Cloud.isTeacher(uid);
+      if(S.user&&S.user.cloudUid===uid&&isT!==S.teacher){S.teacher=isT;if(S.screen==='profile')render(true)}
+      return;
+    }catch(e){
+      if(attempt<2)await new Promise(r=>setTimeout(r,900));
+    }
+  }
 }
 window.onCloudReady=function(){if(S.user&&!S.user.guest)checkTeacher()};
 function ensureUser(){if(!S.user){Repo.startGuest();syncUser()}}
 function go(screen,params={},opt={}){
   if(opt.reset)S.stack=[];else if(!opt.replace)S.stack.push({screen:S.screen,params:S.params});
   S.screen=screen;S.params=params;render();window.scrollTo(0,0);
+  /* Revérifie le statut professeur à chaque visite du Profil : filet de
+     sécurité si la vérification précédente avait échoué silencieusement. */
+  if(screen==='profile')checkTeacher();
 }
 function back(){const p=S.stack.pop();if(p){S.screen=p.screen;S.params=p.params;render();window.scrollTo(0,0)}else go('home',{},{reset:true})}
 const tab=(screen)=>go(screen,{},{reset:true});
