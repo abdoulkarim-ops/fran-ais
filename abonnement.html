@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Abonnement – Le Français avec Abdoul Karim</title>
+<style>
+:root{--bg:#f4f1ea;--card:#fffdf8;--tx:#1e2a24;--mut:#66716b;--pr:#1d5c46;--prt:#fff;--ok:#1d7a4f;--bad:#b3392b;--line:#d9d3c4}
+@media(prefers-color-scheme:dark){:root{--bg:#121816;--card:#1b2420;--tx:#eaf0ec;--mut:#98a89f;--pr:#4cc08f;--prt:#0d1a14;--ok:#5fd6a0;--bad:#ff8a7a;--line:#2e3b35}}
+*{box-sizing:border-box}
+body{margin:0;font-family:Georgia,"Times New Roman",serif;background:var(--bg);color:var(--tx);padding:16px;line-height:1.5}
+.w{max-width:480px;margin:0 auto}
+header{padding:8px 2px 16px}
+header h1{font-size:1.5rem;margin:0}
+header p{margin:2px 0 0;color:var(--mut);font-size:.95rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+h2{font-size:1.1rem;margin:0 0 10px}
+label{display:block;font-size:.9rem;color:var(--mut);margin-top:10px}
+input,select{width:100%;padding:12px;margin-top:4px;border:1px solid var(--line);border-radius:10px;font:inherit;background:transparent;color:inherit}
+input:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--pr);outline-offset:2px}
+.btn{display:block;width:100%;padding:13px;border:0;border-radius:10px;background:var(--pr);color:var(--prt);font:inherit;font-weight:700;text-align:center;text-decoration:none;margin-top:14px;cursor:pointer}
+.btn.alt{background:transparent;color:var(--pr);border:1px solid var(--pr)}
+.link{background:none;border:0;color:var(--pr);font:inherit;text-decoration:underline;cursor:pointer;padding:0;margin-top:12px}
+.prix{font-size:2rem;font-weight:700;margin:0}
+.mut{color:var(--mut);font-size:.9rem}
+.ok{color:var(--ok);font-weight:700}
+.bad{color:var(--bad);font-weight:700}
+.msg{color:var(--bad);font-size:.9rem;min-height:1.2em;margin-top:8px}
+ol{padding-left:20px;margin:8px 0}
+li{margin:6px 0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row small{display:block;color:var(--mut)}
+.row button{padding:8px 12px;border:1px solid var(--pr);background:transparent;color:var(--pr);border-radius:8px;font:inherit;cursor:pointer;white-space:nowrap}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="w">
+  <header>
+    <h1>Le Français avec Abdoul Karim</h1>
+    <p>Accès aux cours et aux groupes de travail</p>
+  </header>
+
+  <!-- Connexion / inscription -->
+  <section id="vAuth" class="card hide">
+    <h2 id="authTitre">Créer mon compte</h2>
+    <div id="champsInscription">
+      <label for="nom">Ton nom</label>
+      <input id="nom" autocomplete="name">
+      <label for="classe">Ta classe</label>
+      <select id="classe"></select>
+    </div>
+    <label for="email">E-mail</label>
+    <input id="email" type="email" autocomplete="email">
+    <label for="mdp">Mot de passe (6 caractères minimum)</label>
+    <input id="mdp" type="password" autocomplete="current-password">
+    <button class="btn" id="btnAuth">Créer mon compte</button>
+    <div class="msg" id="authMsg"></div>
+    <button class="link" id="basculer">J’ai déjà un compte</button>
+  </section>
+
+  <!-- Espace élève -->
+  <section id="vEleve" class="hide">
+    <div class="card">
+      <h2 id="bonjour"></h2>
+      <div id="statut"></div>
+    </div>
+
+    <div class="card" id="cPaiement">
+      <p class="prix"><span id="prix"></span> <span id="devise"></span> <span class="mut">par mois</span></p>
+      <ol>
+        <li>Envoie le montant par Mobile Money :<br>
+          <span id="lMtn">MTN : <b id="numMtn"></b><br></span>
+          <span id="lOrange">Orange : <b id="numOrange"></b><br></span>
+          <span class="mut">Nom du compte : <span id="nomCompte"></span></span></li>
+        <li>Envoie la capture du paiement sur WhatsApp avec le bouton ci-dessous.</li>
+        <li>Ton accès est activé pour 30 jours dès que j’ai vérifié.</li>
+      </ol>
+      <a class="btn" id="btnPaye" target="_blank" rel="noopener">J’ai payé, envoyer la preuve</a>
+    </div>
+
+    <div class="card hide" id="cGroupe">
+      <h2>Ton groupe de travail</h2>
+      <p class="mut" id="groupeInfo"></p>
+      <a class="btn" id="btnGroupe" target="_blank" rel="noopener">Rejoindre le groupe WhatsApp</a>
+      <a class="btn alt" id="btnSite" href="index.html">Ouvrir les cours</a>
+    </div>
+  </section>
+
+  <!-- Espace professeur -->
+  <section id="vProf" class="card hide">
+    <h2>Mes élèves</h2>
+    <p class="mut">Après vérification d’un paiement, appuie sur « +30 jours ».</p>
+    <div id="liste"></div>
+  </section>
+
+  <button class="link hide" id="btnQuitter">Me déconnecter</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* ====== À REMPLIR ====== */
+const CONFIG = {
+  firebase: {
+    apiKey: "AIzaSyCmbyOwIeqIexiHceiPVSWj78oXGVAWMt8",
+    authDomain: "francais-abdoul-karim.firebaseapp.com",
+    projectId: "francais-abdoul-karim",
+    storageBucket: "francais-abdoul-karim.firebasestorage.app",
+    messagingSenderId: "331726426883",
+    appId: "1:331726426883:web:087ef079c90bffd162cf36"
+  },
+  prix: 500,
+  devise: "FCFA",
+  whatsapp: "237655378744",
+  paiement: { mtn: "", orange: "655 37 87 44", nom: "ABRAAIMMABILATOULA" },
+  // Colle le lien d’invitation WhatsApp de chaque groupe de classe
+  groupes: {
+    "6e":"https://chat.whatsapp.com/KSAhz6pBEDV3g0ytifSpsv",
+    "5e":"https://chat.whatsapp.com/KSAhz6pBEDV3g0ytifSpsv",
+    "4e":"https://chat.whatsapp.com/KSAhz6pBEDV3g0ytifSpsv",
+    "3e":"https://chat.whatsapp.com/KSAhz6pBEDV3g0ytifSpsv",
+    "2nde":"https://chat.whatsapp.com/KSAhz6pBEDV3g0ytifSpsv",
+    "1ère":"https://chat.whatsapp.com/KSAhz6pBEDV3g0ytifSpsv",
+    "Terminale":"https://chat.whatsapp.com/KSAhz6pBEDV3g0ytifSpsv"
+  }
+};
+/* ======================= */
+
+firebase.initializeApp(CONFIG.firebase);
+const auth = firebase.auth(), db = firebase.firestore();
+const $ = id => document.getElementById(id);
+const JOUR = 86400000;
+let modeInscription = true, enInscription = false;
+
+Object.keys(CONFIG.groupes).forEach(c => { const o = document.createElement("option"); o.value = o.textContent = c; $("classe").appendChild(o); });
+$("prix").textContent = CONFIG.prix; $("devise").textContent = CONFIG.devise;
+$("numMtn").textContent = CONFIG.paiement.mtn; $("numOrange").textContent = CONFIG.paiement.orange; $("nomCompte").textContent = CONFIG.paiement.nom;
+$("lMtn").classList.toggle("hide", !CONFIG.paiement.mtn);
+$("lOrange").classList.toggle("hide", !CONFIG.paiement.orange);
+
+function vue(nom){ ["vAuth","vEleve","vProf"].forEach(v => $(v).classList.toggle("hide", v !== nom && !(nom === "vEleve" && v === "vProf" && false))); }
+function dateFr(d){ return d.toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"}); }
+function erreur(e){
+  const m = {"auth/email-already-in-use":"Cet e-mail a déjà un compte. Appuie sur « J’ai déjà un compte ».","auth/invalid-email":"L’adresse e-mail n’est pas valide.","auth/weak-password":"Choisis un mot de passe d’au moins 6 caractères.","auth/invalid-credential":"E-mail ou mot de passe incorrect.","auth/network-request-failed":"Pas de connexion. Vérifie ton réseau et réessaie."};
+  return m[e.code] || "Une erreur est survenue. Réessaie.";
+}
+
+$("basculer").onclick = () => {
+  modeInscription = !modeInscription;
+  $("champsInscription").classList.toggle("hide", !modeInscription);
+  $("authTitre").textContent = modeInscription ? "Créer mon compte" : "Me connecter";
+  $("btnAuth").textContent = modeInscription ? "Créer mon compte" : "Me connecter";
+  $("basculer").textContent = modeInscription ? "J’ai déjà un compte" : "Je n’ai pas encore de compte";
+  $("authMsg").textContent = "";
+};
+
+$("btnAuth").onclick = async () => {
+  const email = $("email").value.trim(), mdp = $("mdp").value;
+  $("authMsg").textContent = "";
+  try {
+    if (modeInscription) {
+      const nom = $("nom").value.trim();
+      if (!nom) { $("authMsg").textContent = "Écris ton nom."; return; }
+      enInscription = true;
+      const cred = await auth.createUserWithEmailAndPassword(email, mdp);
+      await db.collection("users").doc(cred.user.uid).set({ nom, classe: $("classe").value, email, cree: firebase.firestore.FieldValue.serverTimestamp() });
+      enInscription = false;
+      charger(cred.user);
+    } else {
+      await auth.signInWithEmailAndPassword(email, mdp);
+    }
+  } catch (e) { enInscription = false; $("authMsg").textContent = erreur(e); }
+};
+
+$("btnQuitter").onclick = () => auth.signOut();
+
+auth.onAuthStateChanged(user => {
+  $("btnQuitter").classList.toggle("hide", !user);
+  if (!user) { vue("vAuth"); return; }
+  if (!enInscription) charger(user);
+});
+
+async function charger(user){
+  const snap = await db.collection("users").doc(user.uid).get();
+  const d = snap.exists ? snap.data() : { nom: "", classe: "" };
+  const fin = d.abonneJusqua ? d.abonneJusqua.toDate() : null;
+  const actif = fin && fin.getTime() > Date.now();
+  vue("vEleve");
+  $("bonjour").textContent = "Bonjour " + (d.nom || "") + (d.classe ? " · " + d.classe : "");
+  if (actif) {
+    const reste = Math.ceil((fin - Date.now()) / JOUR);
+    $("statut").innerHTML = '<span class="ok">Abonnement actif</span><br><span class="mut">Il se termine le ' + dateFr(fin) + " (" + reste + " jour" + (reste > 1 ? "s" : "") + ").</span>";
+    $("cPaiement").classList.toggle("hide", reste > 5);
+    $("cGroupe").classList.remove("hide");
+    const lien = CONFIG.groupes[d.classe];
+    $("btnGroupe").classList.toggle("hide", !lien);
+    if (lien) $("btnGroupe").href = lien;
+    $("groupeInfo").textContent = lien ? "Groupe de la classe de " + d.classe + "." : "Le groupe de ta classe arrive bientôt.";
+  } else {
+    $("statut").innerHTML = fin
+      ? '<span class="bad">Abonnement terminé le ' + dateFr(fin) + '.</span><br><span class="mut">Renouvelle pour retrouver les cours et ton groupe.</span>'
+      : '<span class="mut">Tu n’as pas encore d’abonnement.</span>';
+    $("cPaiement").classList.remove("hide");
+    $("cGroupe").classList.add("hide");
+  }
+  const msg = "Bonjour Abdoul Karim, j’ai payé mon abonnement de " + CONFIG.prix + " " + CONFIG.devise + ".\nNom : " + d.nom + "\nClasse : " + d.classe + "\nE-mail : " + user.email;
+  $("btnPaye").href = "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(msg);
+
+  // Espace professeur (visible seulement si ton compte est dans "teachers")
+  try {
+    const t = await db.collection("teachers").doc(user.uid).get();
+    if (t.exists) { $("vProf").classList.remove("hide"); chargerEleves(); }
+    else $("vProf").classList.add("hide");
+  } catch (e) { $("vProf").classList.add("hide"); }
+}
+
+async function chargerEleves(){
+  const liste = $("liste"); liste.textContent = "Chargement…";
+  try {
+    const qs = await db.collection("users").orderBy("nom").limit(300).get();
+    liste.textContent = "";
+    if (qs.empty) { liste.textContent = "Aucun élève inscrit pour le moment."; return; }
+    qs.forEach(doc => {
+      const d = doc.data(), fin = d.abonneJusqua ? d.abonneJusqua.toDate() : null, actif = fin && fin.getTime() > Date.now();
+      const row = document.createElement("div"); row.className = "row";
+      const info = document.createElement("div");
+      const nom = document.createElement("b"); nom.textContent = d.nom || "(sans nom)";
+      const sm = document.createElement("small");
+      sm.textContent = (d.classe || "") + " · " + (actif ? "actif jusqu’au " + dateFr(fin) : fin ? "terminé le " + dateFr(fin) : "pas abonné");
+      info.append(nom, sm);
+      const b = document.createElement("button"); b.textContent = "+30 jours";
+      b.onclick = async () => {
+        const base = actif ? fin.getTime() : Date.now();
+        b.disabled = true; b.textContent = "…";
+        try {
+          await db.collection("users").doc(doc.id).update({ abonneJusqua: firebase.firestore.Timestamp.fromDate(new Date(base + 30 * JOUR)) });
+          chargerEleves();
+        } catch (e) { b.disabled = false; b.textContent = "Échec, réessaie"; }
+      };
+      row.append(info, b); liste.appendChild(row);
+    });
+  } catch (e) { liste.textContent = "Impossible de charger la liste. Vérifie les règles Firestore."; }
+}
+</script>
+</body>
+</html>
