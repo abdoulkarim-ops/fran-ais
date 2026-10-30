@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Abonnement – Le Français avec Abdoul Karim</title>
+<meta name="theme-color" content="#1E3FAE">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-maskable-512.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <style>
 :root{--bg:#f4f1ea;--card:#fffdf8;--tx:#1e2a24;--mut:#66716b;--pr:#1d5c46;--prt:#fff;--ok:#1d7a4f;--bad:#b3392b;--line:#d9d3c4}
 @media(prefers-color-scheme:dark){:root{--bg:#121816;--card:#1b2420;--tx:#eaf0ec;--mut:#98a89f;--pr:#4cc08f;--prt:#0d1a14;--ok:#5fd6a0;--bad:#ff8a7a;--line:#2e3b35}}
@@ -40,6 +46,7 @@ li{margin:6px 0}
   <header>
     <h1>Le Français avec Abdoul Karim</h1>
     <p>Accès aux cours et aux groupes de travail</p>
+    <button class="btn alt hide" id="btnInstall">Installer l’application sur mon téléphone</button>
   </header>
 
   <!-- Connexion / inscription -->
@@ -133,7 +140,16 @@ firebase.initializeApp(CONFIG.firebase);
 const auth = firebase.auth(), db = firebase.firestore();
 const $ = id => document.getElementById(id);
 const JOUR = 86400000;
-let modeInscription = true, enInscription = false;
+let modeInscription = true, enInscription = false, evtInstall = null;
+
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); evtInstall = e; $("btnInstall").classList.remove("hide"); });
+window.addEventListener("appinstalled", () => $("btnInstall").classList.add("hide"));
+$("btnInstall").onclick = async () => {
+  if (!evtInstall) return;
+  evtInstall.prompt();
+  try { await evtInstall.userChoice; } catch (e) {}
+  evtInstall = null; $("btnInstall").classList.add("hide");
+};
 
 Object.keys(CONFIG.groupes).forEach(c => { const o = document.createElement("option"); o.value = o.textContent = c; $("classe").appendChild(o); });
 $("prix").textContent = CONFIG.prix; $("devise").textContent = CONFIG.devise;
