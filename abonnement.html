@@ -186,10 +186,11 @@ auth.onAuthStateChanged(user => {
 async function charger(user){
   const snap = await db.collection("users").doc(user.uid).get();
   const d = snap.exists ? snap.data() : { nom: "", classe: "" };
+  if (!d.email) { try { await db.collection("users").doc(user.uid).set({ email: user.email }, { merge: true }); d.email = user.email; } catch (e) {} }
   const fin = d.abonneJusqua ? d.abonneJusqua.toDate() : null;
   const actif = fin && fin.getTime() > Date.now();
   vue("vEleve");
-  $("bonjour").textContent = "Bonjour " + (d.nom || "") + (d.classe ? " · " + d.classe : "");
+  $("bonjour").textContent = "Bonjour " + (d.nom || user.email) + (d.classe ? " · " + d.classe : "");
   if (actif) {
     const reste = Math.ceil((fin - Date.now()) / JOUR);
     $("statut").innerHTML = '<span class="ok">Abonnement actif</span><br><span class="mut">Il se termine le ' + dateFr(fin) + " (" + reste + " jour" + (reste > 1 ? "s" : "") + ").</span>";
@@ -220,14 +221,15 @@ async function charger(user){
 async function chargerEleves(){
   const liste = $("liste"); liste.textContent = "Chargement…";
   try {
-    const qs = await db.collection("users").orderBy("nom").limit(300).get();
+    const qs = await db.collection("users").limit(300).get();
     liste.textContent = "";
     if (qs.empty) { liste.textContent = "Aucun élève inscrit pour le moment."; return; }
-    qs.forEach(doc => {
+    const docs = qs.docs.sort((a, b) => ((a.data().nom || a.data().email || "")).localeCompare(b.data().nom || b.data().email || ""));
+    docs.forEach(doc => {
       const d = doc.data(), fin = d.abonneJusqua ? d.abonneJusqua.toDate() : null, actif = fin && fin.getTime() > Date.now();
       const row = document.createElement("div"); row.className = "row";
       const info = document.createElement("div");
-      const nom = document.createElement("b"); nom.textContent = d.nom || "(sans nom)";
+      const nom = document.createElement("b"); nom.textContent = d.nom || d.email || "(sans nom)";
       const sm = document.createElement("small");
       sm.textContent = (d.classe || "") + " · " + (actif ? "actif jusqu’au " + dateFr(fin) : fin ? "terminé le " + dateFr(fin) : "pas abonné");
       info.append(nom, sm);
