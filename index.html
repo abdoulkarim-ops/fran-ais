@@ -437,7 +437,7 @@ summary{font:800 17px var(--f-head);min-height:44px;display:flex;align-items:cen
    ===================================================================== */
 
 /* ============================ 1. CONFIGURATION ============================ */
-const APP={nom:'Le Français avec Abdoul Karim',version:'1.6.0',objectifJour:2,tailleQuiz:10,seuil:6};
+const APP={nom:'Le Français avec Abdoul Karim',version:'1.7.0',objectifJour:2,tailleQuiz:10,seuil:6};
 const CLASSES=[['6e','Sixième','Collège'],['5e','Cinquième','Collège'],['4e','Quatrième','Collège'],['3e','Troisième','Collège'],['2nde','Seconde','Lycée'],['1ère','Première','Lycée'],['Terminale','Terminale','Lycée']];
 const CL=CLASSES.map(c=>c[0]);
 const rg=(a,b)=>CL.slice(CL.indexOf(a),CL.indexOf(b)+1);
@@ -2982,6 +2982,10 @@ const CONTENT={
 };
 /* ===== FIN DU CONTENU ===== */
 
+/* ---- Abonnement : une leçon gratuite par classe, le reste réservé aux abonnés ---- */
+const PAY={prix:500,devise:'FCFA',whatsapp:'237655378744',orange:'655 37 87 44',nom:'ABRAAIMMABILATOULA'};
+const FREE=new Set(CL.map(c=>{const l=CATALOG.find(x=>CONTENT[x.id]&&x.classes.includes(c));return l&&l.id}).filter(Boolean));
+
 /* ============================ UTILITAIRES ============================ */
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -3103,7 +3107,7 @@ async function cloudSyncAfterAuth(localId,contact,pwd){
     u.cloudUid=r.uid;Store.set('users',us);
     if(S.user&&S.user.id===localId)S.user.cloudUid=r.uid;
     await pushCloud(localId);
-    if(S.user&&S.user.id===localId)checkTeacher();
+    if(S.user&&S.user.id===localId){checkTeacher();refreshSub()}
   }catch(e){}
 }
 async function pushCloud(localId){
@@ -3158,7 +3162,40 @@ function recRun(id,mode,score,total){
 
 /* ============================ ÉTAT ET NAVIGATION ============================ */
 const S={screen:'home',params:{},stack:[],user:null,prog:emptyProgress(),cur:null,curFor:'',run:null,result:null,ui:{open:{grammaire:true},exTab:'exos'},teacher:false,teacherData:[],teacherLoading:false};
-function syncUser(){S.user=Repo.current();S.prog=S.user?Repo.progress(S.user.id):emptyProgress();S.teacher=false;checkTeacher()}
+function subActive(){return !!(S.teacher||(S.sub&&S.sub.fin>Date.now()))}
+function canOpen(id){return subActive()||FREE.has(id)}
+let subBusy=false;
+async function refreshSub(){
+  const u=S.user;
+  if(!u||u.guest){S.sub=null;return}
+  const key='sub:'+u.id;
+  if(!S.sub){const c=Store.get(key,null);if(c)S.sub=c}
+  if(subBusy||!(u.cloudUid&&window.Cloud&&Cloud.ready&&Cloud.auth&&Cloud.loadUser&&navigator.onLine))return;
+  subBusy=true;
+  try{
+    await Cloud.auth.authStateReady();
+    const cu=Cloud.auth.currentUser;
+    if(!cu||cu.uid!==u.cloudUid)return;
+    const d=await Cloud.loadUser(u.cloudUid);
+    const fin=d&&d.abonneJusqua&&d.abonneJusqua.toMillis?d.abonneJusqua.toMillis():0;
+    /* Le serveur fait foi pour la classe : on l'applique sur l'appareil. */
+    let changed=false;
+    if(d&&d.classe&&CL.includes(d.classe)&&S.user&&S.user.classe!==d.classe){S.user.classe=d.classe;Repo.save(S.user);changed=true}
+    /* Enregistre la fiche de l'élève pour que le professeur puisse l'activer. */
+    if(!d||!d.nom||(!d.classe&&u.classe)){
+      const fiche={nom:dname(u)};
+      if(u.contactType==='email')fiche.email=u.contact;
+      if(u.classe)fiche.classe=u.classe;
+      await Cloud.saveUser(u.cloudUid,fiche);
+    }
+    const sub={fin,classe:(d&&d.classe)||null};
+    const before=S.sub&&S.sub.fin;
+    S.sub=sub;Store.set(key,sub);
+    if((changed||before!==fin)&&S.screen!=='run')render(true);
+  }catch(e){}
+  finally{subBusy=false}
+}
+function syncUser(){S.user=Repo.current();S.prog=S.user?Repo.progress(S.user.id):emptyProgress();S.teacher=false;S.sub=null;checkTeacher();refreshSub()}
 async function checkTeacher(){
   if(!(S.user&&!S.user.guest&&S.user.cloudUid&&window.Cloud&&Cloud.ready))return;
   const uid=S.user.cloudUid;
@@ -3169,14 +3206,14 @@ async function checkTeacher(){
   for(let attempt=0;attempt<3;attempt++){
     try{
       const isT=await Cloud.isTeacher(uid);
-      if(S.user&&S.user.cloudUid===uid&&isT!==S.teacher){S.teacher=isT;if(S.screen==='profile')render(true)}
+      if(S.user&&S.user.cloudUid===uid&&isT!==S.teacher){S.teacher=isT;if(['profile','lesson','courses','exos','home'].includes(S.screen))render(true)}
       return;
     }catch(e){
       if(attempt<2)await new Promise(r=>setTimeout(r,900));
     }
   }
 }
-window.onCloudReady=function(){if(S.user&&!S.user.guest)checkTeacher()};
+window.onCloudReady=function(){if(S.user&&!S.user.guest){checkTeacher();refreshSub()}};
 function ensureUser(){if(!S.user){Repo.startGuest();syncUser()}}
 function go(screen,params={},opt={}){
   if(opt.reset)S.stack=[];else if(!opt.replace)S.stack.push({screen:S.screen,params:S.params});
@@ -3296,7 +3333,7 @@ function vCourses(){
       const m=CONTENT[l.id];
       if(!m)return `<div class="row soon" style="--cat:${cat.c}"><span class="num">·</span><span class="grow"><b>${esc(l.titre)}</b><small>${rgLabel(l)}</small></span><span class="tag">Bientôt</span></div>`;
       const done=!!p.lessons[l.id],rev=cl&&!l.classes.includes(cl);
-      return `<button class="row ${done?'done':''}" style="--cat:${cat.c}" data-a="lesson" data-id="${l.id}"><span class="num">${done?'✔':'▶'}</span><span class="grow"><b>${esc(l.titre)}</b><small>${rev?'Révision, prévu pour '+rgLabel(l):(done?'Terminée':rgLabel(l))}</small></span><span class="chev">›</span></button>`;
+      return `<button class="row ${done?'done':''}" style="--cat:${cat.c}" data-a="lesson" data-id="${l.id}"><span class="num">${done?'✔':(canOpen(l.id)?'▶':'🔒')}</span><span class="grow"><b>${esc(l.titre)}</b><small>${rev?'Révision, prévu pour '+rgLabel(l):(done?'Terminée':(canOpen(l.id)?rgLabel(l):'Réservé aux abonnés'))}</small></span><span class="chev">›</span></button>`;
     }).join('');
     return `<section class="acc" style="--cat:${cat.c}"><button class="acc-h" data-a="toggleCat" data-id="${cat.id}" aria-expanded="${open}"><span class="cico" style="--cat:${cat.c}">${cat.e}</span><span class="grow"><b>${cat.nom}</b><small>${lessons.length} leçon${lessons.length>1?'s':''}, ${doneN} terminée${doneN>1?'s':''}</small></span><span class="chev" aria-hidden="true">${open?'−':'+'}</span></button>${open?`<div class="acc-b">${rows||'<p class="muted small">Aucune leçon pour le moment.</p>'}</div>`:''}</section>`;
   };
@@ -3314,6 +3351,7 @@ function vLesson(par){
   const id=par.id,m=META(id),c=CONTENT[id];
   if(!m||!c)return vCourses();
   if(S.user&&S.user.classe&&!m.classes.includes(S.user.classe))return vCourses();
+  if(!canOpen(id))return vPaywall({id});
   const cat=CAT[m.cat],p=S.prog,cl=S.user&&S.user.classe;
   if(S.curFor!=='lesson:'+id){S.cur=newQS(c.mini);S.curFor='lesson:'+id}
   const upper=cl&&CL.indexOf(cl)>=3,rev=cl&&!m.classes.includes(cl);
@@ -3426,9 +3464,11 @@ function vRun(){
   <div id="runfoot" class="runfoot">${runFoot()}</div>`;
 }
 function startRun(id,mode){
+  if(id!=='mix'&&!canOpen(id)){go('paywall',{id});return}
+  if(id==='mix'&&!availableLessons().some(l=>canOpen(l.id))){go('paywall',{});return}
   let list;
   if(mode==='exos')list=CONTENT[id].exercices.slice();
-  else if(id==='mix')list=shuf(availableLessons().flatMap(l=>CONTENT[l.id].quiz)).slice(0,APP.tailleQuiz);
+  else if(id==='mix')list=shuf(availableLessons().filter(l=>canOpen(l.id)).flatMap(l=>CONTENT[l.id].quiz)).slice(0,APP.tailleQuiz);
   else list=CONTENT[id].quiz.slice();
   S.run={id,mode,list,i:0,results:[]};S.cur=newQS(list[0]);S.curFor='run:'+id+mode;
   go('run',{});
@@ -3492,6 +3532,7 @@ function vProfile(){
   <div class="pid" style="margin-top:16px"><div class="avatar" aria-hidden="true">${esc(ini)}</div><div><b style="font:800 22px var(--f-head);background:none">${u?esc(dname(u)):'Élève invité'}</b><br><span class="tag">${u&&u.classe?esc(u.classe):'Classe non choisie'}</span>${u&&!u.guest?`<p class="small muted" style="margin:6px 0 0">${esc(u.contact)}</p>`:''}</div></div>
   <div class="stats"><div class="stat"><b>${pa} %</b><span>Progression</span></div><div class="stat"><b>${Object.keys(p.lessons).length}</b><span>Cours terminés</span></div><div class="stat"><b>${p.quizzes.length}</b><span>Quiz réalisés</span></div><div class="stat"><b>${avg===null?'—':fmt(avg)+'/10'}</b><span>Score moyen</span></div></div>
   <div class="card" style="margin-top:12px"><b>Niveau ${lvl.n} : ${lvl.nom}</b> <span class="muted small">(${p.points} points)</span></div>
+  ${u&&!u.guest?`<div class="card" style="margin-top:12px"><b>Abonnement</b> <span class="muted small">${S.teacher?'Compte professeur, accès illimité':(subActive()?'actif jusqu’au '+new Date(S.sub.fin).toLocaleDateString('fr-FR'):'non actif')}</span>${subActive()?'':'<button class="btn btn-primary" style="margin-top:10px" data-a="go" data-to="paywall" data-from="profile">S’abonner</button>'}</div>`:''}
   <div class="stack" style="margin-top:18px">
     ${u?`<button class="btn" data-a="editProfile">Modifier mes informations</button>`:`<button class="btn btn-primary" data-a="go" data-to="register">Créer un compte</button><button class="btn" data-a="go" data-to="login">Se connecter</button>`}
     ${u&&u.guest?`<button class="btn btn-primary" data-a="go" data-to="register">Créer un compte</button><button class="btn" data-a="go" data-to="login">Se connecter</button>`:''}
@@ -3531,7 +3572,19 @@ function vTeacher(){
 }
 
 /* ---------- Affichage ---------- */
-const VIEWS={home:vHome,class:vClass,register:vRegister,login:vLogin,courses:vCourses,lesson:vLesson,exos:vExos,run:vRun,result:vResult,progress:vProgress,profile:vProfile,teacher:vTeacher};
+function vPaywall(par){
+  const u=S.user,guest=!u||u.guest,noMail=!guest&&u.contactType!=='email';
+  const msg='Bonjour Abdoul Karim, j’ai payé mon abonnement de '+PAY.prix+' '+PAY.devise+'.\nNom : '+(guest?'':dname(u))+'\nClasse : '+((u&&u.classe)||'')+'\nE-mail : '+((u&&u.contactType==='email')?u.contact:'');
+  const wa='https://wa.me/'+PAY.whatsapp+'?text='+encodeURIComponent(msg);
+  let body;
+  if(guest)body=`<p>Crée ton compte avec ton adresse e-mail, puis reviens ici pour t’abonner.</p><div class="stack"><button class="btn btn-primary" data-a="go" data-to="register">Créer un compte</button><button class="btn" data-a="go" data-to="login">Se connecter</button></div>`;
+  else if(noMail)body=`<p>Ton compte utilise un numéro de téléphone. Pour t’abonner, crée un compte avec une adresse e-mail.</p><div class="stack"><button class="btn btn-primary" data-a="go" data-to="register">Créer un compte avec e-mail</button></div>`;
+  else body=`<div class="callout rule"><b>${PAY.prix} ${PAY.devise} par mois</b></div>
+    <ol><li>Envoie ${PAY.prix} ${PAY.devise} par Orange Money au <b>${PAY.orange}</b> (nom du compte : ${PAY.nom}).</li><li>Envoie la capture du paiement sur WhatsApp avec le bouton ci-dessous.</li><li>Dès que j’ai vérifié, ton accès est activé pour 30 jours. Reviens ici et touche « J’ai été activé ».</li></ol>
+    <div class="stack"><a class="btn btn-primary" href="${wa}" target="_blank" rel="noopener">J’ai payé, envoyer la preuve</a><button class="btn" data-a="refreshSub">J’ai été activé</button></div>`;
+  return `${headBar('Abonnement')}<div class="screen" style="padding-top:8px"><h1 class="t1">🔒 Réservé aux abonnés</h1><p class="lead">Chaque classe a une leçon gratuite pour essayer l’appli. Le reste des cours, exercices et quiz est réservé aux abonnés.</p>${body}</div>`;
+}
+const VIEWS={paywall:vPaywall,home:vHome,class:vClass,register:vRegister,login:vLogin,courses:vCourses,lesson:vLesson,exos:vExos,run:vRun,result:vResult,progress:vProgress,profile:vProfile,teacher:vTeacher};
 function render(keep){
   const y=window.scrollY,s=S.screen;
   const view=(VIEWS[s]||vHome)(S.params||{});
@@ -3543,6 +3596,12 @@ function render(keep){
 
 /* ============================ 7. ACTIONS ============================ */
 const A={
+  async refreshSub(){
+    toast('Vérification…');
+    if(!navigator.onLine){toast('Connecte-toi à internet pour vérifier.');return}
+    await refreshSub();render(true);
+    toast(subActive()?'Abonnement actif ✔':'Pas encore activé. Réessaie un peu plus tard.');
+  },
   async install(){
     if(!PWA.prompt)return;
     const ev=PWA.prompt;PWA.prompt=null;
@@ -3680,7 +3739,8 @@ function installCard(){
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();PWA.prompt=e;pwaRefresh()});
 window.addEventListener('appinstalled',()=>{PWA.prompt=null;PWA.standalone=true;pwaRefresh();toast('Appli installée. Bon apprentissage !')});
 window.addEventListener('offline',()=>toast("Pas de connexion : l'appli fonctionne quand même."));
-window.addEventListener('online',()=>toast('Connexion rétablie.'));
+window.addEventListener('online',()=>{toast('Connexion rétablie.');refreshSub()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refreshSub()});
 if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')){
   const hadController=!!navigator.serviceWorker.controller;
   navigator.serviceWorker.addEventListener('controllerchange',()=>{if(hadController)toast("Mise à jour installée. Ferme puis rouvre l'appli pour en profiter.")});
@@ -3755,6 +3815,8 @@ try{
   Cloud.loadProgress=async(uid)=>{try{const s=await getDoc(doc(Cloud.db,'progress',uid));return s.exists()?s.data():null}catch(e){return null}};
   Cloud.saveStudent=async(uid,summary)=>{try{await setDoc(doc(Cloud.db,'students',uid),summary);return true}catch(e){return false}};
   Cloud.loadStudent=async(uid)=>{try{const s=await getDoc(doc(Cloud.db,'students',uid));return s.exists()?s.data():null}catch(e){return null}};
+  Cloud.loadUser=async(uid)=>{const s=await getDoc(doc(Cloud.db,'users',uid));return s.exists()?s.data():null};
+  Cloud.saveUser=async(uid,data)=>{try{await setDoc(doc(Cloud.db,'users',uid),data,{merge:true});return true}catch(e){return false}};
   Cloud.isTeacher=async(uid)=>{try{const s=await getDoc(doc(Cloud.db,'teachers',uid));return s.exists()}catch(e){return false}};
   Cloud.listStudents=async()=>{
     try{const snap=await getDocs(collection(Cloud.db,'students'));const out=[];snap.forEach(d=>out.push(Object.assign({uid:d.id},d.data())));return out}
