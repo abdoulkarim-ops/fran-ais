@@ -437,7 +437,7 @@ summary{font:800 17px var(--f-head);min-height:44px;display:flex;align-items:cen
    ===================================================================== */
 
 /* ============================ 1. CONFIGURATION ============================ */
-const APP={nom:'Le Français avec Abdoul Karim',version:'1.5.0',objectifJour:2,tailleQuiz:10,seuil:6};
+const APP={nom:'Le Français avec Abdoul Karim',version:'1.6.0',objectifJour:2,tailleQuiz:10,seuil:6};
 const CLASSES=[['6e','Sixième','Collège'],['5e','Cinquième','Collège'],['4e','Quatrième','Collège'],['3e','Troisième','Collège'],['2nde','Seconde','Lycée'],['1ère','Première','Lycée'],['Terminale','Terminale','Lycée']];
 const CL=CLASSES.map(c=>c[0]);
 const rg=(a,b)=>CL.slice(CL.indexOf(a),CL.indexOf(b)+1);
@@ -520,7 +520,10 @@ const CATALOG=[
   L('langue-cohesion','etude-langue','Cohérence, cohésion et progression thématique',rg('1ère','1ère')),
   L('langue-lexique','etude-langue','Lexique commun et lexique spécialisé',rg('1ère','1ère')),
   L('langue-injonctif','etude-langue','Le texte injonctif',rg('1ère','1ère')),
-  L('langue-homonymes','etude-langue','Homonymes, homophones et paronymes',rg('1ère','1ère'))
+  L('langue-homonymes','etude-langue','Homonymes, homophones et paronymes',rg('1ère','1ère')),
+  L('langue-referent','etude-langue','Le référent : définition et types',rg('Terminale','Terminale')),
+  L('langue-substituts','etude-langue','Les substituts du référent',rg('Terminale','Terminale')),
+  L('langue-presuppose','etude-langue','Le présupposé et le sous-entendu',rg('Terminale','Terminale'))
 ];
 
 /* ============================ 3. CONTENU ============================ */
@@ -2852,6 +2855,129 @@ const CONTENT={
     {t:'qcm',q:"Pourquoi est-il utile de vérifier le sens d'un mot proche d'un autre ?",o:["Pour éviter de confondre deux paronymes et fausser le sens","Pour allonger ses phrases","Pour éviter les répétitions"],a:0,e:"Une confusion de paronymes peut créer un contresens."},
     {t:'fix',q:"Corrige : « Les homophones ont la même orthographe et des prononciations différentes. »",o:["Les homophones ont la même prononciation et des orthographes différentes.","Les homophones ont la même orthographe et des prononciations différentes.","Les homophones et les paronymes sont exactement la même chose."],a:0,e:"C'est l'inverse : même son, orthographe différente."}
   ]
+},
+
+"langue-referent":{
+  objectif:"Définir le référent, distinguer le signifiant, le signifié et le référent, et reconnaître un référent situationnel et un référent textuel.",
+  explication:[
+    "Un mot n'est pas la chose qu'il désigne. Dans le signe linguistique, on distingue le **signifiant** (la forme du mot : « c-h-a-t »), le **signifié** (l'idée, le concept : petit félin domestique) et le **référent** (l'animal précis dont on parle dans la phrase).",
+    "Le **référent** est donc l'être, l'objet, le lieu, l'idée ou la situation du monde auquel un mot ou une expression renvoie dans un énoncé. Il peut être réel (Yaoundé, ma mère), imaginaire (Harpagon, un dragon) ou abstrait (la liberté, la peur).",
+    "Le **référent situationnel** se trouve dans la situation de communication, c'est-à-dire en dehors du texte : qui parle, à qui, où et quand. Il est désigné par des mots appelés **déictiques** (je, tu, nous, ici, maintenant, demain, ceci…). Pour le comprendre, il faut connaître la situation d'énonciation.",
+    "Le **référent textuel** se trouve dans le texte lui-même : il a été cité avant (**anaphore**) ou sera cité après (**cataphore**). Pour le comprendre, il suffit de relire le texte."
+  ],
+  regle:"Pour trouver un référent, demande-toi : **« Qui ou quoi est désigné ? »** Si la réponse est dans le texte, le référent est **textuel** ; si elle dépend de la situation de communication, il est **situationnel**.",
+  tableaux:[{titre:"Deux types de référent",entetes:["Référent","Où le trouver ?","Mots concernés"],lignes:[["situationnel","Dans la situation de communication, hors du texte","je, tu, nous, ici, maintenant, demain, ceci"],["textuel","Dans le texte, avant (anaphore) ou après (cataphore)","il, elle, le, lui, celui-ci, qui"]]}],
+  exemples:[
+    {t:"« **Donne-moi ça**, **ici** et **maintenant**. »",n:"« Ça », « ici » et « maintenant » sont des déictiques : leur référent est situationnel, on ne peut le trouver qu'en connaissant la scène."},
+    {t:"Amina a gagné le concours. **Elle** était folle de joie.",n:"« Elle » renvoie à Amina, citée avant : référent textuel, par anaphore."},
+    {t:"Quand **elle** a ouvert la porte, Mariam a poussé un cri.",n:"« Elle » renvoie à Mariam, citée après : référent textuel, par cataphore."}
+  ],
+  retenir:["Le référent est l'être ou l'objet du monde auquel un mot renvoie.","Il ne faut pas confondre le signifiant, le signifié et le référent.","Le référent situationnel se trouve dans la situation de communication (je, ici, demain…).","Le référent textuel se trouve dans le texte, avant (anaphore) ou après (cataphore)."],
+  plus:"Un même mot peut avoir un référent différent selon la situation : le pronom « je » désigne chaque fois la personne qui parle. C'est pourquoi on dit que les déictiques ont un référent **variable**. À l'inverse, un nom propre comme « Yaoundé » garde le même référent dans presque toutes les situations.",
+  mini:{t:'qcm',q:"Dans « Mon frère est médecin. Il travaille à Douala. », quel est le référent de « il » ?",o:["Mon frère","Douala","Le locuteur"],a:0,e:"« Il » reprend « mon frère », cité dans la phrase précédente : c'est un référent textuel."},
+  exercices:[
+    {t:'qcm',q:"Dans « Je viens demain », le référent de « je » est…",o:["la personne qui parle","un mot cité plus tôt dans le texte","le jour suivant"],a:0,e:"« Je » désigne celui qui parle : son référent est situationnel."},
+    {t:'vf',q:"Dans « Amina a gagné. Elle est heureuse. », le référent de « elle » est situationnel.",a:false,e:"« Elle » reprend Amina, citée avant : le référent est textuel."},
+    {t:'fill',q:"Complète : Un référent cité avant le mot qui le reprend est une ___ .",a:["anaphore"],e:"L'anaphore renvoie à un élément déjà cité dans le texte."},
+    {t:'match',q:"Associe chaque énoncé à son type de référent.",pairs:[["je, ici, demain","référent situationnel"],["Amina… elle","référent textuel (anaphore)"],["Quand elle est entrée, Mariam…","référent textuel (cataphore)"]],e:"Le référent situationnel dépend de la situation ; le référent textuel se trouve dans le texte, avant ou après."},
+    {t:'qcm',q:"Dans « Regarde ça ! », dit en montrant un objet, le référent de « ça » est…",o:["l'objet montré, référent situationnel","un mot du texte, référent textuel","il n'y a pas de référent"],a:0,e:"On ne peut trouver ce référent qu'en voyant la scène : il est situationnel."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Qu'est-ce que le référent ?",o:["L'être ou l'objet du monde auquel un mot renvoie","La forme écrite d'un mot","Le sens du mot dans le dictionnaire"],a:0,e:"Le référent est ce dont on parle réellement dans l'énoncé."},
+    {t:'qcm',q:"Le signifiant du mot « chat » est…",o:["la suite de sons ou de lettres c-h-a-t","l'idée de petit félin","l'animal réel"],a:0,e:"Le signifiant est la forme du mot."},
+    {t:'qcm',q:"Le signifié du mot « chat » est…",o:["l'idée ou le concept de petit félin domestique","l'animal qui dort sur mon lit","la suite de lettres c-h-a-t"],a:0,e:"Le signifié est le concept associé à la forme."},
+    {t:'vf',q:"Le référent peut être un être imaginaire.",a:true,e:"Harpagon ou un dragon sont des référents imaginaires."},
+    {t:'qcm',q:"Où trouve-t-on un référent situationnel ?",o:["Dans la situation de communication","Dans la phrase précédente","Dans le dictionnaire"],a:0,e:"Il dépend de qui parle, à qui, où et quand."},
+    {t:'qcm',q:"Quel mot a un référent situationnel ?",o:["maintenant","Amina","elle (reprenant Amina)"],a:0,e:"« Maintenant » est un déictique : il renvoie au moment où l'on parle."},
+    {t:'fill',q:"Complète : Les mots comme « je », « ici » et « demain », dont le référent dépend de la situation, sont des ___ .",a:["déictiques","deictiques"],e:"Ce sont des déictiques."},
+    {t:'qcm',q:"Dans « Quand il est entré, Paul tremblait. », « il » est…",o:["une cataphore","une anaphore","un déictique"],a:0,e:"« Il » annonce Paul, cité après : c'est une cataphore."},
+    {t:'vf',q:"Pour comprendre un référent textuel, il suffit de relire le texte.",a:true,e:"Le référent textuel est dans le texte lui-même."},
+    {t:'fix',q:"Corrige : « Un référent textuel se trouve en dehors du texte. »",o:["Un référent textuel se trouve dans le texte lui-même.","Un référent textuel se trouve en dehors du texte.","Un référent textuel n'existe pas."],a:0,e:"C'est le référent situationnel qui se trouve hors du texte."}
+  ]
+},
+
+"langue-substituts":{
+  objectif:"Comprendre le rôle des substituts du référent, distinguer les substituts grammaticaux et lexicaux, et les repérer dans un texte.",
+  explication:[
+    "Un texte qui répète toujours le même mot est lourd. Pour l'éviter, l'auteur reprend le référent sous d'autres formes : ce sont les **substituts**. Ils assurent aussi la **cohésion** du texte, car ils relient les phrases entre elles.",
+    "Un **substitut** est un mot ou un groupe de mots qui remplace un terme déjà employé (l'**antécédent**) en renvoyant au même référent. L'ensemble des termes qui désignent le même référent forme une **chaîne de référence** : « Mon voisin a acheté un chien. **Il** l'adore. **Cet homme** sort chaque matin avec **l'animal**. »",
+    "Les **substituts grammaticaux** sont des mots grammaticaux, surtout des pronoms : pronoms personnels (il, elle, le, lui), relatifs (qui, que, dont), démonstratifs (celui-ci, cela), possessifs (le sien), indéfinis (certains, chacun), ainsi que les pronoms adverbiaux **en** et **y**. Ils n'ont pas de sens propre : leur sens vient de l'antécédent.",
+    "Les **substituts lexicaux** sont des mots pleins, qui ont un sens propre : un synonyme (voiture, automobile), un hyperonyme (chat, animal), une périphrase (Paris, la capitale de la France), un groupe nominal qui juge ou qualifie (Paul, ce menteur), une nominalisation (il a refusé, ce refus) ou le même nom repris avec un autre déterminant (un enfant, l'enfant). Ils apportent souvent une précision ou un jugement.",
+    "Pour **repérer un substitut**, lis le texte en entier, trouve la première mention du référent, puis cherche dans les phrases suivantes les mots qui le reprennent. Fais ensuite le **test de substitution** : remplace le mot par l'antécédent ; si le sens est conservé, c'est bien un substitut. Vérifie enfin l'accord en genre et en nombre, puis classe le substitut : grammatical ou lexical."
+  ],
+  regle:"Le substitut **grammatical** remplace sans rien ajouter ; le substitut **lexical** reprend le référent et peut ajouter une précision, un jugement ou une émotion. Tous deux renvoient au même référent que l'antécédent.",
+  tableaux:[{titre:"Les types de substituts",entetes:["Type","Procédé","Exemple"],lignes:[["grammatical","pronom personnel","Paul est arrivé. **Il** est fatigué."],["grammatical","pronom en / y","Il a une radio, il **en** prend soin."],["lexical","synonyme","une voiture… **l'automobile**"],["lexical","hyperonyme","un chat… **l'animal**"],["lexical","périphrase","Paris… **la capitale de la France**"],["lexical","groupe nominal qui juge","Paul… **ce menteur**"]]}],
+  exemples:[
+    {t:"Mon voisin a acheté un chien. **Il** l'adore. **Cet homme** sort chaque matin avec **l'animal**.",n:"Chaîne 1 : mon voisin → il → cet homme. Chaîne 2 : un chien → l' → l'animal. « Il » et « l' » sont grammaticaux ; « cet homme » et « l'animal » sont lexicaux."},
+    {t:"Paul a refusé de venir. **Ce refus** a surpris tout le monde.",n:"« Ce refus » reprend le verbe « a refusé » sous forme de nom : c'est une nominalisation, donc un substitut lexical."},
+    {t:"Paris attire beaucoup de touristes. **La capitale de la France** compte de nombreux musées.",n:"« La capitale de la France » est une périphrase qui reprend « Paris » : substitut lexical."}
+  ],
+  retenir:["Un substitut reprend un référent déjà cité pour éviter la répétition et relier les phrases.","Les substituts grammaticaux sont surtout des pronoms (il, le, qui, celui-ci, en, y).","Les substituts lexicaux sont des mots pleins : synonyme, hyperonyme, périphrase, groupe nominal, nominalisation.","Pour repérer un substitut : trouve l'antécédent, puis fais le test de substitution."],
+  plus:"La reprise lexicale peut être **fidèle** (le même nom est répété avec un autre déterminant : un enfant, l'enfant) ou **infidèle** (un autre mot est employé : un enfant, ce gamin). Les reprises infidèles sont souvent chargées de sens : « ce brave garçon » et « ce petit voyou » désignent le même personnage, mais n'orientent pas le lecteur de la même manière.",
+  mini:{t:'qcm',q:"Dans « Mon grand-père possède une radio. Il l'écoute chaque soir. », « il » est un substitut…",o:["grammatical","lexical","situationnel"],a:0,e:"« Il » est un pronom personnel : c'est un substitut grammatical."},
+  exercices:[
+    {t:'qcm',q:"Quel mot est un substitut lexical de « un chat » ?",o:["l'animal","il","lui"],a:0,e:"« L'animal » est un hyperonyme : un mot plein, donc un substitut lexical."},
+    {t:'vf',q:"« Qui », « en » et « celui-ci » peuvent être des substituts grammaticaux.",a:true,e:"Ce sont des pronoms : relatif, adverbial et démonstratif."},
+    {t:'fill',q:"Complète : L'ensemble des termes qui désignent le même référent forme une chaîne de ___ .",a:["référence","reference"],e:"On parle de chaîne de référence."},
+    {t:'find',q:"Touche les mots qui reprennent « mon grand-père », puis valide.",s:"Mon grand-père possède une radio. Il l'écoute le soir. Cet homme ne la quitte jamais.",a:["Il","Cet","homme"],e:"« Il » (pronom) et « cet homme » (groupe nominal) reprennent « mon grand-père »."},
+    {t:'match',q:"Associe chaque reprise à son procédé.",pairs:[["Il a refusé… ce refus","nominalisation"],["un chat… l'animal","hyperonyme"],["Paris… la capitale de la France","périphrase"]],e:"Ce sont trois procédés de reprise lexicale."}
+  ],
+  quiz:[
+    {t:'qcm',q:"À quoi servent les substituts ?",o:["Éviter les répétitions et assurer la cohésion du texte","Ralentir la lecture","Changer de référent"],a:0,e:"Ils évitent la répétition et relient les phrases."},
+    {t:'qcm',q:"Comment appelle-t-on le terme repris par un substitut ?",o:["L'antécédent","Le déictique","Le signifiant"],a:0,e:"Le terme repris est l'antécédent."},
+    {t:'qcm',q:"Quel est un substitut grammatical ?",o:["un pronom","une périphrase","un hyperonyme"],a:0,e:"Les substituts grammaticaux sont surtout des pronoms."},
+    {t:'qcm',q:"« Ce menteur », qui reprend « Paul », est un substitut…",o:["lexical","grammatical","situationnel"],a:0,e:"C'est un groupe nominal qui juge : substitut lexical."},
+    {t:'vf',q:"Un substitut lexical peut ajouter un jugement sur le référent.",a:true,e:"Par exemple « ce menteur » ou « ce brave garçon »."},
+    {t:'fill',q:"Complète : Le test de ___ consiste à remplacer le substitut par son antécédent.",a:["substitution"],e:"Si le sens est conservé, c'est bien un substitut."},
+    {t:'qcm',q:"Dans « Il a refusé. Ce refus nous a surpris. », « ce refus » est…",o:["une nominalisation","un pronom relatif","un déictique"],a:0,e:"Le verbe est repris sous forme de nom."},
+    {t:'vf',q:"Les pronoms « en » et « y » peuvent être des substituts.",a:true,e:"Dans « il a une radio, il en prend soin », « en » reprend « une radio »."},
+    {t:'qcm',q:"« Paris »… « la capitale de la France » est…",o:["une périphrase","un pronom","un déictique"],a:0,e:"C'est une expression équivalente qui reprend le même référent."},
+    {t:'fix',q:"Corrige : « Un substitut grammatical a un sens propre indépendant de l'antécédent. »",o:["Un substitut grammatical n'a pas de sens propre : son sens vient de l'antécédent.","Un substitut grammatical a un sens propre indépendant de l'antécédent.","Un substitut grammatical n'existe pas."],a:0,e:"Seuls les substituts lexicaux ont un sens propre."}
+  ]
+},
+
+"langue-presuppose":{
+  objectif:"Distinguer l'explicite de l'implicite, définir le présupposé et le sous-entendu, et savoir les repérer dans un énoncé.",
+  explication:[
+    "Dans un énoncé, tout n'est pas dit de la même façon. L'**explicite** (ou **posé**) est ce qui est dit clairement. L'**implicite** est ce qui n'est pas dit directement mais que l'on peut comprendre : il comprend le **présupposé** et le **sous-entendu**. Dans « Paul a cessé de fumer », le posé est « Paul ne fume plus » ; le présupposé est « Paul fumait avant ».",
+    "Le **présupposé** est une information implicite contenue dans les mots et la construction de la phrase. Il est présenté comme déjà connu et admis, et il ne dépend pas du contexte. Il résiste à la négation et à l'interrogation : « Paul n'a pas cessé de fumer » et « Paul a-t-il cessé de fumer ? » présupposent encore que Paul fumait avant.",
+    "Le présupposé s'appuie sur des **marqueurs** : les verbes de changement d'état (cesser de, devenir, continuer, commencer à), les adverbes (encore, déjà, toujours, ne… plus), les déterminants définis et possessifs (« le frère de Marie » présuppose que Marie a un frère), les comparatifs, les mots comme « nouveau » ou « ancien », certains verbes (regretter, savoir) et les questions orientées (« Pourquoi as-tu pleuré ? »).",
+    "Le **sous-entendu** est une information implicite que l'interlocuteur **déduit du contexte**, de la situation ou du ton. Il n'est pas dans les mots eux-mêmes. « Il fait chaud ici », dit dans une salle fermée, peut sous-entendre « ouvre la fenêtre ». Le sous-entendu est incertain : le récepteur peut se tromper, et le locuteur peut le nier (« Je n'ai pas dit ça ! »).",
+    "Le présupposé engage le locuteur : il ne peut pas le nier sans se contredire. Le sous-entendu lui laisse une porte de sortie. C'est pourquoi on les trouve dans la **publicité**, le **discours politique** et l'**argumentation** : ils orientent le lecteur sans qu'il s'en rende compte. Savoir les repérer permet de garder son esprit critique.",
+    "Pour **les repérer** : relève d'abord ce qui est posé ; cherche ensuite les marqueurs de présupposé ; applique le **test de la négation** (si l'information reste, c'est un présupposé ; si elle disparaît, c'est un sous-entendu) ; demande-toi enfin dans quelle situation la phrase est dite. Formule l'information implicite par une phrase complète."
+  ],
+  regle:"**Présupposé** : sens lié aux mots, indépendant du contexte, qui résiste à la négation. **Sous-entendu** : sens déduit du contexte, qui disparaît avec la négation et que le locuteur peut nier. Pour les distinguer, applique le **test de la négation**.",
+  tableaux:[
+    {titre:"Présupposé et sous-entendu",entetes:["Critère","Présupposé","Sous-entendu"],lignes:[["Source","Les mots et la construction de la phrase","Le contexte, la situation, le ton"],["Dépend du contexte ?","Non","Oui"],["Test de la négation","L'information reste","L'information disparaît"],["Le locuteur peut-il le nier ?","Non, il s'en porte garant","Oui : « Je n'ai pas dit ça »"],["Sûreté du sens","Sûr","Possible, à interpréter"]]},
+    {titre:"Quelques marqueurs de présupposé",entetes:["Marqueur","Exemple","Présupposé"],lignes:[["Verbe de changement d'état","Il est **devenu** riche.","Avant, il ne l'était pas."],["Adverbe","Tu as **encore** oublié tes cahiers.","Tu les avais déjà oubliés avant."],["Déterminant défini","**Le** frère de Marie est absent.","Marie a un frère."],["Comparatif, « nouveau »","Le **nouveau** directeur est plus juste.","Il y avait un directeur avant."]]}
+  ],
+  exemples:[
+    {t:"Paul a **cessé de** fumer.",n:"Posé : il ne fume plus. Présupposé : il fumait avant. Le présupposé reste vrai avec « Paul n'a pas cessé de fumer »."},
+    {t:"« Tu as **encore** oublié tes cahiers ! »",n:"Présupposé : tu les avais déjà oubliés avant. Sous-entendu possible : c'est un reproche."},
+    {t:"Un parent à son enfant qui dort : « Il est **déjà** midi. »",n:"Sous-entendu : lève-toi, tu as trop dormi. Ce sens dépend entièrement de la situation."}
+  ],
+  retenir:["L'explicite est ce qui est dit clairement ; l'implicite se divise en présupposé et sous-entendu.","Le présupposé est inscrit dans les mots (cesser de, encore, déjà, le, nouveau…) et résiste à la négation.","Le sous-entendu se déduit du contexte et peut être nié par le locuteur.","Ils servent à orienter, à persuader ou à rester poli sans tout dire."],
+  plus:"Les linguistes comme Oswald Ducrot ont étudié ces notions. Dans la publicité, « Le nouveau Savon X lave encore plus blanc » présuppose que les autres savons lavent blanc, sans que ce soit discuté. Dans un débat, un présupposé passe pour une évidence : celui qui l'accepte sans le remarquer est déjà en partie convaincu. Repérer l'implicite est donc un outil de lecture critique.",
+  mini:{t:'qcm',q:"Dans « Mon voisin a arrêté de crier la nuit », quel est le présupposé ?",o:["Mon voisin criait la nuit avant.","Mon voisin ne dort plus.","Mon voisin est gentil."],a:0,e:"« Arrêter de » présuppose que l'action existait avant."},
+  exercices:[
+    {t:'qcm',q:"Dans « Il est devenu riche », le présupposé est…",o:["Avant, il n'était pas riche.","Il est très généreux.","Il a trouvé un trésor."],a:0,e:"Le verbe « devenir » présuppose un état antérieur différent."},
+    {t:'qcm',q:"Quelle situation contient un sous-entendu ?",o:["« Il fait chaud ici », dit pour qu'on ouvre la fenêtre","« Paul a cessé de fumer. »","« Tu as encore oublié ton livre. »"],a:0,e:"Le sens « ouvre la fenêtre » se déduit de la situation, pas des mots."},
+    {t:'vf',q:"Un présupposé disparaît quand on met la phrase à la forme négative.",a:false,e:"C'est justement le test : le présupposé résiste à la négation."},
+    {t:'fill',q:"Complète : Dans « Il n'a pas arrêté de mentir », le présupposé « il mentait avant » est toujours ___ .",a:["présent","conservé","valable","vrai"],e:"Le présupposé résiste à la négation."},
+    {t:'match',q:"Associe chaque énoncé à son implicite.",pairs:[["Tu as encore oublié tes cahiers","présupposé : tu les avais déjà oubliés"],["Il fait chaud ici (salle fermée)","sous-entendu : ouvre la fenêtre"],["Le nouveau directeur est plus juste","présupposé : il y avait un directeur avant"]],e:"Les marqueurs « encore » et « nouveau » donnent des présupposés ; la salle fermée appelle un sous-entendu."}
+  ],
+  quiz:[
+    {t:'qcm',q:"Qu'appelle-t-on le posé ?",o:["Ce qui est dit explicitement","Ce qui est déduit du contexte","Ce qui est faux"],a:0,e:"Le posé est l'information dite clairement."},
+    {t:'qcm',q:"Le présupposé est…",o:["inscrit dans les mots de la phrase","déduit uniquement du ton de la voix","toujours faux"],a:0,e:"Il est lié aux mots et à la construction de la phrase."},
+    {t:'qcm',q:"Dans « Paul a cessé de fumer », le présupposé est…",o:["Paul fumait avant.","Paul est en bonne santé.","Paul ne fume plus."],a:0,e:"« Paul ne fume plus » est le posé ; « Paul fumait avant » est le présupposé."},
+    {t:'vf',q:"Le sous-entendu dépend du contexte.",a:true,e:"Le même énoncé peut sous-entendre autre chose dans une autre situation."},
+    {t:'qcm',q:"Quel mot est un marqueur de présupposé ?",o:["encore","hier","peut-être"],a:0,e:"« Encore » présuppose que l'action a déjà eu lieu."},
+    {t:'qcm',q:"Le locuteur peut nier plus facilement…",o:["le sous-entendu","le présupposé","le posé"],a:0,e:"Il peut répondre « Je n'ai pas dit ça »."},
+    {t:'vf',q:"Le présupposé résiste à la négation.",a:true,e:"C'est le test qui permet de le reconnaître."},
+    {t:'fill',q:"Complète : « Tu as vu l'heure ? » peut ___ que nous sommes en retard.",a:["sous-entendre","sous-entend"],e:"Le sens se déduit de la situation : c'est un sous-entendu."},
+    {t:'qcm',q:"Dans « Pourquoi as-tu pleuré ? », le présupposé est…",o:["Tu as pleuré.","Tu es triste depuis longtemps.","Tu n'as pas pleuré."],a:0,e:"La question suppose que le fait est vrai."},
+    {t:'fix',q:"Corrige : « Le présupposé dépend uniquement du contexte et peut être nié sans contradiction. »",o:["Le présupposé est lié aux mots de la phrase et ne peut pas être nié sans contradiction.","Le présupposé dépend uniquement du contexte et peut être nié sans contradiction.","Le présupposé n'existe pas en français."],a:0,e:"C'est le sous-entendu qui dépend du contexte et peut être nié."}
+  ]
 }
 };
 /* ===== FIN DU CONTENU ===== */
@@ -2867,7 +2993,7 @@ const fmt=n=>String(Math.round(n*10)/10).replace('.',',');
 const nz=s=>String(s).trim().toLowerCase().replace(/[’`]/g,"'").replace(/\s+/g,' ');
 const cw=t=>t.replace(/[.,;:!?«»"“”()]/g,'').toLowerCase();
 const META=id=>CATALOG.find(l=>l.id===id);
-const availableLessons=cat=>CATALOG.filter(l=>CONTENT[l.id]&&(!cat||l.cat===cat));
+const availableLessons=cat=>CATALOG.filter(l=>CONTENT[l.id]&&(!cat||l.cat===cat)&&(!(S.user&&S.user.classe)||l.classes.includes(S.user.classe)));
 const dname=u=>u?(u.guest?'Élève invité':((u.prenom||'')+' '+(u.nom||'')).trim()):'';
 
 /* ============================ 4. STORE / REPO ============================ */
@@ -3162,7 +3288,7 @@ function vLogin(){
 function vCourses(){
   const cl=S.user&&S.user.classe,p=S.prog;
   const renderCat=cat=>{
-    const lessons=CATALOG.filter(l=>l.cat===cat.id&&(!cl||CONTENT[l.id]||l.classes.includes(cl)));
+    const lessons=CATALOG.filter(l=>l.cat===cat.id&&(!cl||l.classes.includes(cl)));
     const avail=lessons.filter(l=>CONTENT[l.id]),doneN=avail.filter(l=>p.lessons[l.id]).length;
     const open=S.ui.open[cat.id]===true;
     lessons.sort((a,b)=>(!!CONTENT[b.id])-(!!CONTENT[a.id])||(cl?(b.classes.includes(cl)-a.classes.includes(cl)):0));
@@ -3187,6 +3313,7 @@ function vCourses(){
 function vLesson(par){
   const id=par.id,m=META(id),c=CONTENT[id];
   if(!m||!c)return vCourses();
+  if(S.user&&S.user.classe&&!m.classes.includes(S.user.classe))return vCourses();
   const cat=CAT[m.cat],p=S.prog,cl=S.user&&S.user.classe;
   if(S.curFor!=='lesson:'+id){S.cur=newQS(c.mini);S.curFor='lesson:'+id}
   const upper=cl&&CL.indexOf(cl)>=3,rev=cl&&!m.classes.includes(cl);
